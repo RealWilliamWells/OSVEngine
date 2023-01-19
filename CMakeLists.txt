@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.7)
-project(WizEngine)
+project(WizEngine3D)
 
 set(GTEST_COMMIT e2239ee6043f73722e7aa812a459f54a28552929) # Version 1.11.0
 
@@ -53,7 +53,8 @@ endif()
 # Other dependencies
 
 set(OpenGL_GL_PREFERENCE GLVND)
-find_package(OpenGL)
+find_package(OpenGL REQUIRED COMPONENTS OpenGL)
+find_package(glfw3 REQUIRED)
 find_package(Threads REQUIRED)
 
 # include and source files
@@ -71,7 +72,13 @@ file(GLOB SOURCE_FILES
         ${PROJECT_SOURCE_DIR}/include/*/*/*.h
         ${PROJECT_SOURCE_DIR}/include/*/*/*.hpp)
 
+include_directories(include)
+
 add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
+
+add_executable(test_${PROJECT_NAME} ${SOURCE_FILES})
+
+target_link_libraries(test_${PROJECT_NAME} OpenGL::GL glfw)
 
 include(FetchContent)
 FetchContent_Declare(googletest
