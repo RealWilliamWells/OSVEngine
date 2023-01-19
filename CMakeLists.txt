@@ -54,6 +54,7 @@ endif()
 
 set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED COMPONENTS OpenGL)
+find_package(GLEW REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(Threads REQUIRED)
 
@@ -78,7 +79,7 @@ add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
 
 add_executable(test_${PROJECT_NAME} ${SOURCE_FILES})
 
-target_link_libraries(test_${PROJECT_NAME} OpenGL::GL glfw)
+target_link_libraries(test_${PROJECT_NAME} OpenGL::GL GLEW::glew glfw)
 
 include(FetchContent)
 FetchContent_Declare(googletest
