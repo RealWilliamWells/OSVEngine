@@ -3,18 +3,15 @@
 #include <iostream>
 
 void RenderEngine::initWindow() {
-    glewInit();
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
-//    glGenBuffers(1, &VBO);
 }
 
 void RenderEngine::openWindow() {
-    window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
+    window = glfwCreateWindow(800, 600, "WizEngine3D Test", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -30,25 +27,41 @@ void RenderEngine::openWindow() {
         // TODO: throw glew init exception
     }
 
+    glGenBuffers(1, &VBO);
+    glGenVertexArrays(1, &VAO);
+
+    allocateBuffers();
+    compileAndLinkProgramShaders();
+
     glViewport(0, 0, 800, 600);
 
     glfwSetFramebufferSizeCallback(window, RenderEngine::framebufferSizeCallback);
 }
 
-void RenderEngine::allocateBuffer() {
+void RenderEngine::allocateBuffers() {
+    // VBO
     float vertices[] = {
             -0.5f, -0.5f, 0.0f,
             0.5f, -0.5f, 0.0f,
             0.0f,  0.5f, 0.0f
     };
 
-    glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    // VAO
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
 }
 
-void RenderEngine::compileShaders() {
+void RenderEngine::compileAndLinkProgramShaders() {
+    // Compile shaders
     unsigned int vertexShader;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
@@ -76,12 +89,45 @@ void RenderEngine::compileShaders() {
         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
+
+
+    // Link shaders to program
+    shaderProgram = glCreateProgram();
+
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+
+    success = 1;
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if(!success) {
+        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+    }
+
+    // User program
+    glUseProgram(shaderProgram);
+
+    // Delete shaders as they are no longer needed
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
+    // Link vertex attributes
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+}
+
+void RenderEngine::renderShaders() {
+    glUseProgram(shaderProgram);
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
 bool RenderEngine::update() {
     processInput();
 
     renderScreen();
+    renderShaders();
 
     glfwSwapBuffers(window);
     glfwPollEvents();

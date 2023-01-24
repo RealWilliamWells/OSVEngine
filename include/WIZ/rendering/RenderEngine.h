@@ -11,6 +11,7 @@
 class RenderEngine {
     GLFWwindow* window;
     unsigned int VBO;
+    unsigned int VAO;
 
     // Example shader
     const char *vertexShaderSource = "#version 330 core\n"
@@ -28,15 +29,18 @@ class RenderEngine {
                                        "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
                                        "}\0";
 
+    unsigned int shaderProgram;
+
 public:
     void initWindow();
 
     void openWindow();
 
-    void allocateBuffer();
+    void allocateBuffers();
 
-    void compileShaders();
+    void compileAndLinkProgramShaders();
 
+    void renderShaders();
 
     bool update();
 
