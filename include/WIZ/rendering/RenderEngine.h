@@ -12,6 +12,7 @@ class RenderEngine {
     GLFWwindow* window;
     unsigned int VBO;
     unsigned int VAO;
+    unsigned int EBO;
 
     // Example shader
     const char *vertexShaderSource = "#version 330 core\n"
