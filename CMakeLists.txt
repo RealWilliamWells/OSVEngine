@@ -92,7 +92,7 @@ file(GLOB SOURCE_FILES
         ${PROJECT_SOURCE_DIR}/include/*/*/*.h
         ${PROJECT_SOURCE_DIR}/include/*/*/*.hpp)
 
-add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES} include/WIZ/rendering/Textured.h src/WIZ/rendering/Textured.cpp)
+add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES} include/WIZ/rendering/Textured.h src/WIZ/rendering/Textured.cpp include/WIZ/rendering/Camera.h src/WIZ/rendering/Camera.cpp)
 
 FetchContent_Declare(googletest
     GIT_REPOSITORY https://github.com/google/googletest.git

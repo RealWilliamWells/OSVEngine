@@ -2,6 +2,12 @@
 
 #include <iostream>
 
+wiz::RenderEngine::RenderEngine() : camera() {
+    view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f),
+                       glm::vec3(0.0f, 0.0f, 0.0f),
+                       glm::vec3(0.0f, 1.0f, 0.0f));
+}
+
 void wiz::RenderEngine::initWindow() {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -50,9 +56,7 @@ void wiz::RenderEngine::setupBuffers() {
 
 void wiz::RenderEngine::updateCoordinateSystem() {
     model = glm::mat4(1.0f);
-    view = glm::mat4(1.0f);
-    model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
-    view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+//    model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
     projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 }
 
@@ -76,6 +80,7 @@ bool wiz::RenderEngine::update() {
     processInput();
 
     updateCoordinateSystem();
+    moveCamera();
 
     renderScreen();
 
@@ -99,6 +104,13 @@ void wiz::RenderEngine::processInput() {
         glfwSetWindowShouldClose(window, true);
 }
 
+void wiz::RenderEngine::moveCamera() {
+    const float radius = 10.0f;
+    float camX = sin(glfwGetTime()) * radius;
+    float camZ = cos(glfwGetTime()) * radius;
+    view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+}
+
 void wiz::RenderEngine::renderScreen() {
     // TODO: Implement screen class for rendering engine to display
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -116,7 +128,6 @@ int main() {
 
     renderEngine->initWindow();
     renderEngine->openWindow();
-    renderEngine->updateCoordinateSystem();
 
     float vertices[] = {
             -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,

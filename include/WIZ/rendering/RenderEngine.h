@@ -8,6 +8,7 @@
 #include "Shader.h"
 #include "VertexShape.h"
 #include "Textured.h"
+#include "Camera.h"
 
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
@@ -31,11 +32,14 @@ class wiz::RenderEngine {
     const unsigned int SCR_HEIGHT = 600;
 
     glm::mat4 model = glm::mat4(1.0f);
-    glm::mat4 view = glm::mat4(1.0f);
+    glm::mat4 view;
     glm::mat4 projection;
 
+    Camera camera;
 
 public:
+    RenderEngine();
+
     void initWindow();
 
     void openWindow();
@@ -53,6 +57,8 @@ public:
     bool update();
 
     void processInput();
+
+    void moveCamera();
 
     void renderScreen();
 
