@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.7)
 project(WizEngine3D)
 
+set(STB_COMMIT 3ecc60f25ae1391cf6434578ece782afa1458b5)
+set(GLM_COMMIT bf71a834948186f4097caa076cd2663c69a10e1e)
 set(GTEST_COMMIT e2239ee6043f73722e7aa812a459f54a28552929) # Version 1.11.0
 
 if(CMAKE_COMPILER_IS_GNUCXX AND NOT WIN32)
@@ -50,6 +52,21 @@ elseif(UNIX)
     endif()
 endif()
 
+# Fetch dependencies
+include(FetchContent)
+
+FetchContent_Declare(stb
+        GIT_REPOSITORY git@github.com:nothings/stb.git
+        GIT_TAG ${STB_COMMIT})
+FetchContent_MakeAvailable(stb)
+FetchContent_GetProperties(stb SOURCE_DIR STB_SOURCE_DIR)
+
+FetchContent_Declare(glm
+        GIT_REPOSITORY git@github.com:g-truc/glm.git
+        GIT_TAG ${GLM_COMMIT})
+FetchContent_MakeAvailable(glm)
+FetchContent_GetProperties(glm SOURCE_DIR GLM_SOURCE_DIR)
+
 # Other dependencies
 
 set(OpenGL_GL_PREFERENCE GLVND)
@@ -59,6 +76,8 @@ find_package(glfw3 REQUIRED)
 find_package(Threads REQUIRED)
 
 # include and source files
+include_directories(include ${STB_SOURCE_DIR} ${GLM_SOURCE_DIR}/glm)
+
 file(GLOB SOURCE_FILES
         ${PROJECT_SOURCE_DIR}/src/*.cpp
         ${PROJECT_SOURCE_DIR}/include/*.inl
@@ -73,11 +92,8 @@ file(GLOB SOURCE_FILES
         ${PROJECT_SOURCE_DIR}/include/*/*/*.h
         ${PROJECT_SOURCE_DIR}/include/*/*/*.hpp)
 
-include_directories(include)
+add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES} include/WIZ/rendering/Textured.h src/WIZ/rendering/Textured.cpp)
 
-add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
-
-include(FetchContent)
 FetchContent_Declare(googletest
     GIT_REPOSITORY https://github.com/google/googletest.git
     GIT_TAG ${GTEST_COMMIT})

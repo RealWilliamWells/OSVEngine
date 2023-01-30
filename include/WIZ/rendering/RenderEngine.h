@@ -7,6 +7,7 @@
 
 #include "Shader.h"
 #include "VertexShape.h"
+#include "Textured.h"
 
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
@@ -44,6 +45,10 @@ public:
     void addVerticesShapes(wiz::VertexShape newShape);
 
     void addVerticesShapes(std::vector<wiz::VertexShape> newShapes);
+
+    void renderVerticesShapes();
+
+    void useTextures();
 
     bool update();
 

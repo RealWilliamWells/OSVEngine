@@ -44,9 +44,6 @@ void wiz::RenderEngine::setupBuffers() {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
 }
 
 void wiz::RenderEngine::addShaders(Shader newShader) {
@@ -62,7 +59,6 @@ void wiz::RenderEngine::addShaders(std::vector<Shader> newShaders) {
 void wiz::RenderEngine::useShaders() {
     for (Shader& shader : shaders) {
         shader.use();
-        shader.setFloat("someUniform", 1.0f);
     }
 }
 
@@ -71,27 +67,38 @@ void wiz::RenderEngine::addVerticesShapes(wiz::VertexShape newShape) {
 }
 
 void wiz::RenderEngine::addVerticesShapes(std::vector<wiz::VertexShape> newShapes) {
-    for (VertexShape& shader : newShapes) {
-        addVerticesShapes(shader);
+    for (VertexShape& shape : newShapes) {
+        addVerticesShapes(shape);
+    }
+}
+
+void wiz::RenderEngine::renderVerticesShapes() {
+    for (VertexShape& shape : vertexShapes) {
+        shape.render();
+    }
+}
+
+void wiz::RenderEngine::useTextures() {
+    for (VertexShape& shape : vertexShapes) {
+        shape.useTexture();
     }
 }
 
 void wiz::RenderEngine::renderShaders() {
-    useShaders();
-    glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
+
 }
 
 bool wiz::RenderEngine::update() {
     processInput();
 
     renderScreen();
-    renderShaders();
 
     glfwSwapBuffers(window);
     glfwPollEvents();
     if (glfwWindowShouldClose(window)){
+        glDeleteVertexArrays(1, &VAO);
+        glDeleteBuffers(1, &VBO);
+        glDeleteBuffers(1, &EBO);
         glfwTerminate();
         return false;
     }
@@ -105,9 +112,16 @@ void wiz::RenderEngine::processInput() {
 
 void wiz::RenderEngine::renderScreen() {
     // TODO: Implement screen class for rendering engine to display
-
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    useTextures();
+
+    useShaders();
+
+    glBindVertexArray(VAO);
+
+    renderVerticesShapes();
 }
 
 // Test entry point and use of render
@@ -122,17 +136,18 @@ int main() {
     renderEngine->addShaders(shader);
 
     float vertices[] = {
-            0.5f,  0.5f, 0.0f,  // top right
-            0.5f, -0.5f, 0.0f,  // bottom right
-            -0.5f, -0.5f, 0.0f,  // bottom left
-            -0.5f,  0.5f, 0.0f   // top left
+        // positions          // colors           // texture coords
+        0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+        0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left
     };
     unsigned int indices[] = {
-            0, 1, 3,   // first triangle
-            1, 2, 3    // second triangle
+            0, 1, 3, // first triangle
+            1, 2, 3  // second triangle
     };
 
-    wiz::VertexShape vertexShape(vertices, indices, sizeof(vertices), sizeof(indices));
+    wiz::VertexShape vertexShape(vertices, indices, sizeof(vertices), sizeof(indices), "res/gfx/jesus.png");
 
     renderEngine->addVerticesShapes(vertexShape);
 
