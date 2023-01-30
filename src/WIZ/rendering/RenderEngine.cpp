@@ -1,4 +1,5 @@
 #include "WIZ/rendering/RenderEngine.h"
+#include "WIZ/input/Mouse.h"
 
 #include <iostream>
 
@@ -25,6 +26,9 @@ void wiz::RenderEngine::openWindow() {
         // TODO: throw window creation exception
     }
     glfwMakeContextCurrent(window);
+
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(window, wiz::Mouse::inputCallback);
 
 //    glewExperimental = true; // Needed for core profile
     if (glewInit() != GLEW_OK) {
@@ -56,7 +60,7 @@ void wiz::RenderEngine::setupBuffers() {
 
 void wiz::RenderEngine::updateCoordinateSystem() {
     model = glm::mat4(1.0f);
-//    model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
+    model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
     projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 }
 
@@ -80,7 +84,7 @@ bool wiz::RenderEngine::update() {
     processInput();
 
     updateCoordinateSystem();
-    moveCamera();
+    updateView();
 
     renderScreen();
 
@@ -88,6 +92,10 @@ bool wiz::RenderEngine::update() {
     glfwPollEvents();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    float currentFrame = glfwGetTime();
+    deltaTime = currentFrame - lastFrame;
+    lastFrame = currentFrame;
 
     if (glfwWindowShouldClose(window)){
         glDeleteVertexArrays(1, &VAO);
@@ -100,15 +108,22 @@ bool wiz::RenderEngine::update() {
 }
 
 void wiz::RenderEngine::processInput() {
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        camera.moveFrontAndBack(true);
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        camera.moveFrontAndBack(false);
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        camera.moveSideways(true);
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        camera.moveSideways(false);
+
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
 
-void wiz::RenderEngine::moveCamera() {
-    const float radius = 10.0f;
-    float camX = sin(glfwGetTime()) * radius;
-    float camZ = cos(glfwGetTime()) * radius;
-    view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+void wiz::RenderEngine::updateView() {
+    camera.update(deltaTime, wiz::Mouse::pitch, wiz::Mouse::yaw);
+    view = glm::lookAt(camera.getPosition(), camera.getPosition() + camera.getFront(), camera.getUp());
 }
 
 void wiz::RenderEngine::renderScreen() {

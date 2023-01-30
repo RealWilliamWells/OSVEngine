@@ -37,6 +37,9 @@ class wiz::RenderEngine {
 
     Camera camera;
 
+    float deltaTime = 0.f;
+    float lastFrame = 0.f;
+
 public:
     RenderEngine();
 
@@ -58,7 +61,7 @@ public:
 
     void processInput();
 
-    void moveCamera();
+    void updateView();
 
     void renderScreen();
 
