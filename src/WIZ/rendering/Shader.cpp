@@ -8,7 +8,7 @@
 #include <sstream>
 #include <iostream>
 
-Shader::Shader(const char* vertexPath, const char* fragmentPath) {
+wiz::Shader::Shader(const char* vertexPath, const char* fragmentPath) {
     // TODO: use future asset loader for loading GLSL code
 
     std::string vertexCode;
@@ -41,7 +41,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
     compileAndLinkProgramShaders(vShaderCode, fShaderCode);
 }
 
-void Shader::compileAndLinkProgramShaders(const char *vShaderCode, const char *fShaderCode) {
+void wiz::Shader::compileAndLinkProgramShaders(const char *vShaderCode, const char *fShaderCode) {
     unsigned int vertex, fragment;
     int success;
     char infoLog[512];
@@ -81,18 +81,18 @@ void Shader::compileAndLinkProgramShaders(const char *vShaderCode, const char *f
     glDeleteShader(fragment);
 }
 
-void Shader::use() {
+void wiz::Shader::use() {
     glUseProgram(programID);
 }
 
-void Shader::setBool(const std::string &name, bool value) const {
+void wiz::Shader::setBool(const std::string &name, bool value) const {
     glUniform1i(glGetUniformLocation(programID, name.c_str()), (int)value);
 }
 
-void Shader::setInt(const std::string &name, int value) const {
+void wiz::Shader::setInt(const std::string &name, int value) const {
     glUniform1i(glGetUniformLocation(programID, name.c_str()), value);
 }
 
-void Shader::setFloat(const std::string &name, float value) const {
+void wiz::Shader::setFloat(const std::string &name, float value) const {
     glUniform1f(glGetUniformLocation(programID, name.c_str()), value);
 }

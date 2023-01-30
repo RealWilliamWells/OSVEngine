@@ -75,7 +75,7 @@ file(GLOB SOURCE_FILES
 
 include_directories(include)
 
-add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES} src/WIZ/rendering/Shader.cpp)
+add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
 
 include(FetchContent)
 FetchContent_Declare(googletest

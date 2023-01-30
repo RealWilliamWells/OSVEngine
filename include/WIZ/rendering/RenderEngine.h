@@ -12,13 +12,17 @@
 
 #include <vector>
 
-class RenderEngine {
+namespace wiz {
+    class RenderEngine;
+}
+
+class wiz::RenderEngine {
     GLFWwindow* window;
     unsigned int VBO;
     unsigned int VAO;
     unsigned int EBO;
 
-    std::vector<Shader> shaders;
+    std::vector<wiz::Shader> shaders;
 
 public:
     void initWindow();
@@ -27,9 +31,9 @@ public:
 
     void allocateBuffers();
 
-    void addShaders(Shader newShader);
+    void addShaders(wiz::Shader newShader);
 
-    void addShaders(std::vector<Shader> newShaders);
+    void addShaders(std::vector<wiz::Shader> newShaders);
 
     void useShaders();
 

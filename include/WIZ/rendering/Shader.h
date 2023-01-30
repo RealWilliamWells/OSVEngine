@@ -8,8 +8,11 @@
 #include "GL/glew.h"
 #include <string>
 
-class Shader
-{
+namespace wiz {
+    class Shader;
+}
+
+class wiz::Shader {
 public:
 	unsigned int programID;
 

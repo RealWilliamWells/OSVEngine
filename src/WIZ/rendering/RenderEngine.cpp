@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-void RenderEngine::initWindow() {
+void wiz::RenderEngine::initWindow() {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -10,7 +10,7 @@ void RenderEngine::initWindow() {
     //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 }
 
-void RenderEngine::openWindow() {
+void wiz::RenderEngine::openWindow() {
     window = glfwCreateWindow(800, 600, "WizEngine3D Test", NULL, NULL);
     if (window == NULL)
     {
@@ -35,10 +35,10 @@ void RenderEngine::openWindow() {
 
     glViewport(0, 0, 800, 600);
 
-    glfwSetFramebufferSizeCallback(window, RenderEngine::framebufferSizeCallback);
+    glfwSetFramebufferSizeCallback(window, wiz::RenderEngine::framebufferSizeCallback);
 }
 
-void RenderEngine::allocateBuffers() {
+void wiz::RenderEngine::allocateBuffers() {
     float vertices[] = {
             0.5f,  0.5f, 0.0f,  // top right
             0.5f, -0.5f, 0.0f,  // bottom right
@@ -62,31 +62,31 @@ void RenderEngine::allocateBuffers() {
     glEnableVertexAttribArray(0);
 }
 
-void RenderEngine::addShaders(Shader newShader) {
+void wiz::RenderEngine::addShaders(Shader newShader) {
     shaders.push_back(newShader);
 }
 
-void RenderEngine::addShaders(std::vector<Shader> newShaders) {
+void wiz::RenderEngine::addShaders(std::vector<Shader> newShaders) {
     for (Shader& shader : newShaders) {
         addShaders(shader);
     }
 }
 
-void RenderEngine::useShaders() {
+void wiz::RenderEngine::useShaders() {
     for (Shader& shader : shaders) {
         shader.use();
         shader.setFloat("someUniform", 1.0f);
     }
 }
 
-void RenderEngine::renderShaders() {
+void wiz::RenderEngine::renderShaders() {
     useShaders();
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 
-bool RenderEngine::update() {
+bool wiz::RenderEngine::update() {
     processInput();
 
     renderScreen();
@@ -101,12 +101,12 @@ bool RenderEngine::update() {
     return true;
 }
 
-void RenderEngine::processInput() {
+void wiz::RenderEngine::processInput() {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
 
-void RenderEngine::renderScreen() {
+void wiz::RenderEngine::renderScreen() {
     // TODO: Implement screen class for rendering engine to display
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -115,13 +115,13 @@ void RenderEngine::renderScreen() {
 
 // Test entry point and use of render
 int main() {
-    RenderEngine* renderEngine = new RenderEngine();
-    std::vector<Shader> shaders;
+    wiz::RenderEngine* renderEngine = new wiz::RenderEngine();
+    std::vector<wiz::Shader> shaders;
 
     renderEngine->initWindow();
     renderEngine->openWindow();
 
-    Shader shader("res/shaders/defaultVertex.vs", "res/shaders/defaultFragment.vs");
+    wiz::Shader shader("res/shaders/defaultVertex.vs", "res/shaders/defaultFragment.vs");
     renderEngine->addShaders(shader);
 
     while (renderEngine->update());
