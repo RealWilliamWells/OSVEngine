@@ -31,32 +31,19 @@ void wiz::RenderEngine::openWindow() {
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &EBO);
 
-    allocateBuffers();
+    setupBuffers();
 
     glViewport(0, 0, 800, 600);
 
     glfwSetFramebufferSizeCallback(window, wiz::RenderEngine::framebufferSizeCallback);
 }
 
-void wiz::RenderEngine::allocateBuffers() {
-    float vertices[] = {
-            0.5f,  0.5f, 0.0f,  // top right
-            0.5f, -0.5f, 0.0f,  // bottom right
-            -0.5f, -0.5f, 0.0f,  // bottom left
-            -0.5f,  0.5f, 0.0f   // top left
-    };
-    unsigned int indices[] = {
-            0, 1, 3,   // first triangle
-            1, 2, 3    // second triangle
-    };
-
+void wiz::RenderEngine::setupBuffers() {
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -76,6 +63,16 @@ void wiz::RenderEngine::useShaders() {
     for (Shader& shader : shaders) {
         shader.use();
         shader.setFloat("someUniform", 1.0f);
+    }
+}
+
+void wiz::RenderEngine::addVerticesShapes(wiz::VertexShape newShape) {
+    vertexShapes.push_back(newShape);
+}
+
+void wiz::RenderEngine::addVerticesShapes(std::vector<wiz::VertexShape> newShapes) {
+    for (VertexShape& shader : newShapes) {
+        addVerticesShapes(shader);
     }
 }
 
@@ -123,6 +120,21 @@ int main() {
 
     wiz::Shader shader("res/shaders/defaultVertex.vs", "res/shaders/defaultFragment.vs");
     renderEngine->addShaders(shader);
+
+    float vertices[] = {
+            0.5f,  0.5f, 0.0f,  // top right
+            0.5f, -0.5f, 0.0f,  // bottom right
+            -0.5f, -0.5f, 0.0f,  // bottom left
+            -0.5f,  0.5f, 0.0f   // top left
+    };
+    unsigned int indices[] = {
+            0, 1, 3,   // first triangle
+            1, 2, 3    // second triangle
+    };
+
+    wiz::VertexShape vertexShape(vertices, indices, sizeof(vertices), sizeof(indices));
+
+    renderEngine->addVerticesShapes(vertexShape);
 
     while (renderEngine->update());
 

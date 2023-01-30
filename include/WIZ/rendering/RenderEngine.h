@@ -6,6 +6,7 @@
 #define WIZENGINE3D_RENDERENGINE_H
 
 #include "Shader.h"
+#include "VertexShape.h"
 
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
@@ -23,13 +24,14 @@ class wiz::RenderEngine {
     unsigned int EBO;
 
     std::vector<wiz::Shader> shaders;
+    std::vector<wiz::VertexShape> vertexShapes;
 
 public:
     void initWindow();
 
     void openWindow();
 
-    void allocateBuffers();
+    void setupBuffers();
 
     void addShaders(wiz::Shader newShader);
 
@@ -38,6 +40,10 @@ public:
     void useShaders();
 
     void renderShaders();
+
+    void addVerticesShapes(wiz::VertexShape newShape);
+
+    void addVerticesShapes(std::vector<wiz::VertexShape> newShapes);
 
     bool update();
 
