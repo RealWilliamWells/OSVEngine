@@ -54,7 +54,7 @@ public:
 
 float wiz::Mouse::lastX = 0.f;
 float wiz::Mouse::lastY = 0.f;
-float wiz::Mouse::yaw = 0.f;
+float wiz::Mouse::yaw = -90.f;
 float wiz::Mouse::pitch = 0.f;
 
 #endif //WIZENGINE3D_MOUSE_H
