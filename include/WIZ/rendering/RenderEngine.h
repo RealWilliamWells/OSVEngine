@@ -5,8 +5,12 @@
 #ifndef WIZENGINE3D_RENDERENGINE_H
 #define WIZENGINE3D_RENDERENGINE_H
 
+#include "Shader.h"
+
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
+
+#include <vector>
 
 class RenderEngine {
     GLFWwindow* window;
@@ -14,23 +18,7 @@ class RenderEngine {
     unsigned int VAO;
     unsigned int EBO;
 
-    // Example shader
-    const char *vertexShaderSource = "#version 330 core\n"
-                                     "layout (location = 0) in vec3 aPos;\n"
-                                     "void main()\n"
-                                     "{\n"
-                                     "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-                                     "}\0";
-
-    const char *fragmentShaderSource = "#version 330 core\n"
-                                       "out vec4 FragColor;\n"
-                                       "\n"
-                                       "void main()\n"
-                                       "{\n"
-                                       "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-                                       "}\0";
-
-    unsigned int shaderProgram;
+    std::vector<Shader> shaders;
 
 public:
     void initWindow();
@@ -39,7 +27,11 @@ public:
 
     void allocateBuffers();
 
-    void compileAndLinkProgramShaders();
+    void addShaders(Shader newShader);
+
+    void addShaders(std::vector<Shader> newShaders);
+
+    void useShaders();
 
     void renderShaders();
 

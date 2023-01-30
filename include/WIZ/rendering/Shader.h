@@ -11,9 +11,11 @@
 class Shader
 {
 public:
-	unsigned int ID;
+	unsigned int programID;
 
 	Shader(const char* vertexPath, const char* fragmentPath);
+
+    void compileAndLinkProgramShaders(const char *vShaderCode, const char *fShaderCode);
 
 	void use();
 

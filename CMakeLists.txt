@@ -75,11 +75,7 @@ file(GLOB SOURCE_FILES
 
 include_directories(include)
 
-add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
-
-add_executable(test_${PROJECT_NAME} ${SOURCE_FILES})
-
-target_link_libraries(test_${PROJECT_NAME} OpenGL::GL GLEW::glew glfw)
+add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES} src/WIZ/rendering/Shader.cpp)
 
 include(FetchContent)
 FetchContent_Declare(googletest
@@ -101,3 +97,9 @@ FetchContent_MakeAvailable(googletest)
 #include(GoogleTest)
 #gtest_discover_tests(${PROJECT_NAME}_tests)
 
+# TODO: remove the following below when test binary build is no longer needed
+add_executable(test_${PROJECT_NAME} ${SOURCE_FILES})
+
+target_link_libraries(test_${PROJECT_NAME} OpenGL::GL GLEW::glew glfw)
+
+file(COPY res DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
