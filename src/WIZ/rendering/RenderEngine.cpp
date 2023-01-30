@@ -115,7 +115,7 @@ int main() {
     };
 
     wiz::VertexShape vertexShape(vertices, indices, sizeof(vertices), sizeof(indices),
-                                 "res/shaders/defaultVertex.vs", "res/shaders/defaultFragment.vs",
+                                 "res/shaders/defaultVertex.vs", "res/shaders/defaultFragment.fs",
                                  "res/gfx/jesus.png");
 
     renderEngine->addVerticesShapes(vertexShape);
