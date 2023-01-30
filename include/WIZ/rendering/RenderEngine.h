@@ -27,6 +27,9 @@ class wiz::RenderEngine {
     // TODO: all shapes and other renderables should be in a scene or screen class that the rendering engine will draw
     std::vector<wiz::VertexShape> vertexShapes;
 
+    const unsigned int SCR_WIDTH = 800;
+    const unsigned int SCR_HEIGHT = 600;
+
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 projection;
@@ -39,7 +42,7 @@ public:
 
     void setupBuffers();
 
-    void initCoordinateSystem();
+    void updateCoordinateSystem();
 
     void addVerticesShapes(wiz::VertexShape newShape);
 

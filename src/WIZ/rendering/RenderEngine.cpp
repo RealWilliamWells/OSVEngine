@@ -27,6 +27,8 @@ void wiz::RenderEngine::openWindow() {
         // TODO: throw glew init exception
     }
 
+    glEnable(GL_DEPTH_TEST);
+
     glGenBuffers(1, &VBO);
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &EBO);
@@ -46,10 +48,12 @@ void wiz::RenderEngine::setupBuffers() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 }
 
-void wiz::RenderEngine::initCoordinateSystem() {
-    model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-    projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+void wiz::RenderEngine::updateCoordinateSystem() {
+    model = glm::mat4(1.0f);
+    view = glm::mat4(1.0f);
+    model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
+    view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+    projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 }
 
 void wiz::RenderEngine::addVerticesShapes(wiz::VertexShape newShape) {
@@ -71,10 +75,15 @@ void wiz::RenderEngine::renderVerticesShapes() {
 bool wiz::RenderEngine::update() {
     processInput();
 
+    updateCoordinateSystem();
+
     renderScreen();
 
     glfwSwapBuffers(window);
     glfwPollEvents();
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     if (glfwWindowShouldClose(window)){
         glDeleteVertexArrays(1, &VAO);
         glDeleteBuffers(1, &VBO);
@@ -107,7 +116,7 @@ int main() {
 
     renderEngine->initWindow();
     renderEngine->openWindow();
-    renderEngine->initCoordinateSystem();
+    renderEngine->updateCoordinateSystem();
 
     float vertices[] = {
             -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
