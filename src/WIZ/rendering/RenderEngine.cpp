@@ -91,8 +91,6 @@ bool wiz::RenderEngine::update() {
     glfwSwapBuffers(window);
     glfwPollEvents();
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     float currentFrame = glfwGetTime();
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
@@ -129,7 +127,7 @@ void wiz::RenderEngine::updateView() {
 void wiz::RenderEngine::renderScreen() {
     // TODO: Implement screen class for rendering engine to display
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glBindVertexArray(VAO);
 
@@ -137,8 +135,14 @@ void wiz::RenderEngine::renderScreen() {
 }
 
 // Test entry point and use of render
+wiz::RenderEngine* renderEngine;
+
+static void emscriptenMainLoop() {
+    renderEngine->update();
+}
+
 int main() {
-    wiz::RenderEngine* renderEngine = new wiz::RenderEngine();
+    renderEngine = new wiz::RenderEngine();
     std::vector<wiz::Shader> shaders;
 
     renderEngine->initWindow();
@@ -190,11 +194,15 @@ int main() {
 
     wiz::VertexShape vertexShape(vertices, nullptr, sizeof(vertices), 0,
                                  "res/shaders/defaultVertex.vs", "res/shaders/defaultFragment.fs",
-                                 "res/gfx/jesus.png");
+                                 "res/gfx/jesus.jpg");
 
     renderEngine->addVerticesShapes(vertexShape);
 
+#ifdef __EMSCRIPTEN__
+    emscripten_set_main_loop(emscriptenMainLoop, 0, false);
+#else
     while (renderEngine->update());
+#endif
 
     return 0;
 }

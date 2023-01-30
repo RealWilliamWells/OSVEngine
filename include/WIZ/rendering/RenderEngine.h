@@ -10,10 +10,20 @@
 #include "Textured.h"
 #include "Camera.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
+#define GLFW_INCLUDE_ES3
+
+#include <GL/gl.h>
+#include <GLES3/gl3.h>
+#else
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
+#endif
 
 #include <vector>
+
+
 
 namespace wiz {
     class RenderEngine;

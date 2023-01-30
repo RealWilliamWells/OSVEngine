@@ -56,7 +56,7 @@ void wiz::Shader::compileAndLinkProgramShaders(const char *vShaderCode, const ch
     };
 
     fragment = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment, 1, &fShaderCode, NULL);
+    glShaderSource(fragment, 1, (const GLchar**)&fShaderCode, NULL);
     glCompileShader(fragment);
 
     glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
@@ -78,6 +78,8 @@ void wiz::Shader::compileAndLinkProgramShaders(const char *vShaderCode, const ch
 
     glDeleteShader(vertex);
     glDeleteShader(fragment);
+
+    useShader();
 }
 
 void wiz::Shader::useShader() {

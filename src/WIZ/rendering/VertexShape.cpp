@@ -2,6 +2,7 @@
 // Created by william on 29/01/23.
 //
 
+#include <iostream>
 #include "WIZ/rendering/VertexShape.h"
 
 wiz::VertexShape::VertexShape(float vertices[], unsigned int indices[], unsigned verticesSize, unsigned indicesSize,
@@ -32,7 +33,5 @@ void wiz::VertexShape::render(glm::mat4 model, glm::mat4 view, glm::mat4 project
     int projectionLoc = glGetUniformLocation(programID, "projection");
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-    bindTexture();
-    useShader();
     glDrawArrays(GL_TRIANGLES, 0, 36);
 }

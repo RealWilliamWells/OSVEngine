@@ -69,11 +69,13 @@ FetchContent_GetProperties(glm SOURCE_DIR GLM_SOURCE_DIR)
 
 # Other dependencies
 
-set(OpenGL_GL_PREFERENCE GLVND)
-find_package(OpenGL REQUIRED COMPONENTS OpenGL)
-find_package(GLEW REQUIRED)
-find_package(glfw3 REQUIRED)
-find_package(Threads REQUIRED)
+if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
+    set(OpenGL_GL_PREFERENCE GLVND)
+    find_package(OpenGL REQUIRED COMPONENTS OpenGL)
+    find_package(GLEW REQUIRED)
+    find_package(glfw3 REQUIRED)
+    find_package(Threads REQUIRED)
+endif()
 
 # include and source files
 include_directories(include ${STB_SOURCE_DIR} ${GLM_SOURCE_DIR}/glm)
@@ -116,6 +118,14 @@ FetchContent_MakeAvailable(googletest)
 # TODO: remove the following below when test binary build is no longer needed
 add_executable(test_${PROJECT_NAME} ${SOURCE_FILES})
 
-target_link_libraries(test_${PROJECT_NAME} OpenGL::GL GLEW::glew glfw)
+if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
+    target_link_libraries(test_${PROJECT_NAME} OpenGL::GL GLEW::glew glfw)
+else()
+    target_link_libraries(test_${PROJECT_NAME} ${OPENGL_gl_LIBRARY})
+    set_target_properties(test_${PROJECT_NAME}
+            PROPERTIES SUFFIX ".html"
+            LINK_FLAGS "-Os -s USE_WEBGL2=1 -s FULL_ES3=1 -s USE_GLFW=3 -s WASM=1 -s TOTAL_MEMORY=128MB -s SAFE_HEAP=1 --preload-file res")
+    em_link_js_library(wasm ${libraryJsFiles})
+endif()
 
 file(COPY res DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
