@@ -46,6 +46,12 @@ void wiz::RenderEngine::setupBuffers() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 }
 
+void wiz::RenderEngine::initCoordinateSystem() {
+    model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+    projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+}
+
 void wiz::RenderEngine::addVerticesShapes(wiz::VertexShape newShape) {
     vertexShapes.push_back(newShape);
 }
@@ -58,7 +64,7 @@ void wiz::RenderEngine::addVerticesShapes(std::vector<wiz::VertexShape> newShape
 
 void wiz::RenderEngine::renderVerticesShapes() {
     for (VertexShape& shape : vertexShapes) {
-        shape.render();
+        shape.render(model, view, projection);
     }
 }
 
@@ -101,6 +107,7 @@ int main() {
 
     renderEngine->initWindow();
     renderEngine->openWindow();
+    renderEngine->initCoordinateSystem();
 
     float vertices[] = {
         // positions          // colors           // texture coords

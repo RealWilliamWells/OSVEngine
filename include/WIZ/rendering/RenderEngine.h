@@ -24,8 +24,13 @@ class wiz::RenderEngine {
     unsigned int VAO;
     unsigned int EBO;
 
-    std::vector<wiz::Shader> shaders;
+    // TODO: all shapes and other renderables should be in a scene or screen class that the rendering engine will draw
     std::vector<wiz::VertexShape> vertexShapes;
+
+    glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 view = glm::mat4(1.0f);
+    glm::mat4 projection;
+
 
 public:
     void initWindow();
@@ -33,6 +38,8 @@ public:
     void openWindow();
 
     void setupBuffers();
+
+    void initCoordinateSystem();
 
     void addVerticesShapes(wiz::VertexShape newShape);
 

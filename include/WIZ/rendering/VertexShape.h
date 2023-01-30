@@ -26,7 +26,7 @@ public:
     VertexShape(float vertices[], unsigned int indices[], unsigned verticesSize, unsigned indicesSize,
                 const char* vertexPath, const char* fragmentPath, const char *textureFile);
 
-    void render();
+    void render(glm::mat4 model, glm::mat4 view, glm::mat4 projection);
 };
 
 

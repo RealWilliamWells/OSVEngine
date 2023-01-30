@@ -22,12 +22,15 @@ wiz::VertexShape::VertexShape(float vertices[], unsigned int indices[], unsigned
     glEnableVertexAttribArray(2);
 }
 
-void wiz::VertexShape::render() {
-    glm::mat4 trans = glm::mat4(1.0f);
-    trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-    trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-    unsigned int transformLoc = glGetUniformLocation(programID, "transform");
-    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+void wiz::VertexShape::render(glm::mat4 model, glm::mat4 view, glm::mat4 projection) {
+    int modelLoc = glGetUniformLocation(programID, "model");
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+    int viewLoc = glGetUniformLocation(programID, "view");
+    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+    int projectionLoc = glGetUniformLocation(programID, "projection");
+    glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
     bindTexture();
     useShader();
