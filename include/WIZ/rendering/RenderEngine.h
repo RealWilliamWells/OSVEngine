@@ -34,21 +34,11 @@ public:
 
     void setupBuffers();
 
-    void addShaders(wiz::Shader newShader);
-
-    void addShaders(std::vector<wiz::Shader> newShaders);
-
-    void useShaders();
-
-    void renderShaders();
-
     void addVerticesShapes(wiz::VertexShape newShape);
 
     void addVerticesShapes(std::vector<wiz::VertexShape> newShapes);
 
     void renderVerticesShapes();
-
-    void useTextures();
 
     bool update();
 

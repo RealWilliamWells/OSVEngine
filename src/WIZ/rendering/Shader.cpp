@@ -10,7 +10,6 @@
 
 wiz::Shader::Shader(const char* vertexPath, const char* fragmentPath) {
     // TODO: use future asset loader for loading GLSL code
-
     std::string vertexCode;
     std::string fragmentCode;
     std::ifstream vShaderFile;
@@ -81,7 +80,7 @@ void wiz::Shader::compileAndLinkProgramShaders(const char *vShaderCode, const ch
     glDeleteShader(fragment);
 }
 
-void wiz::Shader::use() {
+void wiz::Shader::useShader() {
     glUseProgram(programID);
 }
 

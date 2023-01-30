@@ -30,6 +30,6 @@ wiz::Textured::Textured(const char *textureFile) {
     stbi_image_free(data);
 }
 
-void wiz::Textured::useTexture() {
+void wiz::Textured::bindTexture() {
     glBindTexture(GL_TEXTURE_2D, texture);
 }

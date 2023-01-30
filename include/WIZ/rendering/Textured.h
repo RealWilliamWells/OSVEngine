@@ -22,7 +22,7 @@ class wiz::Textured {
 public:
     Textured(const char *textureFile);
 
-    void useTexture();
+    void bindTexture();
 };
 
 #endif //WIZENGINE3D_TEXTURED_H

@@ -5,6 +5,7 @@
 #ifndef WIZENGINE3D_VERTEXSHAPE_H
 #define WIZENGINE3D_VERTEXSHAPE_H
 
+#include "Shader.h"
 #include "Textured.h"
 
 #include "GL/glew.h"
@@ -16,13 +17,13 @@ namespace wiz {
     class VertexShape;
 }
 
-class wiz::VertexShape : public Textured {
+class wiz::VertexShape : public Shader, public Textured {
     float *vertices;
     unsigned int *indices;
 
 public:
     VertexShape(float vertices[], unsigned int indices[], unsigned verticesSize, unsigned indicesSize,
-                const char *textureFile);
+                const char* vertexPath, const char* fragmentPath, const char *textureFile);
 
     void render();
 };

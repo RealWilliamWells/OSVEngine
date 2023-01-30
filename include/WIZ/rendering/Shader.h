@@ -20,7 +20,7 @@ public:
 
     void compileAndLinkProgramShaders(const char *vShaderCode, const char *fShaderCode);
 
-	void use();
+	void useShader();
 
 	void setBool(const std::string &name, bool value) const;
 	void setInt(const std::string &name, int value) const;

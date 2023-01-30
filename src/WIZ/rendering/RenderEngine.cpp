@@ -46,22 +46,6 @@ void wiz::RenderEngine::setupBuffers() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 }
 
-void wiz::RenderEngine::addShaders(Shader newShader) {
-    shaders.push_back(newShader);
-}
-
-void wiz::RenderEngine::addShaders(std::vector<Shader> newShaders) {
-    for (Shader& shader : newShaders) {
-        addShaders(shader);
-    }
-}
-
-void wiz::RenderEngine::useShaders() {
-    for (Shader& shader : shaders) {
-        shader.use();
-    }
-}
-
 void wiz::RenderEngine::addVerticesShapes(wiz::VertexShape newShape) {
     vertexShapes.push_back(newShape);
 }
@@ -76,16 +60,6 @@ void wiz::RenderEngine::renderVerticesShapes() {
     for (VertexShape& shape : vertexShapes) {
         shape.render();
     }
-}
-
-void wiz::RenderEngine::useTextures() {
-    for (VertexShape& shape : vertexShapes) {
-        shape.useTexture();
-    }
-}
-
-void wiz::RenderEngine::renderShaders() {
-
 }
 
 bool wiz::RenderEngine::update() {
@@ -115,10 +89,6 @@ void wiz::RenderEngine::renderScreen() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    useTextures();
-
-    useShaders();
-
     glBindVertexArray(VAO);
 
     renderVerticesShapes();
@@ -132,9 +102,6 @@ int main() {
     renderEngine->initWindow();
     renderEngine->openWindow();
 
-    wiz::Shader shader("res/shaders/defaultVertex.vs", "res/shaders/defaultFragment.vs");
-    renderEngine->addShaders(shader);
-
     float vertices[] = {
         // positions          // colors           // texture coords
         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
@@ -147,7 +114,9 @@ int main() {
             1, 2, 3  // second triangle
     };
 
-    wiz::VertexShape vertexShape(vertices, indices, sizeof(vertices), sizeof(indices), "res/gfx/jesus.png");
+    wiz::VertexShape vertexShape(vertices, indices, sizeof(vertices), sizeof(indices),
+                                 "res/shaders/defaultVertex.vs", "res/shaders/defaultFragment.vs",
+                                 "res/gfx/jesus.png");
 
     renderEngine->addVerticesShapes(vertexShape);
 
