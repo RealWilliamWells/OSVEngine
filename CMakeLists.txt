@@ -12,11 +12,11 @@ endif()
 
 # applies OS type C++ macro
 if(WIN32)
-    add_compile_definitions(OS_WINDOWS)
+    #add_compile_definitions(OS_WINDOWS)
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    add_compile_definitions(OS_MAC)
+    #add_compile_definitions(OS_MAC)
 elseif(UNIX)
-    add_compile_definitions(OS_UNIX)
+    #add_compile_definitions(OS_UNIX)
 endif()
 
 #
