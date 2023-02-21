@@ -1,4 +1,4 @@
-# WizEngine3D
+# OSVEngine
 OpenGL scene viewer developed for COMP371 at Concordia University
 
 ## Nintendo Switch
