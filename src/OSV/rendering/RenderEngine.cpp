@@ -147,6 +147,10 @@ void osv::RenderEngine::processInput() {
         camera.moveSideways(true);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.moveSideways(false);
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+        camera.moveUpAndDown(true);
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        camera.moveUpAndDown(false);
 
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || state.buttons[GLFW_GAMEPAD_BUTTON_START] == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);

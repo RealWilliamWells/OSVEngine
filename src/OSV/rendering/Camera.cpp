@@ -42,6 +42,13 @@ void osv::Camera::moveSideways(bool dir) {
     position += sign * glm::normalize(glm::cross(front, up)) * deltaMoveSpeed;
 }
 
+void osv::Camera::moveUpAndDown(bool dir) {
+    float sign = dir ? -1.f : 1.f;
+
+    position += sign * deltaMoveSpeed * up;
+}
+
+
 void osv::Camera::look(float pitch, float yaw) {
     glm::vec3 direction;
     direction.x = cos(glm::radians(yaw));

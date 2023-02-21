@@ -38,6 +38,8 @@ public:
 
     void moveSideways(bool dir); // Left: true | Right: false
 
+    void moveUpAndDown(bool dir); // down: true | up: false
+
     void look(float pitch, float yaw);
 };
 
