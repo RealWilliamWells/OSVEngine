@@ -257,7 +257,7 @@ function(add_nro_target target)
     get_target_property(icon ${target} "ICON")
     get_target_property(romfs ${target} "ROMFS")
 
-    set_app_icon(${icon})
+#    set_app_icon(${icon})
 
     # Construct the `NROFLAGS` to invoke elf2nro with.
     set(NROFLAGS "")

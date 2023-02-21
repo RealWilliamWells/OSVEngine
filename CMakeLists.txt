@@ -123,21 +123,22 @@ endif()
 
 add_executable(test_${PROJECT_NAME} ${SOURCE_FILES})
 
-if(SWITCH)
-    set(PORT_LIBS ${DEVKITPRO}/portlibs/switch/lib)
+file(COPY res DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
+if(SWITCH)
     add_compile_definitions(OS_SWITCH)
     set_target_properties(test_${PROJECT_NAME}  PROPERTIES
             APP_TITLE "OSVEngine"
             APP_AUTHOR "William Wells"
-            APP_VERSION "0.0.1")
+            APP_VERSION "0.0.1"
+            ROMFS "res")
     target_link_libraries(test_${PROJECT_NAME}
-            ${PORT_LIBS}/libglad.a
-            ${PORT_LIBS}/libEGL.a
-            ${PORT_LIBS}/libglfw3.a
-            ${PORT_LIBS}/libdrm_nouveau.a
-            ${PORT_LIBS}/libglapi.a
-            ${DEVKITPRO}/libnx/lib/libnx.a)
+            ${PORTLIBS}/lib/libglad.a
+            ${PORTLIBS}/lib/libEGL.a
+            ${PORTLIBS}/lib/libglfw3.a
+            ${PORTLIBS}/lib/libdrm_nouveau.a
+            ${PORTLIBS}/lib/libglapi.a
+            ${LIBNX}/lib/libnx.a)
     add_nro_target(test_${PROJECT_NAME})
 endif()
 
@@ -150,5 +151,3 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
             LINK_FLAGS "-Os -s USE_WEBGL2=1 -s FULL_ES3=1 -s USE_GLFW=3 -s WASM=1 -s TOTAL_MEMORY=128MB -s SAFE_HEAP=1 --preload-file res")
     em_link_js_library(wasm ${libraryJsFiles})
 endif()
-
-file(COPY res DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
