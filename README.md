@@ -1,5 +1,5 @@
 # WizEngine3D
-OpenGL game engine developed by the WWW team
+OpenGL scene viewer developed for COMP371 at Concordia University
 
 ## Nintendo Switch
 ### Build dependencies
