@@ -69,12 +69,18 @@ FetchContent_GetProperties(glm SOURCE_DIR GLM_SOURCE_DIR)
 
 # Other dependencies
 
-if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
+if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten" AND NOT SWITCH)
     set(OpenGL_GL_PREFERENCE GLVND)
     find_package(OpenGL REQUIRED COMPONENTS OpenGL)
     find_package(GLEW REQUIRED)
     find_package(glfw3 REQUIRED)
     find_package(Threads REQUIRED)
+endif()
+
+if (SWITCH)
+    list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+    include(SwitchTools)
+    include_directories(${DEVKITPRO}/libnx/include/ ${DEVKITPRO}/portlibs/switch/include/)
 endif()
 
 # include and source files
@@ -94,14 +100,14 @@ file(GLOB SOURCE_FILES
         ${PROJECT_SOURCE_DIR}/include/*/*/*.h
         ${PROJECT_SOURCE_DIR}/include/*/*/*.hpp)
 
-add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
+if (NOT ${SWITCH})
+    FetchContent_Declare(googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG ${GTEST_COMMIT})
 
-FetchContent_Declare(googletest
-    GIT_REPOSITORY https://github.com/google/googletest.git
-    GIT_TAG ${GTEST_COMMIT})
-
-set(GTEST_FORCE_SHARED_CRT ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
+    set(GTEST_FORCE_SHARED_CRT ON CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(googletest)
+endif()
 
 #enable_testing()
 
@@ -115,12 +121,29 @@ FetchContent_MakeAvailable(googletest)
 #include(GoogleTest)
 #gtest_discover_tests(${PROJECT_NAME}_tests)
 
-# TODO: remove the following below when test binary build is no longer needed
 add_executable(test_${PROJECT_NAME} ${SOURCE_FILES})
 
-if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
+if(SWITCH)
+    set(PORT_LIBS ${DEVKITPRO}/portlibs/switch/lib)
+
+    add_compile_definitions(OS_SWITCH)
+    set_target_properties(test_${PROJECT_NAME}  PROPERTIES
+            APP_TITLE "OSVEngine"
+            APP_AUTHOR "William Wells"
+            APP_VERSION "0.0.1")
+    target_link_libraries(test_${PROJECT_NAME}
+            ${PORT_LIBS}/libglad.a
+            ${PORT_LIBS}/libEGL.a
+            ${PORT_LIBS}/libglfw3.a
+            ${PORT_LIBS}/libdrm_nouveau.a
+            ${PORT_LIBS}/libglapi.a
+            ${DEVKITPRO}/libnx/lib/libnx.a)
+    add_nro_target(test_${PROJECT_NAME})
+endif()
+
+if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten" AND NOT SWITCH)
     target_link_libraries(test_${PROJECT_NAME} OpenGL::GL GLEW::glew glfw)
-else()
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
     target_link_libraries(test_${PROJECT_NAME} ${OPENGL_gl_LIBRARY})
     set_target_properties(test_${PROJECT_NAME}
             PROPERTIES SUFFIX ".html"

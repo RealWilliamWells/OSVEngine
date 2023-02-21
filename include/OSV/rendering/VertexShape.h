@@ -8,7 +8,12 @@
 #include "Shader.h"
 #include "Textured.h"
 
+#ifdef OS_SWITCH
+#include <glad/glad.h>
+#else
 #include "GL/glew.h"
+#endif
+
 #include "GLFW/glfw3.h"
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>

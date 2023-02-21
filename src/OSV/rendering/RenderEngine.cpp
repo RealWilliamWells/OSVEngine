@@ -31,10 +31,14 @@ void osv::RenderEngine::openWindow() {
     glfwSetCursorPosCallback(window, osv::Mouse::inputCallback);
 
 //    glewExperimental = true; // Needed for core profile
+#ifdef OS_SWITCH
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+#else
     if (glewInit() != GLEW_OK) {
-        std::cerr << "Failed to create GLEW" << std::endl;
+#endif
+        std::cerr << "Failed to create GLEW or glad" << std::endl;
         glfwTerminate();
-        // TODO: throw glew init exception
+        // TODO: throw glew or glad init exception
     }
 
     glEnable(GL_DEPTH_TEST);

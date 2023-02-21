@@ -16,6 +16,8 @@
 
 #include <GL/gl.h>
 #include <GLES3/gl3.h>
+#elifdef OS_SWITCH
+#include <glad/glad.h>
 #else
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"

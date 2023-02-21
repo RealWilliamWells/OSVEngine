@@ -5,7 +5,11 @@
 #ifndef WIZENGINE3D_SHADER_H
 #define WIZENGINE3D_SHADER_H
 
+#ifdef OS_SWITCH
+#include <glad/glad.h>
+#else
 #include "GL/glew.h"
+#endif
 #include <string>
 
 namespace osv {
