@@ -3,6 +3,32 @@
 
 #include <iostream>
 
+#ifndef OS_SWITCH
+#define ASSET(_str) "./res/" _str
+#else
+#define ASSET(_str) "romfs:/" _str
+
+#include <switch.h>
+#include <unistd.h>
+
+static int nxlink_sock = -1;
+
+void userAppInit()
+{
+	romfsInit();
+	socketInitializeDefault();
+	nxlink_sock = nxlinkStdio();
+}
+
+void userAppExit()
+{
+	if (nxlink_sock != -1)
+		close(nxlink_sock);
+	socketExit();
+	romfsExit();
+}
+#endif
+
 osv::RenderEngine::RenderEngine() : camera() {
     view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f),
                        glm::vec3(0.0f, 0.0f, 0.0f),
@@ -110,6 +136,9 @@ bool osv::RenderEngine::update() {
 }
 
 void osv::RenderEngine::processInput() {
+    GLFWgamepadstate state;
+    glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
+
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera.moveFrontAndBack(true);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -119,7 +148,7 @@ void osv::RenderEngine::processInput() {
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.moveSideways(false);
 
-    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || state.buttons[GLFW_GAMEPAD_BUTTON_START] == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
 
@@ -141,9 +170,11 @@ void osv::RenderEngine::renderScreen() {
 // Test entry point and use of render
 osv::RenderEngine* renderEngine;
 
-static void emscriptenMainLoop() {
-    renderEngine->update();
-}
+#ifdef __EMSCRIPTEN__
+    static void emscriptenMainLoop() {
+        renderEngine->update();
+    }
+#endif
 
 int main() {
     renderEngine = new osv::RenderEngine();
@@ -197,13 +228,19 @@ int main() {
     };
 
     osv::VertexShape vertexShape(vertices, nullptr, sizeof(vertices), 0,
-                                 "res/shaders/defaultVertex.vs", "res/shaders/defaultFragment.fs",
-                                 "res/gfx/jesus.jpg");
+                                 ASSET("shaders/defaultVertex.vs"), ASSET("shaders/defaultFragment.fs"),
+                                 ASSET("gfx/jesus.jpg"));
 
     renderEngine->addVerticesShapes(vertexShape);
 
 #ifdef __EMSCRIPTEN__
     emscripten_set_main_loop(emscriptenMainLoop, 0, false);
+#elifdef OS_SWITCH
+    consoleInit(NULL);
+
+    while (appletMainLoop()) {
+        renderEngine->update();
+    }
 #else
     while (renderEngine->update());
 #endif

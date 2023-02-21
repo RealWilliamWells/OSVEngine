@@ -121,32 +121,32 @@ endif()
 #include(GoogleTest)
 #gtest_discover_tests(${PROJECT_NAME}_tests)
 
-add_executable(test_${PROJECT_NAME} ${SOURCE_FILES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 file(COPY res DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 if(SWITCH)
     add_compile_definitions(OS_SWITCH)
-    set_target_properties(test_${PROJECT_NAME}  PROPERTIES
+    set_target_properties(${PROJECT_NAME}  PROPERTIES
             APP_TITLE "OSVEngine"
             APP_AUTHOR "William Wells"
             APP_VERSION "0.0.1"
             ROMFS "res")
-    target_link_libraries(test_${PROJECT_NAME}
+    target_link_libraries(${PROJECT_NAME}
             ${PORTLIBS}/lib/libglad.a
             ${PORTLIBS}/lib/libEGL.a
             ${PORTLIBS}/lib/libglfw3.a
             ${PORTLIBS}/lib/libdrm_nouveau.a
             ${PORTLIBS}/lib/libglapi.a
             ${LIBNX}/lib/libnx.a)
-    add_nro_target(test_${PROJECT_NAME})
+    add_nro_target(${PROJECT_NAME})
 endif()
 
 if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten" AND NOT SWITCH)
-    target_link_libraries(test_${PROJECT_NAME} OpenGL::GL GLEW::glew glfw)
+    target_link_libraries(${PROJECT_NAME} OpenGL::GL GLEW::glew glfw)
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
-    target_link_libraries(test_${PROJECT_NAME} ${OPENGL_gl_LIBRARY})
-    set_target_properties(test_${PROJECT_NAME}
+    target_link_libraries(${PROJECT_NAME} ${OPENGL_gl_LIBRARY})
+    set_target_properties(${PROJECT_NAME}
             PROPERTIES SUFFIX ".html"
             LINK_FLAGS "-Os -s USE_WEBGL2=1 -s FULL_ES3=1 -s USE_GLFW=3 -s WASM=1 -s TOTAL_MEMORY=128MB -s SAFE_HEAP=1 --preload-file res")
     em_link_js_library(wasm ${libraryJsFiles})
