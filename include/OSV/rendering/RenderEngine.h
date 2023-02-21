@@ -25,18 +25,18 @@
 
 
 
-namespace wiz {
+namespace osv {
     class RenderEngine;
 }
 
-class wiz::RenderEngine {
+class osv::RenderEngine {
     GLFWwindow* window;
     unsigned int VBO;
     unsigned int VAO;
     unsigned int EBO;
 
     // TODO: all shapes and other renderables should be in a scene or screen class that the rendering engine will draw
-    std::vector<wiz::VertexShape> vertexShapes;
+    std::vector<osv::VertexShape> vertexShapes;
 
     const unsigned int SCR_WIDTH = 800;
     const unsigned int SCR_HEIGHT = 600;
@@ -61,9 +61,9 @@ public:
 
     void updateCoordinateSystem();
 
-    void addVerticesShapes(wiz::VertexShape newShape);
+    void addVerticesShapes(osv::VertexShape newShape);
 
-    void addVerticesShapes(std::vector<wiz::VertexShape> newShapes);
+    void addVerticesShapes(std::vector<osv::VertexShape> newShapes);
 
     void renderVerticesShapes();
 

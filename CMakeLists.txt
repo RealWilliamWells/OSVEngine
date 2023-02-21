@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.7)
-project(WizEngine3D)
+project(OSVEngine)
 
 set(STB_COMMIT 3ecc60f25ae1391cf6434578ece782afa1458b5)
 set(GLM_COMMIT bf71a834948186f4097caa076cd2663c69a10e1e)

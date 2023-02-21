@@ -9,11 +9,11 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 
-namespace wiz {
+namespace osv {
     class Camera;
 }
 
-class wiz::Camera {
+class osv::Camera {
     glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.0f);
     glm::vec3 target = glm::vec3(0.0f, 0.0f, 4.0f);
     glm::vec3 front;

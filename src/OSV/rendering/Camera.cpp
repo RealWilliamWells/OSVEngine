@@ -2,12 +2,12 @@
 // Created by william on 30/01/23.
 //
 
-#include "WIZ/rendering/Camera.h"
+#include "OSV/rendering/Camera.h"
 
-wiz::Camera::Camera() {
+osv::Camera::Camera() {
 }
 
-void wiz::Camera::update(float delta, float pitch, float yaw) {
+void osv::Camera::update(float delta, float pitch, float yaw) {
     look(pitch, yaw);
 
     deltaMoveSpeed = moveSpeed*delta;
@@ -18,31 +18,31 @@ void wiz::Camera::update(float delta, float pitch, float yaw) {
     up = glm::cross(front, right);
 }
 
-const glm::vec3 &wiz::Camera::getPosition() const {
+const glm::vec3 &osv::Camera::getPosition() const {
     return position;
 }
 
-const glm::vec3 &wiz::Camera::getFront() const {
+const glm::vec3 &osv::Camera::getFront() const {
     return front;
 }
 
-const glm::vec3 &wiz::Camera::getUp() const {
+const glm::vec3 &osv::Camera::getUp() const {
     return up;
 }
 
-void wiz::Camera::moveFrontAndBack(bool dir) {
+void osv::Camera::moveFrontAndBack(bool dir) {
     float sign = dir ? 1.f : -1.f;
 
     position += sign * deltaMoveSpeed * front;
 }
 
-void wiz::Camera::moveSideways(bool dir) {
+void osv::Camera::moveSideways(bool dir) {
     float sign = dir ? -1.f : 1.f;
 
     position += sign * glm::normalize(glm::cross(front, up)) * deltaMoveSpeed;
 }
 
-void wiz::Camera::look(float pitch, float yaw) {
+void osv::Camera::look(float pitch, float yaw) {
     glm::vec3 direction;
     direction.x = cos(glm::radians(yaw));
     direction.y = sin(glm::radians(pitch));

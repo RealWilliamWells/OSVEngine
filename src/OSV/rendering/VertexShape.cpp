@@ -3,9 +3,9 @@
 //
 
 #include <iostream>
-#include "WIZ/rendering/VertexShape.h"
+#include "OSV/rendering/VertexShape.h"
 
-wiz::VertexShape::VertexShape(float vertices[], unsigned int indices[], unsigned verticesSize, unsigned indicesSize,
+osv::VertexShape::VertexShape(float vertices[], unsigned int indices[], unsigned verticesSize, unsigned indicesSize,
                               const char* vertexPath, const char* fragmentPath, const char *textureFile) :
                               Shader(vertexPath, fragmentPath), Textured(textureFile),
                               vertices(vertices), indices(indices) {
@@ -23,7 +23,7 @@ wiz::VertexShape::VertexShape(float vertices[], unsigned int indices[], unsigned
     glEnableVertexAttribArray(1);
 }
 
-void wiz::VertexShape::render(glm::mat4 model, glm::mat4 view, glm::mat4 projection) {
+void osv::VertexShape::render(glm::mat4 model, glm::mat4 view, glm::mat4 projection) {
     int modelLoc = glGetUniformLocation(programID, "model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 

@@ -2,13 +2,13 @@
 // Created by william on 29/01/23.
 //
 
-#include "WIZ/rendering/Shader.h"
+#include "OSV/rendering/Shader.h"
 
 #include <fstream>
 #include <sstream>
 #include <iostream>
 
-wiz::Shader::Shader(const char* vertexPath, const char* fragmentPath) {
+osv::Shader::Shader(const char* vertexPath, const char* fragmentPath) {
     // TODO: use future asset loader for loading GLSL code
     std::string vertexCode;
     std::string fragmentCode;
@@ -40,7 +40,7 @@ wiz::Shader::Shader(const char* vertexPath, const char* fragmentPath) {
     compileAndLinkProgramShaders(vShaderCode, fShaderCode);
 }
 
-void wiz::Shader::compileAndLinkProgramShaders(const char *vShaderCode, const char *fShaderCode) {
+void osv::Shader::compileAndLinkProgramShaders(const char *vShaderCode, const char *fShaderCode) {
     unsigned int vertex, fragment;
     int success;
     char infoLog[512];
@@ -82,18 +82,18 @@ void wiz::Shader::compileAndLinkProgramShaders(const char *vShaderCode, const ch
     useShader();
 }
 
-void wiz::Shader::useShader() {
+void osv::Shader::useShader() {
     glUseProgram(programID);
 }
 
-void wiz::Shader::setBool(const std::string &name, bool value) const {
+void osv::Shader::setBool(const std::string &name, bool value) const {
     glUniform1i(glGetUniformLocation(programID, name.c_str()), (int)value);
 }
 
-void wiz::Shader::setInt(const std::string &name, int value) const {
+void osv::Shader::setInt(const std::string &name, int value) const {
     glUniform1i(glGetUniformLocation(programID, name.c_str()), value);
 }
 
-void wiz::Shader::setFloat(const std::string &name, float value) const {
+void osv::Shader::setFloat(const std::string &name, float value) const {
     glUniform1f(glGetUniformLocation(programID, name.c_str()), value);
 }

@@ -14,11 +14,11 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 
-namespace wiz {
+namespace osv {
     class VertexShape;
 }
 
-class wiz::VertexShape : public Shader, public Textured {
+class osv::VertexShape : public Shader, public Textured {
     float *vertices;
     unsigned int *indices;
 

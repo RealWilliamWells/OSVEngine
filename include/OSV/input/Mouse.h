@@ -10,14 +10,14 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 
-namespace wiz {
+namespace osv {
     class Mouse;
 
     static bool firstMouse = true;
     static const float mouseSensitivity = 0.1f;
 }
 
-class wiz::Mouse {
+class osv::Mouse {
 public:
     static float lastX;
     static float lastY;
@@ -52,9 +52,9 @@ public:
     }
 };
 
-float wiz::Mouse::lastX = 0.f;
-float wiz::Mouse::lastY = 0.f;
-float wiz::Mouse::yaw = -90.f;
-float wiz::Mouse::pitch = 0.f;
+float osv::Mouse::lastX = 0.f;
+float osv::Mouse::lastY = 0.f;
+float osv::Mouse::yaw = -90.f;
+float osv::Mouse::pitch = 0.f;
 
 #endif //WIZENGINE3D_MOUSE_H

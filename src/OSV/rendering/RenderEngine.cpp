@@ -1,15 +1,15 @@
-#include "WIZ/rendering/RenderEngine.h"
-#include "WIZ/input/Mouse.h"
+#include "OSV/rendering/RenderEngine.h"
+#include "OSV/input/Mouse.h"
 
 #include <iostream>
 
-wiz::RenderEngine::RenderEngine() : camera() {
+osv::RenderEngine::RenderEngine() : camera() {
     view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f),
                        glm::vec3(0.0f, 0.0f, 0.0f),
                        glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
-void wiz::RenderEngine::initWindow() {
+void osv::RenderEngine::initWindow() {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -17,8 +17,8 @@ void wiz::RenderEngine::initWindow() {
     //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 }
 
-void wiz::RenderEngine::openWindow() {
-    window = glfwCreateWindow(800, 600, "WizEngine3D Test", NULL, NULL);
+void osv::RenderEngine::openWindow() {
+    window = glfwCreateWindow(800, 600, "OSVEngine Test", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -28,7 +28,7 @@ void wiz::RenderEngine::openWindow() {
     glfwMakeContextCurrent(window);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetCursorPosCallback(window, wiz::Mouse::inputCallback);
+    glfwSetCursorPosCallback(window, osv::Mouse::inputCallback);
 
 //    glewExperimental = true; // Needed for core profile
     if (glewInit() != GLEW_OK) {
@@ -47,10 +47,10 @@ void wiz::RenderEngine::openWindow() {
 
     glViewport(0, 0, 800, 600);
 
-    glfwSetFramebufferSizeCallback(window, wiz::RenderEngine::framebufferSizeCallback);
+    glfwSetFramebufferSizeCallback(window, osv::RenderEngine::framebufferSizeCallback);
 }
 
-void wiz::RenderEngine::setupBuffers() {
+void osv::RenderEngine::setupBuffers() {
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -58,29 +58,29 @@ void wiz::RenderEngine::setupBuffers() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 }
 
-void wiz::RenderEngine::updateCoordinateSystem() {
+void osv::RenderEngine::updateCoordinateSystem() {
     model = glm::mat4(1.0f);
     model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
     projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 }
 
-void wiz::RenderEngine::addVerticesShapes(wiz::VertexShape newShape) {
+void osv::RenderEngine::addVerticesShapes(osv::VertexShape newShape) {
     vertexShapes.push_back(newShape);
 }
 
-void wiz::RenderEngine::addVerticesShapes(std::vector<wiz::VertexShape> newShapes) {
+void osv::RenderEngine::addVerticesShapes(std::vector<osv::VertexShape> newShapes) {
     for (VertexShape& shape : newShapes) {
         addVerticesShapes(shape);
     }
 }
 
-void wiz::RenderEngine::renderVerticesShapes() {
+void osv::RenderEngine::renderVerticesShapes() {
     for (VertexShape& shape : vertexShapes) {
         shape.render(model, view, projection);
     }
 }
 
-bool wiz::RenderEngine::update() {
+bool osv::RenderEngine::update() {
     processInput();
 
     updateCoordinateSystem();
@@ -105,7 +105,7 @@ bool wiz::RenderEngine::update() {
     return true;
 }
 
-void wiz::RenderEngine::processInput() {
+void osv::RenderEngine::processInput() {
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera.moveFrontAndBack(true);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -119,12 +119,12 @@ void wiz::RenderEngine::processInput() {
         glfwSetWindowShouldClose(window, true);
 }
 
-void wiz::RenderEngine::updateView() {
-    camera.update(deltaTime, wiz::Mouse::pitch, wiz::Mouse::yaw);
+void osv::RenderEngine::updateView() {
+    camera.update(deltaTime, osv::Mouse::pitch, osv::Mouse::yaw);
     view = glm::lookAt(camera.getPosition(), camera.getPosition() + camera.getFront(), camera.getUp());
 }
 
-void wiz::RenderEngine::renderScreen() {
+void osv::RenderEngine::renderScreen() {
     // TODO: Implement screen class for rendering engine to display
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -135,15 +135,15 @@ void wiz::RenderEngine::renderScreen() {
 }
 
 // Test entry point and use of render
-wiz::RenderEngine* renderEngine;
+osv::RenderEngine* renderEngine;
 
 static void emscriptenMainLoop() {
     renderEngine->update();
 }
 
 int main() {
-    renderEngine = new wiz::RenderEngine();
-    std::vector<wiz::Shader> shaders;
+    renderEngine = new osv::RenderEngine();
+    std::vector<osv::Shader> shaders;
 
     renderEngine->initWindow();
     renderEngine->openWindow();
@@ -192,7 +192,7 @@ int main() {
             -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
 
-    wiz::VertexShape vertexShape(vertices, nullptr, sizeof(vertices), 0,
+    osv::VertexShape vertexShape(vertices, nullptr, sizeof(vertices), 0,
                                  "res/shaders/defaultVertex.vs", "res/shaders/defaultFragment.fs",
                                  "res/gfx/jesus.jpg");
 

@@ -2,13 +2,13 @@
 // Created by william on 30/01/23.
 //
 
-#include "WIZ/rendering/Textured.h"
+#include "OSV/rendering/Textured.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include <iostream>
 
-wiz::Textured::Textured(const char *textureFile) {
+osv::Textured::Textured(const char *textureFile) {
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -32,6 +32,6 @@ wiz::Textured::Textured(const char *textureFile) {
     bindTexture();
 }
 
-void wiz::Textured::bindTexture() {
+void osv::Textured::bindTexture() {
     glBindTexture(GL_TEXTURE_2D, texture);
 }

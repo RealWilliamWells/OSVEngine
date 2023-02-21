@@ -7,11 +7,11 @@
 
 #include "GL/glew.h"
 
-namespace wiz {
+namespace osv {
     class Textured;
 }
 
-class wiz::Textured {
+class osv::Textured {
     unsigned int texture;
 
     unsigned char *data;
