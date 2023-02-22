@@ -11,13 +11,14 @@
 #include <gtc/type_ptr.hpp>
 
 namespace osv {
-    class Mouse;
+    class LookInput;
 
     static bool firstMouse = true;
     static const float mouseSensitivity = 0.1f;
+    static const float joyStickSensitivity = .7f;
 }
 
-class osv::Mouse {
+class osv::LookInput {
 public:
     static float lastX;
     static float lastY;
@@ -26,7 +27,7 @@ public:
     static float pitch;
 
 
-    static void inputCallback(GLFWwindow* window, double xpos, double ypos) {
+    static void mouseInputCallback(GLFWwindow* window, double xpos, double ypos) {
         if (firstMouse)
         {
             lastX = xpos;
@@ -42,6 +43,17 @@ public:
         xoffset *= mouseSensitivity;
         yoffset *= mouseSensitivity;
 
+        updateYawAndPitch(xoffset, yoffset);
+    }
+
+    static void joyStickInputHandler(float xAxis, float yAxis) {
+        float xoffset = joyStickSensitivity * xAxis;
+        float yoffset = joyStickSensitivity * yAxis;
+
+        updateYawAndPitch(xoffset, yoffset);
+    }
+
+    static void updateYawAndPitch(float& xoffset, float& yoffset) {
         yaw   += xoffset;
         pitch += yoffset;
 
@@ -52,9 +64,9 @@ public:
     }
 };
 
-float osv::Mouse::lastX = 0.f;
-float osv::Mouse::lastY = 0.f;
-float osv::Mouse::yaw = -90.f;
-float osv::Mouse::pitch = 0.f;
+float osv::LookInput::lastX = 0.f;
+float osv::LookInput::lastY = 0.f;
+float osv::LookInput::yaw = -90.f;
+float osv::LookInput::pitch = 0.f;
 
 #endif //WIZENGINE3D_MOUSE_H

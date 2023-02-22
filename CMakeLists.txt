@@ -131,7 +131,7 @@ if(SWITCH)
             APP_TITLE "OSVEngine"
             APP_AUTHOR "William Wells"
             APP_VERSION "0.0.1"
-            ROMFS "res")
+            ROMFS res)
     target_link_libraries(${PROJECT_NAME}
             ${PORTLIBS}/lib/libglad.a
             ${PORTLIBS}/lib/libEGL.a

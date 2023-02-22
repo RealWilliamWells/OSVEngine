@@ -1,5 +1,5 @@
 #include "OSV/rendering/RenderEngine.h"
-#include "OSV/input/Mouse.h"
+#include "OSV/input/LookInput.h"
 
 #include <iostream>
 
@@ -36,6 +36,7 @@ osv::RenderEngine::RenderEngine() : camera() {
 }
 
 void osv::RenderEngine::initWindow() {
+    glfwInitHint(GLFW_JOYSTICK_HAT_BUTTONS, GLFW_FALSE);
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -44,7 +45,7 @@ void osv::RenderEngine::initWindow() {
 }
 
 void osv::RenderEngine::openWindow() {
-    window = glfwCreateWindow(800, 600, "OSVEngine Test", NULL, NULL);
+    window = glfwCreateWindow(1280, 720, "OSVEngine", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -54,7 +55,7 @@ void osv::RenderEngine::openWindow() {
     glfwMakeContextCurrent(window);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetCursorPosCallback(window, osv::Mouse::inputCallback);
+    glfwSetCursorPosCallback(window, osv::LookInput::mouseInputCallback);
 
 //    glewExperimental = true; // Needed for core profile
 #ifdef OS_SWITCH
@@ -139,17 +140,17 @@ void osv::RenderEngine::processInput() {
     GLFWgamepadstate state;
     glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
 
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y] < -0.5f)
         camera.moveFrontAndBack(true);
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS  || state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y] > 0.5f)
         camera.moveFrontAndBack(false);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || state.axes[GLFW_GAMEPAD_AXIS_LEFT_X] < -0.5f)
         camera.moveSideways(true);
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || state.axes[GLFW_GAMEPAD_AXIS_LEFT_X] > 0.5f)
         camera.moveSideways(false);
-    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || state.buttons[GLFW_GAMEPAD_BUTTON_B])
         camera.moveUpAndDown(true);
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || state.buttons[GLFW_GAMEPAD_BUTTON_A])
         camera.moveUpAndDown(false);
 
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || state.buttons[GLFW_GAMEPAD_BUTTON_START] == GLFW_PRESS)
@@ -157,7 +158,16 @@ void osv::RenderEngine::processInput() {
 }
 
 void osv::RenderEngine::updateView() {
-    camera.update(deltaTime, osv::Mouse::pitch, osv::Mouse::yaw);
+    GLFWgamepadstate state;
+    glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
+    float xAxis = state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X];
+    float yAxis = state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y];
+
+    if (std::abs(xAxis) > 0.2 || std::abs(yAxis) > 0.2) {
+        osv::LookInput::joyStickInputHandler(xAxis, -yAxis);
+    }
+
+    camera.update(deltaTime, osv::LookInput::pitch, osv::LookInput::yaw);
     view = glm::lookAt(camera.getPosition(), camera.getPosition() + camera.getFront(), camera.getUp());
 }
 
@@ -181,6 +191,9 @@ osv::RenderEngine* renderEngine;
 #endif
 
 int main() {
+#ifdef OS_SWITCH
+    userAppInit();
+#endif
     renderEngine = new osv::RenderEngine();
     std::vector<osv::Shader> shaders;
 
@@ -245,6 +258,8 @@ int main() {
     while (appletMainLoop()) {
         renderEngine->update();
     }
+
+    userAppExit();
 #else
     while (renderEngine->update());
 #endif
