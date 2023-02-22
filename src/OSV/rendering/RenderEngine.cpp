@@ -36,7 +36,9 @@ osv::RenderEngine::RenderEngine() : camera() {
 }
 
 void osv::RenderEngine::initWindow() {
+#ifndef __EMSCRIPTEN__
     glfwInitHint(GLFW_JOYSTICK_HAT_BUTTONS, GLFW_FALSE);
+#endif
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -76,7 +78,7 @@ void osv::RenderEngine::openWindow() {
 
     setupBuffers();
 
-    glViewport(0, 0, 800, 600);
+    glViewport(0, 0, 1280, 720);
 
     glfwSetFramebufferSizeCallback(window, osv::RenderEngine::framebufferSizeCallback);
 }
@@ -137,27 +139,46 @@ bool osv::RenderEngine::update() {
 }
 
 void osv::RenderEngine::processInput() {
+    float leftYAxis = 0.f;
+    float leftXAxis = 0.f;
+
+    char buttonB = 0;
+    char buttonA = 0;
+
+    char buttonStart = 0;
+
+#ifndef __EMSCRIPTEN__
     GLFWgamepadstate state;
     glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
 
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y] < -0.5f)
+    leftYAxis = state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y];
+    leftXAxis = state.axes[GLFW_GAMEPAD_AXIS_LEFT_X];
+
+    buttonB = state.buttons[GLFW_GAMEPAD_BUTTON_B];
+    buttonA = state.buttons[GLFW_GAMEPAD_BUTTON_A];
+
+    buttonStart = state.buttons[GLFW_GAMEPAD_BUTTON_START];
+#endif
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || leftYAxis < -0.5f)
         camera.moveFrontAndBack(true);
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS  || state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y] > 0.5f)
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS  || leftYAxis > 0.5f)
         camera.moveFrontAndBack(false);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || state.axes[GLFW_GAMEPAD_AXIS_LEFT_X] < -0.5f)
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || leftXAxis < -0.5f)
         camera.moveSideways(true);
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || state.axes[GLFW_GAMEPAD_AXIS_LEFT_X] > 0.5f)
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || leftXAxis > 0.5f)
         camera.moveSideways(false);
-    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || state.buttons[GLFW_GAMEPAD_BUTTON_B])
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || buttonB == GLFW_PRESS)
         camera.moveUpAndDown(true);
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || state.buttons[GLFW_GAMEPAD_BUTTON_A])
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || buttonA == GLFW_PRESS)
         camera.moveUpAndDown(false);
 
-    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || state.buttons[GLFW_GAMEPAD_BUTTON_START] == GLFW_PRESS)
+    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || buttonStart == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
 
 void osv::RenderEngine::updateView() {
+#ifndef __EMSCRIPTEN__
     GLFWgamepadstate state;
     glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
     float xAxis = state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X];
@@ -166,6 +187,7 @@ void osv::RenderEngine::updateView() {
     if (std::abs(xAxis) > 0.2 || std::abs(yAxis) > 0.2) {
         osv::LookInput::joyStickInputHandler(xAxis, -yAxis);
     }
+#endif
 
     camera.update(deltaTime, osv::LookInput::pitch, osv::LookInput::yaw);
     view = glm::lookAt(camera.getPosition(), camera.getPosition() + camera.getFront(), camera.getUp());
