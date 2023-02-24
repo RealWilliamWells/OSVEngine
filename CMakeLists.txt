@@ -3,6 +3,7 @@ project(OSVEngine)
 
 set(STB_COMMIT 3ecc60f25ae1391cf6434578ece782afa1458b5)
 set(GLM_COMMIT bf71a834948186f4097caa076cd2663c69a10e1e)
+set(OPENAL_SOFT_COMMIT 70c14cd560db819f180073052f4c2bfae5cf3c31)
 set(GTEST_COMMIT e2239ee6043f73722e7aa812a459f54a28552929) # Version 1.11.0
 
 if(CMAKE_COMPILER_IS_GNUCXX AND NOT WIN32)
@@ -67,6 +68,12 @@ FetchContent_Declare(glm
 FetchContent_MakeAvailable(glm)
 FetchContent_GetProperties(glm SOURCE_DIR GLM_SOURCE_DIR)
 
+FetchContent_Declare(openal
+        GIT_REPOSITORY git@github.com:kcat/openal-soft.git
+        GIT_TAG ${OPENAL_SOFT_COMMIT})
+FetchContent_MakeAvailable(openal)
+FetchContent_GetProperties(openal SOURCE_DIR OPENAL_SOFT_SOURCE_DIR)
+
 # Other dependencies
 
 if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten" AND NOT SWITCH)
@@ -84,7 +91,7 @@ if (SWITCH)
 endif()
 
 # include and source files
-include_directories(include ${STB_SOURCE_DIR} ${GLM_SOURCE_DIR}/glm)
+include_directories(include ${STB_SOURCE_DIR} ${GLM_SOURCE_DIR}/glm ${OPENAL_SOFT_SOURCE_DIR}/include)
 
 file(GLOB SOURCE_FILES
         ${PROJECT_SOURCE_DIR}/src/*.cpp
