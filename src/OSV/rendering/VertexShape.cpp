@@ -44,7 +44,8 @@ void osv::VertexShape::deleteBuffers() {
 void osv::VertexShape::render(glm::mat4 view, glm::mat4 projection) {
     // Rotate cube
     model = glm::mat4(1.0f);
-    model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
+    translate(glm::vec3(1.f, 1.0f, 0.0f));
+    rotate((float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
 
     int modelLoc = glGetUniformLocation(programID, "model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
@@ -58,4 +59,12 @@ void osv::VertexShape::render(glm::mat4 view, glm::mat4 projection) {
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
     glBindVertexArray(VAO);
+}
+
+void osv::VertexShape::translate(glm::vec3 translation) {
+    model = glm::translate(model, translation);
+}
+
+void osv::VertexShape::rotate(float angle, glm::vec3 rotation) {
+    model = glm::rotate(model, angle, rotation);
 }

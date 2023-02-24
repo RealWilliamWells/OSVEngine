@@ -28,6 +28,7 @@ class osv::VertexShape : public Shader, public Textured {
     unsigned int VAO;
     unsigned int EBO;
 
+    glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.0f);
     glm::mat4 model = glm::mat4(1.0f);
 
 public:
@@ -39,6 +40,10 @@ public:
     void deleteBuffers();
 
     void render(glm::mat4 view, glm::mat4 projection);
+
+    void translate(glm::vec3 translation);
+
+    void rotate(float angle, glm::vec3 rotation);
 };
 
 
