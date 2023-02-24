@@ -190,7 +190,7 @@ void osv::RenderEngine::renderScreen() {
 }
 
 // Test entry point and use of render
-osv::RenderEngine* renderEngine;
+std::shared_ptr<osv::RenderEngine> renderEngine;
 
 #ifdef __EMSCRIPTEN__
     static void emscriptenMainLoop() {
@@ -202,7 +202,7 @@ int main() {
 #ifdef OS_SWITCH
     userAppInit();
 #endif
-    renderEngine = new osv::RenderEngine();
+    renderEngine = std::shared_ptr<osv::RenderEngine>(new osv::RenderEngine());
     std::vector<osv::Shader> shaders;
 
     renderEngine->initWindow();

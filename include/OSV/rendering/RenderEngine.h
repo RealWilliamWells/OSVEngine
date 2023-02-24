@@ -5,6 +5,8 @@
 #ifndef WIZENGINE3D_RENDERENGINE_H
 #define WIZENGINE3D_RENDERENGINE_H
 
+#include <memory>
+
 #include "Shader.h"
 #include "VertexShape.h"
 #include "Textured.h"
