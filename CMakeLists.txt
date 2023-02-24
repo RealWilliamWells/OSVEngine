@@ -4,6 +4,8 @@ project(OSVEngine)
 set(STB_COMMIT 3ecc60f25ae1391cf6434578ece782afa1458b5)
 set(GLM_COMMIT bf71a834948186f4097caa076cd2663c69a10e1e)
 set(OPENAL_SOFT_COMMIT 70c14cd560db819f180073052f4c2bfae5cf3c31)
+set(LIBSNDFILE_COMMIT master)
+
 set(GTEST_COMMIT e2239ee6043f73722e7aa812a459f54a28552929) # Version 1.11.0
 
 if(CMAKE_COMPILER_IS_GNUCXX AND NOT WIN32)
@@ -68,11 +70,19 @@ FetchContent_Declare(glm
 FetchContent_MakeAvailable(glm)
 FetchContent_GetProperties(glm SOURCE_DIR GLM_SOURCE_DIR)
 
-FetchContent_Declare(openal
-        GIT_REPOSITORY git@github.com:kcat/openal-soft.git
-        GIT_TAG ${OPENAL_SOFT_COMMIT})
-FetchContent_MakeAvailable(openal)
-FetchContent_GetProperties(openal SOURCE_DIR OPENAL_SOFT_SOURCE_DIR)
+if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten" AND NOT SWITCH)
+    FetchContent_Declare(openal
+            GIT_REPOSITORY git@github.com:kcat/openal-soft.git
+            GIT_TAG ${OPENAL_SOFT_COMMIT})
+    FetchContent_MakeAvailable(openal)
+    FetchContent_GetProperties(openal SOURCE_DIR OPENAL_SOFT_SOURCE_DIR)
+endif()
+
+FetchContent_Declare(libsndfile
+        GIT_REPOSITORY git@github.com:RealWilliamWells/libsndfile.git
+        GIT_TAG ${LIBSNDFILE_COMMIT})
+FetchContent_MakeAvailable(libsndfile)
+FetchContent_GetProperties(libsndfile SOURCE_DIR LIBSNDFILE_SOURCE_DIR)
 
 # Other dependencies
 
@@ -91,7 +101,7 @@ if (SWITCH)
 endif()
 
 # include and source files
-include_directories(include ${STB_SOURCE_DIR} ${GLM_SOURCE_DIR}/glm ${OPENAL_SOFT_SOURCE_DIR}/include)
+include_directories(include ${STB_SOURCE_DIR} ${GLM_SOURCE_DIR}/glm ${OPENAL_SOFT_SOURCE_DIR}/include ${LIBSNDFILE_SOURCE_DIR}/include)
 
 file(GLOB SOURCE_FILES
         ${PROJECT_SOURCE_DIR}/src/*.cpp
@@ -145,14 +155,17 @@ if(SWITCH)
             ${PORTLIBS}/lib/libglfw3.a
             ${PORTLIBS}/lib/libdrm_nouveau.a
             ${PORTLIBS}/lib/libglapi.a
-            ${LIBNX}/lib/libnx.a)
+            ${PORTLIBS}/lib/libopenal.a
+            ${PORTLIBS}/lib/libSDL2.a
+            ${LIBNX}/lib/libnx.a
+            sndfile)
     add_nro_target(${PROJECT_NAME})
 endif()
 
 if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten" AND NOT SWITCH)
-    target_link_libraries(${PROJECT_NAME} OpenGL::GL GLEW::glew glfw)
+    target_link_libraries(${PROJECT_NAME} OpenGL::GL GLEW::glew glfw openal sndfile)
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
-    target_link_libraries(${PROJECT_NAME} ${OPENGL_gl_LIBRARY})
+    target_link_libraries(${PROJECT_NAME} ${OPENGL_gl_LIBRARY} sndfile)
     set_target_properties(${PROJECT_NAME}
             PROPERTIES SUFFIX ".html"
             LINK_FLAGS "-Os -s USE_WEBGL2=1 -s FULL_ES3=1 -s USE_GLFW=3 -s WASM=1 -s TOTAL_MEMORY=128MB -s SAFE_HEAP=1 --preload-file res")

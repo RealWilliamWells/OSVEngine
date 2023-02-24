@@ -1,5 +1,6 @@
 #include "OSV/rendering/RenderEngine.h"
 #include "OSV/input/LookInput.h"
+#include "OSV/audio/Music.h"
 
 #include <iostream>
 
@@ -257,6 +258,9 @@ int main() {
                                  ASSET("gfx/jesus.jpg"));
 
     renderEngine->addVerticesShapes(vertexShape);
+
+//    Music backgroundMusic(ASSET("sfx/background.wav"));
+//    backgroundMusic.play();
 
 #ifdef __EMSCRIPTEN__
     emscripten_set_main_loop(emscriptenMainLoop, 0, false);

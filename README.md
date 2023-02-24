@@ -3,7 +3,7 @@ OpenGL scene viewer developed for COMP371 at Concordia University
 
 ## Nintendo Switch
 ### Build dependencies
-`pacman -S switch-glfw switch-mesa switch-glm switch-glad`
+`pacman -S switch-glfw switch-mesa switch-glm switch-glad switch-openal-soft`
 
 ### Building
 `cmake -G "Unix Makefiles" --toolchain=DevkitA64Libnx.cmake -S .. -B ./`
