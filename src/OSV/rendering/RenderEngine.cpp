@@ -72,28 +72,12 @@ void osv::RenderEngine::openWindow() {
 
     glEnable(GL_DEPTH_TEST);
 
-    glGenBuffers(1, &VBO);
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &EBO);
-
-    setupBuffers();
-
     glViewport(0, 0, 1280, 720);
 
     glfwSetFramebufferSizeCallback(window, osv::RenderEngine::framebufferSizeCallback);
 }
 
-void osv::RenderEngine::setupBuffers() {
-    glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-}
-
 void osv::RenderEngine::updateCoordinateSystem() {
-    model = glm::mat4(1.0f);
-    model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
     projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 }
 
@@ -109,7 +93,13 @@ void osv::RenderEngine::addVerticesShapes(std::vector<osv::VertexShape> newShape
 
 void osv::RenderEngine::renderVerticesShapes() {
     for (VertexShape& shape : vertexShapes) {
-        shape.render(model, view, projection);
+        shape.render(view, projection);
+    }
+}
+
+void osv::RenderEngine::clearBuffers() {
+    for (VertexShape& shape : vertexShapes) {
+        shape.deleteBuffers();
     }
 }
 
@@ -129,9 +119,7 @@ bool osv::RenderEngine::update() {
     lastFrame = currentFrame;
 
     if (glfwWindowShouldClose(window)){
-        glDeleteVertexArrays(1, &VAO);
-        glDeleteBuffers(1, &VBO);
-        glDeleteBuffers(1, &EBO);
+        clearBuffers();
         glfwTerminate();
         return false;
     }
@@ -197,8 +185,6 @@ void osv::RenderEngine::renderScreen() {
     // TODO: Implement screen class for rendering engine to display
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glBindVertexArray(VAO);
 
     renderVerticesShapes();
 }

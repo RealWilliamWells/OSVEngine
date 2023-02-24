@@ -33,9 +33,6 @@ namespace osv {
 
 class osv::RenderEngine {
     GLFWwindow* window;
-    unsigned int VBO;
-    unsigned int VAO;
-    unsigned int EBO;
 
     // TODO: all shapes and other renderables should be in a scene or screen class that the rendering engine will draw
     std::vector<osv::VertexShape> vertexShapes;
@@ -43,7 +40,6 @@ class osv::RenderEngine {
     const unsigned int SCR_WIDTH = 800;
     const unsigned int SCR_HEIGHT = 600;
 
-    glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 view;
     glm::mat4 projection;
 
@@ -59,8 +55,6 @@ public:
 
     void openWindow();
 
-    void setupBuffers();
-
     void updateCoordinateSystem();
 
     void addVerticesShapes(osv::VertexShape newShape);
@@ -68,6 +62,8 @@ public:
     void addVerticesShapes(std::vector<osv::VertexShape> newShapes);
 
     void renderVerticesShapes();
+
+    void clearBuffers();
 
     bool update();
 

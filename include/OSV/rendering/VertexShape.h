@@ -24,14 +24,21 @@ namespace osv {
 }
 
 class osv::VertexShape : public Shader, public Textured {
-    float *vertices;
-    unsigned int *indices;
+    unsigned int VBO;
+    unsigned int VAO;
+    unsigned int EBO;
+
+    glm::mat4 model = glm::mat4(1.0f);
 
 public:
     VertexShape(float vertices[], unsigned int indices[], unsigned verticesSize, unsigned indicesSize,
                 const char* vertexPath, const char* fragmentPath, const char *textureFile);
 
-    void render(glm::mat4 model, glm::mat4 view, glm::mat4 projection);
+    void setupBuffers();
+
+    void deleteBuffers();
+
+    void render(glm::mat4 view, glm::mat4 projection);
 };
 
 
