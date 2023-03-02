@@ -93,8 +93,9 @@ void osv::RenderEngine::addVerticesShapes(std::vector<osv::VertexShape> newShape
 }
 
 void osv::RenderEngine::renderVerticesShapes() {
+//	glm::mat3 lightColor = {1.0f, 1.0f, 1.0f};
     for (VertexShape& shape : vertexShapes) {
-        shape.render(view, projection);
+        shape.render(view, projection, glm::vec3(255.0f));
     }
 }
 

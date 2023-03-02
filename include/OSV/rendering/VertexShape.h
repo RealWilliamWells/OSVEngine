@@ -30,6 +30,7 @@ class osv::VertexShape : public Shader, public Textured {
 
     glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.0f);
     glm::mat4 model = glm::mat4(1.0f);
+	glm::mat4 lightColor;
 
 public:
     VertexShape(float vertices[], unsigned int indices[], unsigned verticesSize, unsigned indicesSize,
@@ -39,7 +40,7 @@ public:
 
     void deleteBuffers();
 
-    void render(glm::mat4 view, glm::mat4 projection);
+    void render(glm::mat4 view, glm::mat4 projection, glm::vec3 lightColor);
 
     void translate(glm::vec3 translation);
 

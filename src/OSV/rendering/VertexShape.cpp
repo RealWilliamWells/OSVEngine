@@ -41,7 +41,7 @@ void osv::VertexShape::deleteBuffers() {
     glDeleteBuffers(1, &EBO);
 }
 
-void osv::VertexShape::render(glm::mat4 view, glm::mat4 projection) {
+void osv::VertexShape::render(glm::mat4 view, glm::mat4 projection, glm::vec3 lightColor) {
     // Rotate cube
     model = glm::mat4(1.0f);
     translate(glm::vec3(1.f, 1.0f, 0.0f));
@@ -55,6 +55,9 @@ void osv::VertexShape::render(glm::mat4 view, glm::mat4 projection) {
 
     int projectionLoc = glGetUniformLocation(programID, "projection");
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+	int lightColorLoc = glGetUniformLocation(programID, "lightColor");
+	glUniformMatrix4fv(lightColorLoc, 1, GL_FALSE, glm::value_ptr(lightColor));
 
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
