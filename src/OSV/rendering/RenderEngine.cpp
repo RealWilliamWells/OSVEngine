@@ -31,8 +31,8 @@ void osv::RenderEngine::openWindow() {
     }
     glfwMakeContextCurrent(window);
 
-//    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-//    glfwSetCursorPosCallback(window, osv::LookInput::mouseInputCallback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(window, osv::LookInput::mouseInputCallback);
 
 //    glewExperimental = true; // Needed for core profile
 #ifdef OS_SWITCH

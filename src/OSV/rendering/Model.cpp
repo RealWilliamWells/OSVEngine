@@ -11,15 +11,16 @@ osv::Model::Model(std::vector<tbd::Vector3<float>> &vertices, std::vector<tbd::V
     setupBuffers();
 
     // Load data into array buffer
-    float *data = new float[vertices.size()*5];
+    float *data = new float[5*vertices.size()];
     for (int i = 0; i<vertices.size(); i++) {
-        data[i] = vertices.at(i).x;
-        data[i+1] = vertices.at(i).y;
-        data[i+2] = vertices.at(i).z;
-        data[i+3] = textureCoords.at(i).x;
-        data[i+4] = textureCoords.at(i).y;
+        data[0+i*5] = vertices.at(i).x;
+        data[1+i*5] = vertices.at(i).y;
+        data[2+i*5] = vertices.at(i).z;
+        data[3+i*5] = textureCoords.at(i).x;
+        data[4+i*5] = textureCoords.at(i).y;
     }
-    glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
+
+    glBufferData(GL_ARRAY_BUFFER, 5*vertices.size()*sizeof(float), data, GL_STATIC_DRAW);
     delete[] data;
 //    if (indices.size() > 0)
 //        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size(), indicesData, GL_STATIC_DRAW);
