@@ -4,32 +4,6 @@
 
 #include <iostream>
 
-#ifndef OS_SWITCH
-#define ASSET(_str) "./res/" _str
-#else
-#define ASSET(_str) "romfs:/" _str
-
-#include <switch.h>
-#include <unistd.h>
-
-static int nxlink_sock = -1;
-
-void userAppInit()
-{
-	romfsInit();
-	socketInitializeDefault();
-	nxlink_sock = nxlinkStdio();
-}
-
-void userAppExit()
-{
-	if (nxlink_sock != -1)
-		close(nxlink_sock);
-	socketExit();
-	romfsExit();
-}
-#endif
-
 osv::RenderEngine::RenderEngine() : camera() {
     view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f),
                        glm::vec3(0.0f, 0.0f, 0.0f),
@@ -57,8 +31,8 @@ void osv::RenderEngine::openWindow() {
     }
     glfwMakeContextCurrent(window);
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetCursorPosCallback(window, osv::LookInput::mouseInputCallback);
+//    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+//    glfwSetCursorPosCallback(window, osv::LookInput::mouseInputCallback);
 
 //    glewExperimental = true; // Needed for core profile
 #ifdef OS_SWITCH
@@ -190,91 +164,14 @@ void osv::RenderEngine::renderScreen() {
     renderVerticesShapes();
 }
 
-// Test entry point and use of render
-std::shared_ptr<osv::RenderEngine> renderEngine;
+void osv::RenderEngine::setScene(tbd::Scene &scene, const char *vertexShaderFile, const char *fragmentShaderFile) {
+    currentScene = &scene;
 
-#ifdef __EMSCRIPTEN__
-    static void emscriptenMainLoop() {
-        renderEngine->update();
+    const std::vector<tbd::Entity>& entities = currentScene->getEntities();
+
+    for (const tbd::Entity &entity : entities) {
+        Model model(entity.model->vertices, entity.model->indices, entity.model->textureCoords,
+                             vertexShaderFile, fragmentShaderFile, entity.model->texture);
+        addVerticesShapes(model);
     }
-#endif
-
-int main() {
-#ifdef OS_SWITCH
-    userAppInit();
-#endif
-    renderEngine = std::shared_ptr<osv::RenderEngine>(new osv::RenderEngine());
-    std::vector<osv::Shader> shaders;
-
-    renderEngine->initWindow();
-    renderEngine->openWindow();
-
-    float vertices[] = {
-            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-            0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-    };
-
-    osv::Model vertexShape(vertices, nullptr, sizeof(vertices), 0,
-                                 ASSET("shaders/defaultVertex.vs"), ASSET("shaders/defaultFragment.fs"),
-                                 ASSET("gfx/jesus.jpg"));
-
-    renderEngine->addVerticesShapes(vertexShape);
-
-//    Music backgroundMusic(ASSET("sfx/background.wav"));
-//    backgroundMusic.play();
-
-#ifdef __EMSCRIPTEN__
-    emscripten_set_main_loop(emscriptenMainLoop, 0, false);
-#elifdef OS_SWITCH
-    consoleInit(NULL);
-
-    while (appletMainLoop()) {
-        renderEngine->update();
-    }
-
-    userAppExit();
-#else
-    while (renderEngine->update());
-#endif
-
-    return 0;
 }

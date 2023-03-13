@@ -11,6 +11,10 @@
 #include "GL/glew.h"
 #endif
 
+#include "Scene.h"
+
+#include <vector>
+
 namespace osv {
     class Textured;
 }
@@ -18,13 +22,8 @@ namespace osv {
 class osv::Textured {
     unsigned int texture;
 
-    unsigned char *data;
-    int width;
-    int height;
-    int nrChannels;
-
 public:
-    Textured(const char *textureFile);
+    Textured(tbd::Texture &textureData);
 
     void bindTexture();
 };

@@ -12,6 +12,8 @@
 #include "Textured.h"
 #include "Camera.h"
 
+#include "Scene.h"
+
 #ifdef __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
 #define GLFW_INCLUDE_ES3
@@ -51,6 +53,8 @@ class osv::RenderEngine {
     float deltaTime = 0.f;
     float lastFrame = 0.f;
 
+    tbd::Scene* currentScene;
+
 public:
     RenderEngine();
 
@@ -75,6 +79,8 @@ public:
     void updateView();
 
     void renderScreen();
+
+    void setScene(tbd::Scene &scene, const char *vertexShaderFile, const char *fragmentShaderFile);
 
     static void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
         glViewport(0, 0, width, height);

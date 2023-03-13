@@ -19,6 +19,8 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 
+#include "Base.h"
+
 namespace osv {
     class Model;
 }
@@ -32,8 +34,9 @@ class osv::Model : public Shader, public Textured {
     glm::mat4 model = glm::mat4(1.0f);
 
 public:
-    Model(float vertices[], unsigned int indices[], unsigned verticesSize, unsigned indicesSize,
-          const char* vertexPath, const char* fragmentPath, const char *textureFile);
+    Model(std::vector<tbd::Vector3<float>> &vertices, std::vector<tbd::Vector3<tbd::U32>> &indices,
+          std::vector<tbd::Vector3<float>> &textureCoords, const char* vertexPath, const char* fragmentPath,
+          tbd::Texture &texture);
 
     void setupBuffers();
 

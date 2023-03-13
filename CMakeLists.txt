@@ -6,6 +6,9 @@ set(GLM_COMMIT bf71a834948186f4097caa076cd2663c69a10e1e)
 set(OPENAL_SOFT_COMMIT 70c14cd560db819f180073052f4c2bfae5cf3c31)
 set(LIBSNDFILE_COMMIT master)
 
+set(IMPORT_AND_EXPORT_TOOL_COMMIT 0254e28079c885bae1a3b027b4c7413981324dc6)
+#set(CEREAL_COMMIT ebef1e929807629befafbb2918ea1a08c7194554) # Version 1.3.2
+
 set(GTEST_COMMIT e2239ee6043f73722e7aa812a459f54a28552929) # Version 1.11.0
 
 if(CMAKE_COMPILER_IS_GNUCXX AND NOT WIN32)
@@ -15,45 +18,23 @@ endif()
 
 # applies OS type C++ macro
 if(WIN32)
-    #add_compile_definitions(OS_WINDOWS)
+    set(CMAKE_CXX_STANDARD_LIBRARIES "-static-libgcc -static-libstdc++ -lwsock32 -lws2_32 ${CMAKE_CXX_STANDARD_LIBRARIES}")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-Bstatic,--whole-archive -lpthread -Wl,--no-whole-archive")
+
+    add_compile_definitions(OS_WINDOWS)
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    #add_compile_definitions(OS_MAC)
+    add_compile_definitions(OS_MAC)
 elseif(UNIX)
-    #add_compile_definitions(OS_UNIX)
+    set(CMAKE_CXX_STANDARD_LIBRARIES "-static-libgcc -static-libstdc++ ${CMAKE_CXX_STANDARD_LIBRARIES}")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath,./lib/")
+
+    add_compile_definitions(OS_UNIX)
 endif()
 
 #
 # Set C++ version
 #
 set(CMAKE_CXX_STANDARD 20)
-
-
-#
-# The following if-else chain makes the different platform output at different
-# paths:
-#
-# bin/
-#   windows64/
-#   windows32/
-#   mac/
-#   linux64/
-#   linux32/
-#
-if(WIN32)
-    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/windows64/)
-    else()
-        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/windows32/)
-    endif()
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/mac/)
-elseif(UNIX)
-    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/linux64/)
-    else()
-        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/linux32/)
-    endif()
-endif()
 
 # Fetch dependencies
 include(FetchContent)
@@ -84,6 +65,19 @@ FetchContent_Declare(libsndfile
 FetchContent_MakeAvailable(libsndfile)
 FetchContent_GetProperties(libsndfile SOURCE_DIR LIBSNDFILE_SOURCE_DIR)
 
+FetchContent_Declare(importandexport
+        GIT_REPOSITORY https://github.com/RealWilliamWells/scene-import-and-export.git
+        GIT_TAG ${IMPORT_AND_EXPORT_TOOL_COMMIT})
+FetchContent_MakeAvailable(importandexport)
+FetchContent_GetProperties(importandexport)
+add_compile_definitions(NO_CEREAL)
+
+#FetchContent_Declare(cereal
+#        GIT_REPOSITORY https://github.com/USCiLab/cereal.git
+#        GIT_TAG ${CEREAL_COMMIT})
+#FetchContent_MakeAvailable(cereal)
+#FetchContent_GetProperties(cereal SOURCE_DIR CEREAL_SOURCE_DIR)
+
 # Other dependencies
 
 if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten" AND NOT SWITCH)
@@ -101,7 +95,8 @@ if (SWITCH)
 endif()
 
 # include and source files
-include_directories(include ${STB_SOURCE_DIR} ${GLM_SOURCE_DIR}/glm ${OPENAL_SOFT_SOURCE_DIR}/include ${LIBSNDFILE_SOURCE_DIR}/include)
+include_directories(include ${STB_SOURCE_DIR} ${GLM_SOURCE_DIR}/glm ${OPENAL_SOFT_SOURCE_DIR}/include
+        ${LIBSNDFILE_SOURCE_DIR}/include ${importandexport_SOURCE_DIR}/src)
 
 file(GLOB SOURCE_FILES
         ${PROJECT_SOURCE_DIR}/src/*.cpp
@@ -158,14 +153,15 @@ if(SWITCH)
             ${PORTLIBS}/lib/libopenal.a
             ${PORTLIBS}/lib/libSDL2.a
             ${LIBNX}/lib/libnx.a
-            sndfile)
+            sndfile
+            scene-data)
     add_nro_target(${PROJECT_NAME})
 endif()
 
 if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten" AND NOT SWITCH)
-    target_link_libraries(${PROJECT_NAME} OpenGL::GL GLEW::glew glfw openal sndfile)
+    target_link_libraries(${PROJECT_NAME} OpenGL::GL GLEW::glew glfw openal sndfile scene-data)
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
-    target_link_libraries(${PROJECT_NAME} ${OPENGL_gl_LIBRARY} sndfile)
+    target_link_libraries(${PROJECT_NAME} ${OPENGL_gl_LIBRARY} sndfile scene-data)
     set_target_properties(${PROJECT_NAME}
             PROPERTIES SUFFIX ".html"
             LINK_FLAGS "-Os -s USE_WEBGL2=1 -s FULL_ES3=1 -s USE_GLFW=3 -s WASM=1 -s TOTAL_MEMORY=128MB -s SAFE_HEAP=1 --preload-file res")
