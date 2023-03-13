@@ -8,7 +8,7 @@
 #include <memory>
 
 #include "Shader.h"
-#include "VertexShape.h"
+#include "Model.h"
 #include "Textured.h"
 #include "Camera.h"
 
@@ -38,7 +38,7 @@ class osv::RenderEngine {
     GLFWwindow* window;
 
     // TODO: all shapes and other renderables should be in a scene or screen class that the rendering engine will draw
-    std::vector<osv::VertexShape> vertexShapes;
+    std::vector<osv::Model> vertexShapes;
 
     const unsigned int SCR_WIDTH = 800;
     const unsigned int SCR_HEIGHT = 600;
@@ -60,9 +60,9 @@ public:
 
     void updateCoordinateSystem();
 
-    void addVerticesShapes(osv::VertexShape newShape);
+    void addVerticesShapes(osv::Model newShape);
 
-    void addVerticesShapes(std::vector<osv::VertexShape> newShapes);
+    void addVerticesShapes(std::vector<osv::Model> newShapes);
 
     void renderVerticesShapes();
 

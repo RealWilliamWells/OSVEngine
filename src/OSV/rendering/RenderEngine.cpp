@@ -82,24 +82,24 @@ void osv::RenderEngine::updateCoordinateSystem() {
     projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 }
 
-void osv::RenderEngine::addVerticesShapes(osv::VertexShape newShape) {
+void osv::RenderEngine::addVerticesShapes(osv::Model newShape) {
     vertexShapes.push_back(newShape);
 }
 
-void osv::RenderEngine::addVerticesShapes(std::vector<osv::VertexShape> newShapes) {
-    for (VertexShape& shape : newShapes) {
+void osv::RenderEngine::addVerticesShapes(std::vector<osv::Model> newShapes) {
+    for (Model& shape : newShapes) {
         addVerticesShapes(shape);
     }
 }
 
 void osv::RenderEngine::renderVerticesShapes() {
-    for (VertexShape& shape : vertexShapes) {
+    for (Model& shape : vertexShapes) {
         shape.render(view, projection);
     }
 }
 
 void osv::RenderEngine::clearBuffers() {
-    for (VertexShape& shape : vertexShapes) {
+    for (Model& shape : vertexShapes) {
         shape.deleteBuffers();
     }
 }
@@ -253,7 +253,7 @@ int main() {
             -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
 
-    osv::VertexShape vertexShape(vertices, nullptr, sizeof(vertices), 0,
+    osv::Model vertexShape(vertices, nullptr, sizeof(vertices), 0,
                                  ASSET("shaders/defaultVertex.vs"), ASSET("shaders/defaultFragment.fs"),
                                  ASSET("gfx/jesus.jpg"));
 

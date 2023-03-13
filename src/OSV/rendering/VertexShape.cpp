@@ -2,10 +2,10 @@
 // Created by william on 29/01/23.
 //
 
-#include "OSV/rendering/VertexShape.h"
+#include "OSV/rendering/Model.h"
 
-osv::VertexShape::VertexShape(float vertices[], unsigned int indices[], unsigned verticesSize, unsigned indicesSize,
-                              const char* vertexPath, const char* fragmentPath, const char *textureFile) :
+osv::Model::Model(float vertices[], unsigned int indices[], unsigned verticesSize, unsigned indicesSize,
+                  const char* vertexPath, const char* fragmentPath, const char *textureFile) :
                               Shader(vertexPath, fragmentPath), Textured(textureFile) {
     setupBuffers();
 
@@ -23,7 +23,7 @@ osv::VertexShape::VertexShape(float vertices[], unsigned int indices[], unsigned
     glEnableVertexAttribArray(1);
 }
 
-void osv::VertexShape::setupBuffers() {
+void osv::Model::setupBuffers() {
     glGenBuffers(1, &VBO);
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &EBO);
@@ -35,13 +35,13 @@ void osv::VertexShape::setupBuffers() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 }
 
-void osv::VertexShape::deleteBuffers() {
+void osv::Model::deleteBuffers() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
 }
 
-void osv::VertexShape::render(glm::mat4 view, glm::mat4 projection) {
+void osv::Model::render(glm::mat4 view, glm::mat4 projection) {
     // Rotate cube
     model = glm::mat4(1.0f);
     translate(glm::vec3(1.f, 1.0f, 0.0f));
@@ -61,10 +61,10 @@ void osv::VertexShape::render(glm::mat4 view, glm::mat4 projection) {
     glBindVertexArray(VAO);
 }
 
-void osv::VertexShape::translate(glm::vec3 translation) {
+void osv::Model::translate(glm::vec3 translation) {
     model = glm::translate(model, translation);
 }
 
-void osv::VertexShape::rotate(float angle, glm::vec3 rotation) {
+void osv::Model::rotate(float angle, glm::vec3 rotation) {
     model = glm::rotate(model, angle, rotation);
 }
