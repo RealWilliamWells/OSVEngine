@@ -6,14 +6,13 @@ set(GLM_COMMIT bf71a834948186f4097caa076cd2663c69a10e1e)
 set(OPENAL_SOFT_COMMIT 70c14cd560db819f180073052f4c2bfae5cf3c31)
 set(LIBSNDFILE_COMMIT master)
 
-set(IMPORT_AND_EXPORT_TOOL_COMMIT 0254e28079c885bae1a3b027b4c7413981324dc6)
-#set(CEREAL_COMMIT ebef1e929807629befafbb2918ea1a08c7194554) # Version 1.3.2
+set(IMPORT_AND_EXPORT_TOOL_COMMIT cd2756bdad54827f1e46843a9091b6b70a3edb2e)
 
 set(GTEST_COMMIT e2239ee6043f73722e7aa812a459f54a28552929) # Version 1.11.0
 
 if(CMAKE_COMPILER_IS_GNUCXX AND NOT WIN32)
     # Not for windows because windres.exe doesn't support those
-    add_definitions(-frtti -Wall -ansi -Wno-deprecated -pthread -Wpedantic)
+    add_definitions(-frtti -Wall -ansi -Wno-deprecated -pthread -Wpedantic -fexceptions)
 endif()
 
 # applies OS type C++ macro
@@ -71,12 +70,6 @@ FetchContent_Declare(importandexport
 FetchContent_MakeAvailable(importandexport)
 FetchContent_GetProperties(importandexport)
 add_compile_definitions(NO_CEREAL)
-
-#FetchContent_Declare(cereal
-#        GIT_REPOSITORY https://github.com/USCiLab/cereal.git
-#        GIT_TAG ${CEREAL_COMMIT})
-#FetchContent_MakeAvailable(cereal)
-#FetchContent_GetProperties(cereal SOURCE_DIR CEREAL_SOURCE_DIR)
 
 # Other dependencies
 
