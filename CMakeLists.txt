@@ -5,6 +5,7 @@ set(STB_COMMIT 3ecc60f25ae1391cf6434578ece782afa1458b5)
 set(GLM_COMMIT bf71a834948186f4097caa076cd2663c69a10e1e)
 set(OPENAL_SOFT_COMMIT 70c14cd560db819f180073052f4c2bfae5cf3c31)
 set(LIBSNDFILE_COMMIT master)
+set(IMGUI_COMMIT f3f6295d532b98e322691afb8ef418209d963786) # Version 1.89.4
 
 set(IMPORT_AND_EXPORT_TOOL_COMMIT cd2756bdad54827f1e46843a9091b6b70a3edb2e)
 
@@ -64,6 +65,12 @@ FetchContent_Declare(libsndfile
 FetchContent_MakeAvailable(libsndfile)
 FetchContent_GetProperties(libsndfile SOURCE_DIR LIBSNDFILE_SOURCE_DIR)
 
+FetchContent_Declare(imgui
+        GIT_REPOSITORY https://github.com/ocornut/imgui
+        GIT_TAG ${IMGUI_COMMIT})
+FetchContent_MakeAvailable(imgui)
+FetchContent_GetProperties(imgui SOURCE_DIR IMGUI_SOURCE_DIR)
+
 FetchContent_Declare(importandexport
         GIT_REPOSITORY https://github.com/RealWilliamWells/scene-import-and-export.git
         GIT_TAG ${IMPORT_AND_EXPORT_TOOL_COMMIT})
@@ -89,7 +96,7 @@ endif()
 
 # include and source files
 include_directories(include ${STB_SOURCE_DIR} ${GLM_SOURCE_DIR}/glm ${OPENAL_SOFT_SOURCE_DIR}/include
-        ${LIBSNDFILE_SOURCE_DIR}/include ${importandexport_SOURCE_DIR}/src)
+        ${LIBSNDFILE_SOURCE_DIR}/include ${importandexport_SOURCE_DIR}/src ${IMGUI_SOURCE_DIR})
 
 file(GLOB SOURCE_FILES
         ${PROJECT_SOURCE_DIR}/src/*.cpp
@@ -103,7 +110,14 @@ file(GLOB SOURCE_FILES
         ${PROJECT_SOURCE_DIR}/src/*/*/*.cpp
         ${PROJECT_SOURCE_DIR}/include/*/*/*.inl
         ${PROJECT_SOURCE_DIR}/include/*/*/*.h
-        ${PROJECT_SOURCE_DIR}/include/*/*/*.hpp)
+        ${PROJECT_SOURCE_DIR}/include/*/*/*.hpp
+
+        ${IMGUI_SOURCE_DIR}/*.h
+        ${IMGUI_SOURCE_DIR}/*.cpp
+        ${IMGUI_SOURCE_DIR}/backends/imgui_impl_opengl2.h
+        ${IMGUI_SOURCE_DIR}/backends/imgui_impl_opengl2.cpp
+        ${IMGUI_SOURCE_DIR}/backends/imgui_impl_glfw.h
+        ${IMGUI_SOURCE_DIR}/backends/imgui_impl_glfw.cpp)
 
 if (NOT ${SWITCH})
     FetchContent_Declare(googletest
