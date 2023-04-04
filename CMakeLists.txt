@@ -5,7 +5,7 @@ set(STB_COMMIT 3ecc60f25ae1391cf6434578ece782afa1458b5)
 set(GLM_COMMIT bf71a834948186f4097caa076cd2663c69a10e1e)
 set(OPENAL_SOFT_COMMIT 70c14cd560db819f180073052f4c2bfae5cf3c31)
 set(LIBSNDFILE_COMMIT master)
-set(IMGUI_COMMIT f3f6295d532b98e322691afb8ef418209d963786) # Version 1.89.4
+set(IMGUI_COMMIT ee3dd9f62b88d8e36e7b3215d7a33d6f9b0fe2dc) # Version 1.77
 
 set(SCENEPORT_COMMIT main)
 
@@ -66,7 +66,7 @@ FetchContent_MakeAvailable(libsndfile)
 FetchContent_GetProperties(libsndfile SOURCE_DIR LIBSNDFILE_SOURCE_DIR)
 
 FetchContent_Declare(imgui
-        GIT_REPOSITORY https://github.com/ocornut/imgui.git
+        GIT_REPOSITORY https://github.com/MstrVLT/switch_imgui_glfw.git
         GIT_TAG ${IMGUI_COMMIT})
 FetchContent_MakeAvailable(imgui)
 FetchContent_GetProperties(imgui)
@@ -98,7 +98,7 @@ endif()
 
 # include and source files
 include_directories(include ${STB_SOURCE_DIR} ${GLM_SOURCE_DIR}/glm ${OPENAL_SOFT_SOURCE_DIR}/include
-        ${LIBSNDFILE_SOURCE_DIR}/include ${sceneport_SOURCE_DIR}/src ${imgui_SOURCE_DIR})
+        ${LIBSNDFILE_SOURCE_DIR}/include ${sceneport_SOURCE_DIR}/src ${imgui_SOURCE_DIR}/source)
 
 file(GLOB SOURCE_FILES
         ${PROJECT_SOURCE_DIR}/src/*.cpp
@@ -114,12 +114,7 @@ file(GLOB SOURCE_FILES
         ${PROJECT_SOURCE_DIR}/include/*/*/*.h
         ${PROJECT_SOURCE_DIR}/include/*/*/*.hpp
 
-        ${imgui_SOURCE_DIR}/*.h
-        ${imgui_SOURCE_DIR}/*.cpp
-        ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.h
-        ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
-        ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.h
-        ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp)
+        ${imgui_SOURCE_DIR}/source/*)
 
 if (NOT ${SWITCH})
     FetchContent_Declare(googletest
