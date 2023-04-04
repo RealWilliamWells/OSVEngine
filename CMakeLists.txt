@@ -5,7 +5,7 @@ set(STB_COMMIT 3ecc60f25ae1391cf6434578ece782afa1458b5)
 set(GLM_COMMIT bf71a834948186f4097caa076cd2663c69a10e1e)
 set(OPENAL_SOFT_COMMIT 70c14cd560db819f180073052f4c2bfae5cf3c31)
 set(LIBSNDFILE_COMMIT master)
-set(IMGUI_COMMIT master) # Version 1.89.4
+set(IMGUI_COMMIT f3f6295d532b98e322691afb8ef418209d963786) # Version 1.89.4
 
 set(SCENEPORT_COMMIT main)
 
@@ -40,33 +40,33 @@ set(CMAKE_CXX_STANDARD 20)
 include(FetchContent)
 
 FetchContent_Declare(stb
-        GIT_REPOSITORY git@github.com:nothings/stb.git
+        GIT_REPOSITORY https://github.com/nothings/stb.git
         GIT_TAG ${STB_COMMIT})
 FetchContent_MakeAvailable(stb)
 FetchContent_GetProperties(stb SOURCE_DIR STB_SOURCE_DIR)
 
 FetchContent_Declare(glm
-        GIT_REPOSITORY git@github.com:g-truc/glm.git
+        GIT_REPOSITORY https://github.com/g-truc/glm.git
         GIT_TAG ${GLM_COMMIT})
 FetchContent_MakeAvailable(glm)
 FetchContent_GetProperties(glm SOURCE_DIR GLM_SOURCE_DIR)
 
 if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten" AND NOT SWITCH)
     FetchContent_Declare(openal
-            GIT_REPOSITORY git@github.com:kcat/openal-soft.git
+            GIT_REPOSITORY https://github.com/kcat/openal-soft.git
             GIT_TAG ${OPENAL_SOFT_COMMIT})
     FetchContent_MakeAvailable(openal)
     FetchContent_GetProperties(openal SOURCE_DIR OPENAL_SOFT_SOURCE_DIR)
 endif()
 
 FetchContent_Declare(libsndfile
-        GIT_REPOSITORY git@github.com:RealWilliamWells/libsndfile.git
+        GIT_REPOSITORY https://github.com/RealWilliamWells/libsndfile.git
         GIT_TAG ${LIBSNDFILE_COMMIT})
 FetchContent_MakeAvailable(libsndfile)
 FetchContent_GetProperties(libsndfile SOURCE_DIR LIBSNDFILE_SOURCE_DIR)
 
 FetchContent_Declare(imgui
-        GIT_REPOSITORY git@github.com:RealWilliamWells/imgui-switch-opengl.git
+        GIT_REPOSITORY https://github.com/ocornut/imgui.git
         GIT_TAG ${IMGUI_COMMIT})
 FetchContent_MakeAvailable(imgui)
 FetchContent_GetProperties(imgui)
@@ -114,12 +114,12 @@ file(GLOB SOURCE_FILES
         ${PROJECT_SOURCE_DIR}/include/*/*/*.h
         ${PROJECT_SOURCE_DIR}/include/*/*/*.hpp
 
-        ${IMGUI_SOURCE_DIR}/*.h
-        ${IMGUI_SOURCE_DIR}/*.cpp
-        ${IMGUI_SOURCE_DIR}/backends/imgui_impl_opengl2.h
-        ${IMGUI_SOURCE_DIR}/backends/imgui_impl_opengl2.cpp
-        ${IMGUI_SOURCE_DIR}/backends/imgui_impl_glfw.h
-        ${IMGUI_SOURCE_DIR}/backends/imgui_impl_glfw.cpp)
+        ${imgui_SOURCE_DIR}/*.h
+        ${imgui_SOURCE_DIR}/*.cpp
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.h
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.h
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp)
 
 if (NOT ${SWITCH})
     FetchContent_Declare(googletest
@@ -163,15 +163,14 @@ if(SWITCH)
             ${PORTLIBS}/lib/libSDL2.a
             ${LIBNX}/lib/libnx.a
             sndfile
-            sceneport
-            imgui)
+            ScenePort)
     add_nro_target(${PROJECT_NAME})
 endif()
 
 if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten" AND NOT SWITCH)
-    target_link_libraries(${PROJECT_NAME} OpenGL::GL GLEW::glew glfw openal sndfile sceneport imgui)
+    target_link_libraries(${PROJECT_NAME} OpenGL::GL GLEW::glew glfw openal sndfile ScenePort)
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
-    target_link_libraries(${PROJECT_NAME} ${OPENGL_gl_LIBRARY} sndfile sceneport imgui)
+    target_link_libraries(${PROJECT_NAME} ${OPENGL_gl_LIBRARY} sndfile ScenePort)
     set_target_properties(${PROJECT_NAME}
             PROPERTIES SUFFIX ".html"
             LINK_FLAGS "-Os -s USE_WEBGL2=1 -s FULL_ES3=1 -s USE_GLFW=3 -s WASM=1 -s TOTAL_MEMORY=128MB -s SAFE_HEAP=1 --preload-file res")

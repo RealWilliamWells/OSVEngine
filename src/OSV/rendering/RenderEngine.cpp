@@ -61,7 +61,6 @@ void osv::RenderEngine::openWindow() {
 
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-//    ImGui_ImplOpenGL2_Init();
     ImGui_ImplOpenGL3_Init("#version 300 es");
 
     // Setup Dear ImGui style
