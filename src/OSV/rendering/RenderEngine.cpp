@@ -2,6 +2,10 @@
 #include "OSV/input/LookInput.h"
 #include "OSV/audio/Music.h"
 
+#include "imgui.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
+
 #include <iostream>
 
 osv::RenderEngine::RenderEngine() : camera() {
@@ -31,8 +35,8 @@ void osv::RenderEngine::openWindow() {
     }
     glfwMakeContextCurrent(window);
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetCursorPosCallback(window, osv::LookInput::mouseInputCallback);
+//    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+//    glfwSetCursorPosCallback(window, osv::LookInput::mouseInputCallback);
 
 //    glewExperimental = true; // Needed for core profile
 #ifdef OS_SWITCH
@@ -50,6 +54,18 @@ void osv::RenderEngine::openWindow() {
     glViewport(0, 0, 1280, 720);
 
     glfwSetFramebufferSizeCallback(window, osv::RenderEngine::framebufferSizeCallback);
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO &io = ImGui::GetIO();
+
+    // Setup Platform/Renderer bindings
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+//    ImGui_ImplOpenGL2_Init();
+    ImGui_ImplOpenGL3_Init("#version 300 es");
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
 }
 
 void osv::RenderEngine::updateCoordinateSystem() {
@@ -94,6 +110,10 @@ bool osv::RenderEngine::update() {
     lastFrame = currentFrame;
 
     if (glfwWindowShouldClose(window)){
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
+
         clearBuffers();
         glfwTerminate();
         return false;
@@ -162,6 +182,17 @@ void osv::RenderEngine::renderScreen() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     renderVerticesShapes();
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    ImGui::Begin("Demo window");
+    ImGui::Button("Hello!");
+    ImGui::End();
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void osv::RenderEngine::setScene(tbd::Scene &scene, const char *vertexShaderFile, const char *fragmentShaderFile) {

@@ -12,7 +12,7 @@
 #include "Textured.h"
 #include "Camera.h"
 
-#include "Scene.h"
+#include "sp/Scene.h"
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
