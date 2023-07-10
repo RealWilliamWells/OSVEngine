@@ -3,8 +3,8 @@
 #include "OSV/audio/Music.h"
 
 #include "imgui.h"
-#include "imgui_impl_glfw_switch.h"
-#include "imgui_impl_opengl3.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
 
 #include <iostream>
 
@@ -26,7 +26,7 @@ void osv::RenderEngine::initWindow() {
 }
 
 void osv::RenderEngine::openWindow() {
-    window = glfwCreateWindow(1280, 720, "OSVEngine", NULL, NULL);
+    window = glfwCreateWindow(1024, 768, "OSVEngine", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -35,8 +35,8 @@ void osv::RenderEngine::openWindow() {
     }
     glfwMakeContextCurrent(window);
 
-//    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-//    glfwSetCursorPosCallback(window, osv::LookInput::mouseInputCallback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(window, osv::LookInput::mouseInputCallback);
 
 //    glewExperimental = true; // Needed for core profile
 #ifdef OS_SWITCH
@@ -51,39 +51,39 @@ void osv::RenderEngine::openWindow() {
 
     glEnable(GL_DEPTH_TEST);
 
-    glViewport(0, 0, 1280, 720);
+    glViewport(0, 0, 1024, 768);
 
     glfwSetFramebufferSizeCallback(window, osv::RenderEngine::framebufferSizeCallback);
 
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO();
-
-    // Setup Platform/Renderer bindings
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 300 es");
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
+//    IMGUI_CHECKVERSION();
+//    ImGui::CreateContext();
+//    ImGuiIO &io = ImGui::GetIO();
+//
+//    // Setup Platform/Renderer bindings
+//    ImGui_ImplGlfw_InitForOpenGL(window, true);
+//    ImGui_ImplOpenGL3_Init("#version 300 es");
+//
+//    // Setup Dear ImGui style
+//    ImGui::StyleColorsDark();
 }
 
 void osv::RenderEngine::updateCoordinateSystem() {
     projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 }
 
-void osv::RenderEngine::addVerticesShapes(osv::Model newShape) {
-    vertexShapes.push_back(newShape);
+void osv::RenderEngine::addModel(osv::Model newModel) {
+    vertexShapes.push_back(newModel);
 }
 
-void osv::RenderEngine::addVerticesShapes(std::vector<osv::Model> newShapes) {
-    for (Model& shape : newShapes) {
-        addVerticesShapes(shape);
+void osv::RenderEngine::addModels(std::vector<osv::Model> newModels) {
+    for (Model& model : newModels) {
+        addModel(model);
     }
 }
 
 void osv::RenderEngine::renderVerticesShapes() {
     for (Model& shape : vertexShapes) {
-        shape.render(view, projection);
+        shape.render(*mainShader, view, projection);
     }
 }
 
@@ -109,9 +109,9 @@ bool osv::RenderEngine::update() {
     lastFrame = currentFrame;
 
     if (glfwWindowShouldClose(window)){
-        ImGui_ImplOpenGL3_Shutdown();
-        ImGui_ImplGlfw_Shutdown();
-        ImGui::DestroyContext();
+//        ImGui_ImplOpenGL3_Shutdown();
+//        ImGui_ImplGlfw_Shutdown();
+//        ImGui::DestroyContext();
 
         clearBuffers();
         glfwTerminate();
@@ -182,26 +182,30 @@ void osv::RenderEngine::renderScreen() {
 
     renderVerticesShapes();
 
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-
-    ImGui::Begin("Demo window");
-    ImGui::Button("Hello!");
-    ImGui::End();
-
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+//    ImGui_ImplOpenGL3_NewFrame();
+//    ImGui_ImplGlfw_NewFrame();
+//    ImGui::NewFrame();
+//
+//    ImGui::Begin("Demo window");
+//    ImGui::Button("Hello!");
+//    ImGui::End();
+//
+//    ImGui::Render();
+//    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void osv::RenderEngine::setScene(tbd::Scene &scene, const char *vertexShaderFile, const char *fragmentShaderFile) {
-    currentScene = &scene;
-
-    const std::vector<tbd::Entity>& entities = currentScene->getEntities();
-
-    for (const tbd::Entity &entity : entities) {
-        Model model(entity.model->vertices, entity.model->indices, entity.model->textureCoords,
-                             vertexShaderFile, fragmentShaderFile, entity.model->texture);
-        addVerticesShapes(model);
-    }
+void osv::RenderEngine::setMainShader(const std::shared_ptr<Shader> &mainShader) {
+    RenderEngine::mainShader = mainShader;
 }
+
+//void osv::RenderEngine::setScene(tbd::Scene &scene, const char *vertexShaderFile, const char *fragmentShaderFile) {
+//    currentScene = &scene;
+//
+//    const std::vector<tbd::Entity>& entities = currentScene->getEntities();
+//
+//    for (const tbd::Entity &entity : entities) {
+//        Model model(entity.model->vertices, entity.model->indices, entity.model->textureCoords,
+//                             vertexShaderFile, fragmentShaderFile, entity.model->texture);
+//        addVerticesShapes(model);
+//    }
+//}

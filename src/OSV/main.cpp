@@ -3,7 +3,6 @@
 //
 
 #include "OSV/rendering/RenderEngine.h"
-#include "Scene.h"
 
 #ifndef OS_SWITCH
 #define ASSET(_str) "./res/" _str
@@ -32,6 +31,7 @@ void userAppExit()
 #endif
 
 std::shared_ptr<osv::RenderEngine> renderEngine;
+std::shared_ptr<osv::Shader> shader;
 
 #ifdef __EMSCRIPTEN__
 static void emscriptenMainLoop() {
@@ -49,17 +49,16 @@ int main() {
     renderEngine->initWindow();
     renderEngine->openWindow();
 
-    tbd::SceneManager sceneManager;
+    shader = std::shared_ptr<osv::Shader>(new osv::Shader(ASSET("shaders/defaultVertex.vs"), ASSET("shaders/defaultFragment.fs")));
 
-    std::stringstream input = sceneManager.importFromFile(ASSET("scenes/test.oscene"));
+    renderEngine->setMainShader(shader);
 
-    std::shared_ptr<tbd::Scene> importedScene = sceneManager.importScene(input);
+    osv::Model model(ASSET("models/backpack/Survival_BackPack_2.fbx"));
+    renderEngine->addModel(model); // TODO: use references to models instead, or only pass path and create model inside of addModel.
 
 //    osv::Model vertexShape(vertices, nullptr, sizeof(vertices), 0,
 //                           ASSET("shaders/defaultVertex.vs"), ASSET("shaders/defaultFragment.fs"),
 //                           ASSET("gfx/jesus.jpg"));
-
-    renderEngine->setScene(*importedScene, ASSET("shaders/defaultVertex.vs"), ASSET("shaders/defaultFragment.fs"));
 
 //    Music backgroundMusic(ASSET("sfx/background.wav"));
 //    backgroundMusic.play();

@@ -9,10 +9,7 @@
 
 #include "Shader.h"
 #include "Model.h"
-#include "Textured.h"
 #include "Camera.h"
-
-#include "sp/Scene.h"
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
@@ -53,7 +50,7 @@ class osv::RenderEngine {
     float deltaTime = 0.f;
     float lastFrame = 0.f;
 
-    tbd::Scene* currentScene;
+    std::shared_ptr<Shader> mainShader;
 
 public:
     RenderEngine();
@@ -64,9 +61,9 @@ public:
 
     void updateCoordinateSystem();
 
-    void addVerticesShapes(osv::Model newShape);
+    void addModel(osv::Model newModel);
 
-    void addVerticesShapes(std::vector<osv::Model> newShapes);
+    void addModels(std::vector<osv::Model> newModels);
 
     void renderVerticesShapes();
 
@@ -80,7 +77,9 @@ public:
 
     void renderScreen();
 
-    void setScene(tbd::Scene &scene, const char *vertexShaderFile, const char *fragmentShaderFile);
+    void setMainShader(const std::shared_ptr<Shader> &mainShader);
+
+//    void setScene(tbd::Scene &scene, const char *vertexShaderFile, const char *fragmentShaderFile);
 
     static void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
         glViewport(0, 0, width, height);

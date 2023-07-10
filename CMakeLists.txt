@@ -5,15 +5,14 @@ set(STB_COMMIT 3ecc60f25ae1391cf6434578ece782afa1458b5)
 set(GLM_COMMIT bf71a834948186f4097caa076cd2663c69a10e1e)
 set(OPENAL_SOFT_COMMIT 70c14cd560db819f180073052f4c2bfae5cf3c31)
 set(LIBSNDFILE_COMMIT master)
-set(IMGUI_COMMIT ee3dd9f62b88d8e36e7b3215d7a33d6f9b0fe2dc) # Version 1.77
-
-set(SCENEPORT_COMMIT main)
+set(IMGUI_COMMIT f3f6295d532b98e322691afb8ef418209d963786) # Version 1.89.4
+set(ASSIMP_COMMIT 9519a62dd20799c5493c638d1ef5a6f484e5faf1) # Version 5.2.5
 
 set(GTEST_COMMIT e2239ee6043f73722e7aa812a459f54a28552929) # Version 1.11.0
 
 if(CMAKE_COMPILER_IS_GNUCXX AND NOT WIN32)
     # Not for windows because windres.exe doesn't support those
-    add_definitions(-frtti -Wall -ansi -Wno-deprecated -pthread -Wpedantic -fexceptions)
+    add_definitions(-Wall -ansi -Wno-deprecated -pthread -Wpedantic -fexceptions -Wno-dangling-reference) # removed from list: -frtti
 endif()
 
 # applies OS type C++ macro
@@ -66,19 +65,18 @@ FetchContent_MakeAvailable(libsndfile)
 FetchContent_GetProperties(libsndfile SOURCE_DIR LIBSNDFILE_SOURCE_DIR)
 
 FetchContent_Declare(imgui
-        GIT_REPOSITORY https://github.com/MstrVLT/switch_imgui_glfw.git
+        GIT_REPOSITORY https://github.com/ocornut/imgui.git
         GIT_TAG ${IMGUI_COMMIT})
 FetchContent_MakeAvailable(imgui)
 FetchContent_GetProperties(imgui)
 add_compile_definitions(IMGUI_IMPL_OPENGL_LOADER_CUSTOM) # Indicate to IMGUI that it doesn't need to find its own OPENGL3 loader
 add_compile_definitions(IMGUI_IMPL_OPENGL_ES3)
 
-FetchContent_Declare(sceneport
-        GIT_REPOSITORY https://github.com/RealWilliamWells/ScenePort.git
-        GIT_TAG ${SCENEPORT_COMMIT})
-FetchContent_MakeAvailable(sceneport)
-FetchContent_GetProperties(sceneport)
-add_compile_definitions(NO_CEREAL)
+FetchContent_Declare(assimp
+        GIT_REPOSITORY https://github.com/assimp/assimp.git
+        GIT_TAG ${ASSIMP_COMMIT})
+FetchContent_MakeAvailable(assimp)
+FetchContent_GetProperties(assimp SOURCE_DIR ASSIMP_SOURCE_DIR)
 
 # Other dependencies
 
@@ -98,7 +96,7 @@ endif()
 
 # include and source files
 include_directories(include ${STB_SOURCE_DIR} ${GLM_SOURCE_DIR}/glm ${OPENAL_SOFT_SOURCE_DIR}/include
-        ${LIBSNDFILE_SOURCE_DIR}/include ${sceneport_SOURCE_DIR}/src ${imgui_SOURCE_DIR}/source)
+        ${LIBSNDFILE_SOURCE_DIR}/include ${imgui_SOURCE_DIR} ${ASSIMP_SOURCE_DIR}/include)
 
 file(GLOB SOURCE_FILES
         ${PROJECT_SOURCE_DIR}/src/*.cpp
@@ -114,7 +112,13 @@ file(GLOB SOURCE_FILES
         ${PROJECT_SOURCE_DIR}/include/*/*/*.h
         ${PROJECT_SOURCE_DIR}/include/*/*/*.hpp
 
-        ${imgui_SOURCE_DIR}/source/*)
+        ${imgui_SOURCE_DIR}/*.h
+        ${imgui_SOURCE_DIR}/*.cpp
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.h
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.h
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp)
+
 
 if (NOT ${SWITCH})
     FetchContent_Declare(googletest
@@ -157,15 +161,14 @@ if(SWITCH)
             ${PORTLIBS}/lib/libopenal.a
             ${PORTLIBS}/lib/libSDL2.a
             ${LIBNX}/lib/libnx.a
-            sndfile
-            ScenePort)
+            sndfile)
     add_nro_target(${PROJECT_NAME})
 endif()
 
 if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten" AND NOT SWITCH)
-    target_link_libraries(${PROJECT_NAME} OpenGL::GL GLEW::glew glfw openal sndfile ScenePort)
+    target_link_libraries(${PROJECT_NAME} OpenGL::GL GLEW::glew glfw openal sndfile assimp)
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
-    target_link_libraries(${PROJECT_NAME} ${OPENGL_gl_LIBRARY} sndfile ScenePort)
+    target_link_libraries(${PROJECT_NAME} ${OPENGL_gl_LIBRARY} sndfile)
     set_target_properties(${PROJECT_NAME}
             PROPERTIES SUFFIX ".html"
             LINK_FLAGS "-Os -s USE_WEBGL2=1 -s FULL_ES3=1 -s USE_GLFW=3 -s WASM=1 -s TOTAL_MEMORY=128MB -s SAFE_HEAP=1 --preload-file res")

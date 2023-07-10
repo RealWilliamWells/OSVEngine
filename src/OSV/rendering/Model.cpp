@@ -3,73 +3,117 @@
 //
 
 #include "OSV/rendering/Model.h"
+#include "OSV/rendering/texture.h"
 
-osv::Model::Model(std::vector<tbd::Vector3<float>> &vertices, std::vector<tbd::Vector3<tbd::U32>> &indices,
-                  std::vector<tbd::Vector3<float>> &textureCoords, const char* vertexPath, const char* fragmentPath,
-                  tbd::Texture &texture) : Shader(vertexPath, fragmentPath),
-                  Textured(texture) {
-    setupBuffers();
-
-    // Load data into array buffer
-    float *data = new float[5*vertices.size()];
-    for (int i = 0; i<vertices.size(); i++) {
-        data[0+i*5] = vertices.at(i).x;
-        data[1+i*5] = vertices.at(i).y;
-        data[2+i*5] = vertices.at(i).z;
-        data[3+i*5] = textureCoords.at(i).x;
-        data[4+i*5] = textureCoords.at(i).y;
-    }
-
-    glBufferData(GL_ARRAY_BUFFER, 5*vertices.size()*sizeof(float), data, GL_STATIC_DRAW);
-    delete[] data;
-//    if (indices.size() > 0)
-//        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size(), indicesData, GL_STATIC_DRAW);
-
-    // Position
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    // Texture coords
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+osv::Model::Model(std::string path) {
+    loadModel(path);
 }
 
-void osv::Model::setupBuffers() {
-    glGenBuffers(1, &VBO);
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &EBO);
+void osv::Model::loadModel(std::string path) {
+    Assimp::Importer import;
+    const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
-    glBindVertexArray(VAO);
+    if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+        std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
+        return;
+    }
+    directory = path.substr(0, path.find_last_of('/'));
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    processNode(scene->mRootNode, scene);
+}
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+void osv::Model::processNode(aiNode *node, const aiScene *scene) {
+    for(unsigned int i = 0; i < node->mNumMeshes; i++) {
+        aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
+        meshes.push_back(processMesh(mesh, scene));
+    }
+    for(unsigned int i = 0; i < node->mNumChildren; i++) {
+        processNode(node->mChildren[i], scene);
+    }
+}
+
+osv::Mesh osv::Model::processMesh(aiMesh *mesh, const aiScene *scene) {
+    std::vector<Vertex> vertices;
+    std::vector<unsigned int> indices;
+    std::vector<Texture> textures;
+
+    for(unsigned int i = 0; i < mesh->mNumVertices; i++) {
+        Vertex vertex;
+        // process vertex positions, normals and texture coordinates
+        vertex.position.x = mesh->mVertices[i].x;
+        vertex.position.y = mesh->mVertices[i].y;
+        vertex.position.z = mesh->mVertices[i].z;
+
+        vertex.normal.x = mesh->mNormals[i].x;
+        vertex.normal.y = mesh->mNormals[i].y;
+        vertex.normal.z = mesh->mNormals[i].z;
+
+        if (mesh->mTextureCoords[0]) {
+            vertex.texCoords.x = mesh->mTextureCoords[0][i].x;
+            vertex.texCoords.y = mesh->mTextureCoords[0][i].y;
+        }
+        else {
+            vertex.texCoords = glm::vec2(0.0f, 0.0f);
+        }
+
+        vertices.push_back(vertex);
+    }
+
+    for(unsigned int i = 0; i < mesh->mNumFaces; i++) {
+        aiFace face = mesh->mFaces[i];
+        for(unsigned int j = 0; j < face.mNumIndices; j++)
+            indices.push_back(face.mIndices[j]);
+    }
+
+    if(mesh->mMaterialIndex >= 0) {
+        aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
+        std::vector<Texture> diffuseMaps = loadMaterialTextures(material,
+                                                           aiTextureType_DIFFUSE, "texture_diffuse");
+        textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+        std::vector<Texture> specularMaps = loadMaterialTextures(material,
+                                                            aiTextureType_SPECULAR, "texture_specular");
+        textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+    }
+
+    return Mesh(vertices, indices, textures);
+}
+
+std::vector<osv::Texture> osv::Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName) {
+    std::vector<Texture> textures;
+    for(unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
+        aiString str;
+        mat->GetTexture(type, i, &str);
+        bool skip = false;
+        for(unsigned int j = 0; j < textures_loaded.size(); j++) {
+            if(std::strcmp(textures_loaded[j].path.data(), str.C_Str()) == 0)
+            {
+                textures.push_back(textures_loaded[j]);
+                skip = true;
+                break;
+            }
+        }
+        if(!skip) {   //  If texture has not been loaded previously
+            Texture texture;
+            texture.id = texture::loadTexture(str.C_Str(), directory);
+            texture.type = typeName;
+            texture.path = str.C_Str();
+            textures.push_back(texture);
+            textures_loaded.push_back(texture);
+        }
+    }
+    return textures;
+}
+
+void osv::Model::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection) {
+    for (unsigned int i = 0; i < meshes.size(); i++) {
+        meshes[i].render(shader, view, projection, model);
+    }
 }
 
 void osv::Model::deleteBuffers() {
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
-}
-
-void osv::Model::render(glm::mat4 view, glm::mat4 projection) {
-    // Rotate cube
-    model = glm::mat4(1.0f);
-    translate(glm::vec3(1.f, 1.0f, 0.0f));
-    rotate((float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
-
-    int modelLoc = glGetUniformLocation(programID, "model");
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
-    int viewLoc = glGetUniformLocation(programID, "view");
-    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-
-    int projectionLoc = glGetUniformLocation(programID, "projection");
-    glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-
-    glBindVertexArray(VAO);
+    for (unsigned int i = 0; i < meshes.size(); i++) {
+        meshes[i].deleteBuffers();
+    }
 }
 
 void osv::Model::translate(glm::vec3 translation) {
