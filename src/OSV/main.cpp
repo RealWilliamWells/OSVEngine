@@ -53,7 +53,7 @@ int main() {
 
     renderEngine->setMainShader(shader);
 
-    osv::Model model(ASSET("models/backpack/Survival_BackPack_2.fbx"));
+    osv::Model model(ASSET("models/fork/fork.obj"));
     renderEngine->addModel(model); // TODO: use references to models instead, or only pass path and create model inside of addModel.
 
 //    osv::Model vertexShape(vertices, nullptr, sizeof(vertices), 0,

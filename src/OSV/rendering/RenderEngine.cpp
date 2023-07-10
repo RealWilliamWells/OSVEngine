@@ -35,7 +35,7 @@ void osv::RenderEngine::openWindow() {
     }
     glfwMakeContextCurrent(window);
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     glfwSetCursorPosCallback(window, osv::LookInput::mouseInputCallback);
 
 //    glewExperimental = true; // Needed for core profile
