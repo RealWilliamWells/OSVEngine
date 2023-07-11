@@ -161,14 +161,15 @@ if(SWITCH)
             ${PORTLIBS}/lib/libopenal.a
             ${PORTLIBS}/lib/libSDL2.a
             ${LIBNX}/lib/libnx.a
-            sndfile)
+            sndfile
+            assimp)
     add_nro_target(${PROJECT_NAME})
 endif()
 
 if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten" AND NOT SWITCH)
     target_link_libraries(${PROJECT_NAME} OpenGL::GL GLEW::glew glfw openal sndfile assimp)
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
-    target_link_libraries(${PROJECT_NAME} ${OPENGL_gl_LIBRARY} sndfile)
+    target_link_libraries(${PROJECT_NAME} ${OPENGL_gl_LIBRARY} sndfile assimp)
     set_target_properties(${PROJECT_NAME}
             PROPERTIES SUFFIX ".html"
             LINK_FLAGS "-Os -s USE_WEBGL2=1 -s FULL_ES3=1 -s USE_GLFW=3 -s WASM=1 -s TOTAL_MEMORY=128MB -s SAFE_HEAP=1 --preload-file res")
