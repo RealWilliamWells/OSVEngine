@@ -24,8 +24,12 @@ osv::Shader::Shader(const char* vertexPath, const char* fragmentPath) {
         fShaderFile.open(fragmentPath);
         std::stringstream vShaderStream, fShaderStream;
 
-        vShaderStream << vShaderFile.rdbuf();
-        fShaderStream << fShaderFile.rdbuf();
+        std::string openGLVersionString = "#version 410";
+#ifdef __EMSCRIPTEN__
+        openGLVersionString = "#version 300 es";
+#endif
+        vShaderStream << openGLVersionString << "\n" << vShaderFile.rdbuf();
+        fShaderStream << openGLVersionString << "\n" << fShaderFile.rdbuf();
 
         vShaderFile.close();
         fShaderFile.close();
