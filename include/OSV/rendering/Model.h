@@ -45,6 +45,8 @@ private:
 public:
     Model(std::string path);
 
+    Model();
+
     void deleteBuffers();
 
     void render(Shader &shader, glm::mat4 &view, glm::mat4 &projection);
@@ -54,6 +56,8 @@ public:
     void rotate(float angle, glm::vec3 rotation);
 
     void scale(glm::vec3 scale);
+
+    void addMesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture> &textures, GLenum mode);
 };
 
 

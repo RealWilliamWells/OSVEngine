@@ -54,9 +54,11 @@ int main() {
     renderEngine->setMainShader(shader);
 
     osv::Model coorModel(ASSET("models/coor_axis/coor_axis.dae"));
+    coorModel.scale({0.19f, 0.19f, 0.19f});
 
     osv::Model armModel(ASSET("models/arm/arm.dae"));
     armModel.translate({-2.f, 0.f, -2.f});
+    armModel.scale({.25f, .25f, .25f});
     armModel.rotate(-45.f, {0.f, 1.f, 0.f});
 
     osv::Model backdropModel(ASSET("models/backdrop/backdrop.dae"));
@@ -66,6 +68,7 @@ int main() {
     renderEngine->addModel(armModel);
     renderEngine->addModel(backdropModel);
 
+    renderEngine->addDisplayGrid();
 
 //    Music backgroundMusic(ASSET("sfx/background.wav"));
 //    backgroundMusic.play();

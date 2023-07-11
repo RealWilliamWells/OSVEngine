@@ -34,6 +34,7 @@ namespace osv {
 }
 
 class osv::RenderEngine {
+private:
     GLFWwindow* window;
 
     // TODO: all shapes and other renderables should be in a scene or screen class that the rendering engine will draw
@@ -79,7 +80,7 @@ public:
 
     void setMainShader(const std::shared_ptr<Shader> &mainShader);
 
-//    void setScene(tbd::Scene &scene, const char *vertexShaderFile, const char *fragmentShaderFile);
+    void addDisplayGrid();
 
     static void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
         glViewport(0, 0, width, height);

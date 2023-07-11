@@ -33,6 +33,8 @@ class osv::Mesh {
 private:
     unsigned int VAO, VBO, EBO;
 
+    GLenum mode;
+
     void setupMesh();
 
 public:
@@ -40,7 +42,7 @@ public:
     std::vector<unsigned int> indices;
     std::vector<Texture> textures;
 
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, GLenum mode);
     void render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, glm::mat4 &model);
 
     void deleteBuffers();

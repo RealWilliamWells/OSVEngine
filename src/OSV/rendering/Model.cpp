@@ -5,6 +5,9 @@
 #include "OSV/rendering/Model.h"
 #include "OSV/rendering/texture.h"
 
+osv::Model::Model() {
+}
+
 osv::Model::Model(std::string path) {
     loadModel(path);
 }
@@ -94,7 +97,7 @@ osv::Mesh osv::Model::processMesh(aiMesh *mesh, const aiScene *scene, const aiMa
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     }
 
-    return Mesh(vertices, indices, textures);
+    return Mesh(vertices, indices, textures, GL_TRIANGLES);
 }
 
 std::vector<osv::Texture> osv::Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName) {
@@ -146,4 +149,9 @@ void osv::Model::rotate(float angle, glm::vec3 rotation) {
 
 void osv::Model::scale(glm::vec3 scale) {
     model = glm::scale(model, scale);
+}
+
+void osv::Model::addMesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture> &textures,
+                         GLenum mode) {
+    meshes.push_back(Mesh(vertices, indices, textures, mode));
 }

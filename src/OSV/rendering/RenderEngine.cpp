@@ -198,6 +198,87 @@ void osv::RenderEngine::setMainShader(const std::shared_ptr<Shader> &mainShader)
     RenderEngine::mainShader = mainShader;
 }
 
+void osv::RenderEngine::addDisplayGrid() {
+    glEnable(GL_LINE_SMOOTH);
+    glEnable(GL_BLEND);
+
+    float gridSize = 100.f; // Size of the grid
+    float stepSize = .1f;
+
+    std::vector<Vertex> vertices;
+    Vertex vertex;
+
+    for(float j=0.f; j<=gridSize; j++) {
+        for(int i=0.f; i<=gridSize; i++) {
+            vertex.position = glm::vec3(i*stepSize - (gridSize/2.f) * stepSize, 0.f, j*stepSize - (gridSize/2.f) * stepSize);
+            vertices.push_back(vertex);
+        }
+    }
+
+    std::vector<unsigned int> indices;
+    for(int j=0; j<gridSize; ++j) {
+        for(int i=0; i<gridSize; ++i) {
+            int row1 = j * (gridSize+1);
+            int row2 = (j+1) * (gridSize+1);
+
+            indices.push_back(row1+i);
+            indices.push_back(row1+i+1);
+            indices.push_back(row1+i+1);
+            indices.push_back(row2+i+1);
+
+            indices.push_back(row2+i+1);
+            indices.push_back(row2+i);
+            indices.push_back(row2+i);
+            indices.push_back(row1+i);
+
+        }
+    }
+
+
+//    // Draw lines along the X axis
+//    for (float i = -gridSize; i <= gridSize; i += stepSize) {
+//        vertex.position = {i, 0.0f, -gridSize};
+//        vertices.push_back(vertex);
+//        vertex.position = {i, 0.0f, gridSize};
+//        vertices.push_back(vertex);
+//    }
+//
+//    // Draw lines along the Z axis
+//    for (float i = -gridSize; i <= gridSize; i += stepSize) {
+//        vertex.position = {-gridSize, 0.0f, i};
+//        vertices.push_back(vertex);
+//        vertex.position = {gridSize, 0.0f, i};
+//        vertices.push_back(vertex);
+//    }
+//
+//    std::vector<unsigned int> indices;
+//    for(int j=0; j<gridSize; ++j) {
+//        for(int i=0; i<gridSize; ++i) {
+//
+//            int row1 =  j    * (gridSize+1);
+//            int row2 = (j+1) * (gridSize+1);
+//
+//            indices.push_back(row1+i);
+//            indices.push_back(row1+i+1);
+//            indices.push_back(row1+i+1);
+//            indices.push_back(row2+i+1);
+//
+//            indices.push_back(row2+i+1);
+//            indices.push_back(row2+i);
+//            indices.push_back(row2+i);
+//            indices.push_back(row1+i);
+//        }
+//    }
+
+    Model grid;
+
+    std::vector<Texture> textures;
+
+    grid.addMesh(vertices, indices, textures, GL_LINES);
+
+    addModel(grid);
+}
+
 //void osv::RenderEngine::setScene(tbd::Scene &scene, const char *vertexShaderFile, const char *fragmentShaderFile) {
 //    currentScene = &scene;
 //

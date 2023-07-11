@@ -5,10 +5,12 @@
 #include "OSV/rendering/Mesh.h"
 #include "gtc/type_ptr.hpp"
 
-osv::Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures) {
+osv::Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, GLenum mode) {
     this->vertices = vertices;
     this->indices = indices;
     this->textures = textures;
+
+    this->mode = mode;
 
     setupMesh();
 }
@@ -69,7 +71,7 @@ void osv::Mesh::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, g
 
     // draw mesh
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(mode, indices.size(), GL_UNSIGNED_INT, 0);  // TODO: Add ability to change to points and lines
     glBindVertexArray(0);
 }
 
