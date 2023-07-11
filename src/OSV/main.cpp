@@ -59,8 +59,12 @@ int main() {
     armModel.translate({-2.f, 0.f, -2.f});
     armModel.rotate(-45.f, {0.f, 1.f, 0.f});
 
+    osv::Model backdropModel(ASSET("models/backdrop/backdrop.dae"));
+    backdropModel.translate({0.f, 0.f, -5.f});
+
     renderEngine->addModel(coorModel); // TODO: use references to models instead, or only pass path and create model inside of addModel.
     renderEngine->addModel(armModel);
+    renderEngine->addModel(backdropModel);
 
 
 //    Music backgroundMusic(ASSET("sfx/background.wav"));

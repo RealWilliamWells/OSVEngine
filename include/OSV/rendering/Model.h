@@ -52,6 +52,8 @@ public:
     void translate(glm::vec3 translation);
 
     void rotate(float angle, glm::vec3 rotation);
+
+    void scale(glm::vec3 scale);
 };
 
 

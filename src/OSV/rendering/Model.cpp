@@ -143,3 +143,7 @@ void osv::Model::translate(glm::vec3 translation) {
 void osv::Model::rotate(float angle, glm::vec3 rotation) {
     model = glm::rotate(model, angle, rotation);
 }
+
+void osv::Model::scale(glm::vec3 scale) {
+    model = glm::scale(model, scale);
+}
