@@ -53,12 +53,15 @@ int main() {
 
     renderEngine->setMainShader(shader);
 
-    osv::Model model(ASSET("models/coor_axis/coor_axis.dae"));
-    renderEngine->addModel(model); // TODO: use references to models instead, or only pass path and create model inside of addModel.
+    osv::Model coorModel(ASSET("models/coor_axis/coor_axis.dae"));
 
-//    osv::Model vertexShape(vertices, nullptr, sizeof(vertices), 0,
-//                           ASSET("shaders/defaultVertex.vs"), ASSET("shaders/defaultFragment.fs"),
-//                           ASSET("gfx/jesus.jpg"));
+    osv::Model armModel(ASSET("models/arm/arm.dae"));
+    armModel.translate({-2.f, 0.f, -2.f});
+    armModel.rotate(-45.f, {0.f, 1.f, 0.f});
+
+    renderEngine->addModel(coorModel); // TODO: use references to models instead, or only pass path and create model inside of addModel.
+    renderEngine->addModel(armModel);
+
 
 //    Music backgroundMusic(ASSET("sfx/background.wav"));
 //    backgroundMusic.play();

@@ -68,9 +68,8 @@ osv::Mesh osv::Model::processMesh(aiMesh *mesh, const aiScene *scene, const aiMa
         vertex.normal.z = mesh->mNormals[i].z;
 
         if (mesh->mTextureCoords[0]) {
-            vertex.texCoords = glm::vec2(0.0f, 0.0f);
-//            vertex.texCoords.x = mesh->mTextureCoords[0][i].x;
-//            vertex.texCoords.y = mesh->mTextureCoords[0][i].y;
+            vertex.texCoords.x = mesh->mTextureCoords[0][i].x;
+            vertex.texCoords.y = mesh->mTextureCoords[0][i].y;
         }
         else {
             vertex.texCoords = glm::vec2(0.0f, 0.0f);

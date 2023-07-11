@@ -19,8 +19,6 @@
 namespace osv::texture {
     unsigned char *loadTextureFromFile(std::string &texturePath, int &width, int &height) {
         // TODO: use asset loader for this instead
-        stbi_set_flip_vertically_on_load(true);
-
         int nrChannels;
         unsigned char *data = stbi_load(texturePath.c_str(), &width, &height, &nrChannels, 0);
 
