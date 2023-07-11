@@ -234,42 +234,6 @@ void osv::RenderEngine::addDisplayGrid() {
         }
     }
 
-
-//    // Draw lines along the X axis
-//    for (float i = -gridSize; i <= gridSize; i += stepSize) {
-//        vertex.position = {i, 0.0f, -gridSize};
-//        vertices.push_back(vertex);
-//        vertex.position = {i, 0.0f, gridSize};
-//        vertices.push_back(vertex);
-//    }
-//
-//    // Draw lines along the Z axis
-//    for (float i = -gridSize; i <= gridSize; i += stepSize) {
-//        vertex.position = {-gridSize, 0.0f, i};
-//        vertices.push_back(vertex);
-//        vertex.position = {gridSize, 0.0f, i};
-//        vertices.push_back(vertex);
-//    }
-//
-//    std::vector<unsigned int> indices;
-//    for(int j=0; j<gridSize; ++j) {
-//        for(int i=0; i<gridSize; ++i) {
-//
-//            int row1 =  j    * (gridSize+1);
-//            int row2 = (j+1) * (gridSize+1);
-//
-//            indices.push_back(row1+i);
-//            indices.push_back(row1+i+1);
-//            indices.push_back(row1+i+1);
-//            indices.push_back(row2+i+1);
-//
-//            indices.push_back(row2+i+1);
-//            indices.push_back(row2+i);
-//            indices.push_back(row2+i);
-//            indices.push_back(row1+i);
-//        }
-//    }
-
     Model grid;
 
     std::vector<Texture> textures;
@@ -278,15 +242,3 @@ void osv::RenderEngine::addDisplayGrid() {
 
     addModel(grid);
 }
-
-//void osv::RenderEngine::setScene(tbd::Scene &scene, const char *vertexShaderFile, const char *fragmentShaderFile) {
-//    currentScene = &scene;
-//
-//    const std::vector<tbd::Entity>& entities = currentScene->getEntities();
-//
-//    for (const tbd::Entity &entity : entities) {
-//        Model model(entity.model->vertices, entity.model->indices, entity.model->textureCoords,
-//                             vertexShaderFile, fragmentShaderFile, entity.model->texture);
-//        addVerticesShapes(model);
-//    }
-//}
