@@ -11,7 +11,7 @@ osv::Model::Model(std::string path) {
 
 void osv::Model::loadModel(std::string path) {
     Assimp::Importer import;
-    const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+    const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals);
 
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
         std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
@@ -20,19 +20,36 @@ void osv::Model::loadModel(std::string path) {
     directory = path.substr(0, path.find_last_of('/'));
 
     processNode(scene->mRootNode, scene);
+
+    import.FreeScene();
+
 }
 
 void osv::Model::processNode(aiNode *node, const aiScene *scene) {
     for(unsigned int i = 0; i < node->mNumMeshes; i++) {
         aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-        meshes.push_back(processMesh(mesh, scene));
+        meshes.push_back(processMesh(mesh, scene, &node->mTransformation));
     }
     for(unsigned int i = 0; i < node->mNumChildren; i++) {
         processNode(node->mChildren[i], scene);
     }
 }
 
-osv::Mesh osv::Model::processMesh(aiMesh *mesh, const aiScene *scene) {
+osv::Mesh osv::Model::processMesh(aiMesh *mesh, const aiScene *scene, const aiMatrix4x4 *transformation) {
+    glm::mat3 rotationMat = {1.f, 1.f, 1.f,
+                                   1.f, 1.f, 1.f,
+                                   1.f, 1.f, 1.f};
+
+    glm::vec3 translationVec = {1.f, 1.f, 1.f};
+
+    if (transformation) {
+        rotationMat = {transformation->a1, transformation->b1, transformation->c1,
+                             transformation->a2, transformation->b2, transformation->c2,
+                             transformation->a3, transformation->b3, transformation->c3,};
+
+        translationVec = {transformation->a4, transformation->b4, transformation->c4};
+    }
+
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture> textures;
@@ -44,13 +61,16 @@ osv::Mesh osv::Model::processMesh(aiMesh *mesh, const aiScene *scene) {
         vertex.position.y = mesh->mVertices[i].y;
         vertex.position.z = mesh->mVertices[i].z;
 
+        vertex.position = (rotationMat * vertex.position) + translationVec;
+
         vertex.normal.x = mesh->mNormals[i].x;
         vertex.normal.y = mesh->mNormals[i].y;
         vertex.normal.z = mesh->mNormals[i].z;
 
         if (mesh->mTextureCoords[0]) {
-            vertex.texCoords.x = mesh->mTextureCoords[0][i].x;
-            vertex.texCoords.y = mesh->mTextureCoords[0][i].y;
+            vertex.texCoords = glm::vec2(0.0f, 0.0f);
+//            vertex.texCoords.x = mesh->mTextureCoords[0][i].x;
+//            vertex.texCoords.y = mesh->mTextureCoords[0][i].y;
         }
         else {
             vertex.texCoords = glm::vec2(0.0f, 0.0f);
@@ -80,12 +100,13 @@ osv::Mesh osv::Model::processMesh(aiMesh *mesh, const aiScene *scene) {
 
 std::vector<osv::Texture> osv::Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName) {
     std::vector<Texture> textures;
+
     for(unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
         aiString str;
         mat->GetTexture(type, i, &str);
         bool skip = false;
         for(unsigned int j = 0; j < textures_loaded.size(); j++) {
-            if(std::strcmp(textures_loaded[j].path.data(), str.C_Str()) == 0)
+            if(std::strcmp(textures_loaded.at(j).path.data(), str.C_Str()) == 0)
             {
                 textures.push_back(textures_loaded[j]);
                 skip = true;
@@ -106,13 +127,13 @@ std::vector<osv::Texture> osv::Model::loadMaterialTextures(aiMaterial *mat, aiTe
 
 void osv::Model::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection) {
     for (unsigned int i = 0; i < meshes.size(); i++) {
-        meshes[i].render(shader, view, projection, model);
+        meshes.at(i).render(shader, view, projection, model);
     }
 }
 
 void osv::Model::deleteBuffers() {
     for (unsigned int i = 0; i < meshes.size(); i++) {
-        meshes[i].deleteBuffers();
+        meshes.at(i).deleteBuffers();
     }
 }
 

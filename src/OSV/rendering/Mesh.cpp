@@ -44,19 +44,17 @@ void osv::Mesh::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, g
 {
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
-    for(unsigned int i = 0; i < textures.size(); i++)
-    {
+    for(unsigned int i = 0; i < textures.size(); i++) {
         glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
-        // retrieve texture number (the N in diffuse_textureN)
         std::string number;
-        std::string name = textures[i].type;
+        std::string name = textures.at(i).type;
         if(name == "texture_diffuse")
             number = std::to_string(diffuseNr++);
         else if(name == "texture_specular")
             number = std::to_string(specularNr++);
 
         shader.setInt(("material." + name + number).c_str(), i); // TODO: Lighting and materials are not in shader code yet
-        glBindTexture(GL_TEXTURE_2D, textures[i].id);
+        glBindTexture(GL_TEXTURE_2D, textures.at(i).id);
     }
     glActiveTexture(GL_TEXTURE0);
 

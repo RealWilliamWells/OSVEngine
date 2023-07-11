@@ -17,18 +17,18 @@
 #include <iostream>
 
 namespace osv::texture {
-    unsigned char *loadTextureFromFile(const char *texturePath, int &width, int &height) {
+    unsigned char *loadTextureFromFile(std::string &texturePath, int &width, int &height) {
         // TODO: use asset loader for this instead
         stbi_set_flip_vertically_on_load(true);
 
         int nrChannels;
-        unsigned char *data = stbi_load(texturePath, &width, &height, &nrChannels, 0);
+        unsigned char *data = stbi_load(texturePath.c_str(), &width, &height, &nrChannels, 0);
 
         return data;
     }
 
     unsigned int loadTexture(std::string relativePath, const std::string modelDirectory) {
-        const char* texturePath = (texturePath + modelDirectory).c_str();
+        std::string texturePath = modelDirectory + "/" + relativePath;
 
         unsigned int texture;
         glGenTextures(1, &texture);
