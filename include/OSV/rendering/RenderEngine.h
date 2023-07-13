@@ -89,6 +89,10 @@ public:
 
     void rotateModel(unsigned int index, float angle, glm::vec3 rotation);
 
+    void translateModel(unsigned int index, glm::vec3 translation);
+
+    void setModelPos(unsigned int index, glm::vec3 position);
+
     const std::vector<osv::Model> &getModels() const;
 
     void closeWindow();

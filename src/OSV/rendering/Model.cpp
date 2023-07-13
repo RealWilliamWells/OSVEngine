@@ -8,7 +8,15 @@
 osv::Model::Model(bool renderCanBeOverridden) : renderCanBeOverridden(renderCanBeOverridden) {
 }
 
-osv::Model::Model(std::string path, bool renderCanBeOverridden) : renderCanBeOverridden(renderCanBeOverridden) {
+osv::Model::Model(std::string path, bool renderCanBeOverridden, glm::vec3 position, float angle, glm::vec3 rotation,
+                  glm::vec3 scale) : renderCanBeOverridden(renderCanBeOverridden) {
+    startingModel = glm::rotate(startingModel, angle, rotation);
+    startingModel = glm::scale(startingModel, scale);
+
+    model = startingModel;
+    model = glm::translate(model, position);
+    baseModel = model;
+
     loadModel(path);
 }
 
@@ -161,4 +169,9 @@ void osv::Model::scaleRelative(glm::vec3 scale) {
 void osv::Model::addMesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture> &textures,
                          GLenum mode) {
     meshes.push_back(Mesh(vertices, indices, textures, mode, renderCanBeOverridden));
+}
+
+void osv::Model::setPosition(glm::vec3 position) {
+    model = glm::translate(startingModel, position);
+    baseModel = model;
 }

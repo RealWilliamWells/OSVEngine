@@ -255,6 +255,14 @@ void osv::RenderEngine::rotateModel(unsigned int index, float angle, glm::vec3 r
     models.at(index).rotate(angle, rotation);
 }
 
+void osv::RenderEngine::translateModel(unsigned int index, glm::vec3 translation) {
+    models.at(index).translate(translation);
+}
+
+void osv::RenderEngine::setModelPos(unsigned int index, glm::vec3 position) {
+    models.at(index).setPosition(position);
+}
+
 const std::vector<osv::Model> &osv::RenderEngine::getModels() const {
     return models;
 }

@@ -34,9 +34,10 @@ private:
     std::vector<osv::Mesh> meshes;
     std::string directory;
 
-    glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.0f);
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 baseModel = glm::mat4(1.0f);
+
+    glm::mat4 startingModel = glm::mat4(1.0f);
 
     void loadModel(std::string path);
     void processNode(aiNode *node, const aiScene *scene);
@@ -46,7 +47,8 @@ private:
     bool renderCanBeOverridden = true;
 
 public:
-    Model(std::string path, bool renderCanBeOverridden);
+    Model(std::string path, bool renderCanBeOverridden, glm::vec3 position, float angle, glm::vec3 rotation,
+          glm::vec3 scale);
 
     Model(bool renderCanBeOverridden);
 
@@ -63,6 +65,9 @@ public:
     void scaleRelative(glm::vec3 scale);
 
     void addMesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture> &textures, GLenum mode);
+
+    void setPosition(glm::vec3 position);
+
 };
 
 

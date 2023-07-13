@@ -113,6 +113,29 @@ namespace osv::KeyBinds {
 
             renderEngine->rotateModel(selectedModel, rotation, {0.f, 1.f, 0.f});
         }
+
+        void moveRight(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            renderEngine->translateModel(selectedModel,{.5f*delta, 0.f, 0.f});
+        }
+
+        void moveLeft(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            renderEngine->translateModel(selectedModel,{-.5f*delta, 0.f, 0.f});
+        }
+
+        void moveUp(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            renderEngine->translateModel(selectedModel,{0.f, 0.f, .5f*delta});
+        }
+
+        void moveDown(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            renderEngine->translateModel(selectedModel,{0.f, 0.f, -.5f*delta});
+        }
+
+        void randPos(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            if (delayPress)
+                return;
+
+            renderEngine->setModelPos(selectedModel, {rand() % 20 - 10, 0.f, rand() % 20 - 10});
+        }
     }
 
     InputMode generateEditModeBinds() {
@@ -125,6 +148,13 @@ namespace osv::KeyBinds {
 
         modelBinds.binds[GLFW_KEY_Z].keyActionCallback = EditModeControl::rotateLeft;
         modelBinds.binds[GLFW_KEY_X].keyActionCallback = EditModeControl::rotateRight;
+
+        modelBinds.binds[GLFW_KEY_D].keyActionCallback = EditModeControl::moveRight;
+        modelBinds.binds[GLFW_KEY_A].keyActionCallback = EditModeControl::moveLeft;
+        modelBinds.binds[GLFW_KEY_W].keyActionCallback = EditModeControl::moveUp;
+        modelBinds.binds[GLFW_KEY_S].keyActionCallback = EditModeControl::moveDown;
+
+        modelBinds.binds[GLFW_KEY_SPACE].keyActionCallback = EditModeControl::randPos;
 
         modelBinds.mousePosCallback = MouseInput::editModeInputCallback;
 
