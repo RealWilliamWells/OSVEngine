@@ -1,6 +1,58 @@
 # OSVEngine
 OpenGL scene viewer developed for COMP371 at Concordia University
 
+# For Markers
+## Assignment 1
+This project contains many different components. It takes advantage of libraries such as Assimp and stb (all linked below)  in order to import models that were custom made in Blender.
+
+### Notable features
+* Full coordinate system that properly localizes models in 3D space and allow for transformations.
+* Easy interfacing with rendering engine and input handler, making it very easy to add models and other assets. Allowing for custom programs to be easily written using the pre-existing rendering code.
+* Adaptable input handling allowing for easily changable controls. (still requires minor code edits to change controls)
+* Ability to swap between control schems. The controls required for this assignment are used by default, but can be changed to freefly controls on the fly with hotkey Q
+* Basic sound support via OpenAL.
+* Full cross capablilty with WebGL via WebAssembly and Nintendo Switch via homebrew. Check out the WebGL version [here](wwells.net/)! (takes awhile to load and there is no loading bar implemented yet!)
+* Joystick support. (except for WebGL unfortunately.
+* Importation of many different 3D model assets formats. (Mainly .dae, aka COLLADA,  was tested)
+
+### Project Structure Breakdown
+### Rendering Engine
+Almost everything pretaining to rendering related roles is located under "src/OSV/rendering/". The "glue" class that holds everything together is "RenderEngine.cpp" under that directory.
+
+You can find the model, shader and mesh classes here. Model is the parent of a list of meshes and make up a complete model, while having parts that are able to move on their own. When a model is moved, all meshes that make it up are moved with it.
+
+### Input Handler
+The input handler is its module that uses the rendering engine interface to allow user control of the environment and window. It is located under "src/OSV/input/", the glue of the handler is "KeyInputHandler.cpp". This handler is also used for joystick control.
+
+The actual bindings configurated for user control are located in "include/input/keyConfigs/keyBinds.h", alongside a "configStruct.h" file that defines some types for function callbacks and custom data structures.
+
+Additionally the mouse input is covered by the callbacks located in "include/OSV/input/MouseInput.h". You can find the handling for the two different control schemes here as well.
+
+### Assets and Shader Code
+All assets can be located under "res/". The models and shader vertex and fragment codes used are all located here. The CMake script of the project copies these assets to the build directory and loads them into the asset files necessary in the case of the web and Nintendo Switch builds.
+
+#### Submission Program Entry Point
+The driver for the rendering engine and input handler is "src/OSV/main.cpp". This uses the two drivers to produce the program for the assignment submissions.
+
+### Major External Libraries
+* GLEW for PC and WebGL builds, and Glad for Nintendo Switch build.
+* [stb](https://github.com/nothings/stb) for image parsing for textures.
+* [GLM](https://github.com/g-truc/glm) for matrices and vector math.
+* [OpenAL](https://github.com/kcat/openal-soft) for audio playback.
+* [libsndfile](https://github.com/RealWilliamWells/libsndfile) for parsing audio files.
+* [imgui](https://github.com/nothings/stb) for future potiential GUI needs.
+* [emscripten](https://emscripten.org/) for WebAssembly and WebGL APIs and build tools.
+* [LibNX](https://github.com/switchbrew/libnx) for Nintendo Switch OS and hardware interfacing.
+
+# Build Instructions
+All dependencies except for GLEW and the frameworks and libraries for cross compilation are automatically fetched in the CMake scripts. This makes it exetremely portable but take a long time to run for the first time as it needs to clone and build the dependencies.
+
+## PC
+Make sure that you have GLEW installed and it is able to be located by your system.
+`mkdir build && cd build`
+`cmake ../ -B ./`
+`make`
+
 ## Nintendo Switch
 ### Build dependencies
 `pacman -S switch-glfw switch-mesa switch-glm switch-glad switch-openal-soft`
