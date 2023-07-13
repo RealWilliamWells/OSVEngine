@@ -172,7 +172,7 @@ void osv::RenderEngine::updateView() {
 //    }
 #endif
 
-    view = glm::lookAt(camera.getPosition(), camera.getPosition() + camera.getFront(), camera.getUp());
+    view = glm::lookAt(camera.getPosition(), camera.getPosition() + camera.getFront(), camera.getUp()) * worldOrientation;
 }
 
 void osv::RenderEngine::renderScreen() {
@@ -286,5 +286,13 @@ GLFWwindow *osv::RenderEngine::getWindow() const {
 void osv::RenderEngine::toggleMouseRelease() {
     captureMouse = !captureMouse;
     int value = captureMouse ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL;
-    glfwSetInputMode(window, GLFW_CURSOR, captureMouse);
+    glfwSetInputMode(window, GLFW_CURSOR, value);
+}
+
+void osv::RenderEngine::orientateWorld(float angle, glm::vec3 rotation) {
+    worldOrientation = glm::rotate(worldOrientation, angle, rotation);
+}
+
+void osv::RenderEngine::resetWorldOrientation() {
+    worldOrientation = glm::mat4(1.f);
 }

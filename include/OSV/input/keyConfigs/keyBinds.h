@@ -46,6 +46,9 @@ namespace osv::KeyBinds {
         }
 
         void releaseMouse(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            if (delayPress)
+                return;
+
             renderEngine->toggleMouseRelease();
         }
     }
@@ -60,7 +63,9 @@ namespace osv::KeyBinds {
         windowInputs.binds[GLFW_KEY_L].keyActionCallback = WindowControl::setLinesRendering;
         windowInputs.binds[GLFW_KEY_T].keyActionCallback = WindowControl::setTrianglesRendering;
 
+#ifndef __EMSCRIPTEN__
         windowInputs.binds[GLFW_KEY_LEFT_CONTROL].keyActionCallback = WindowControl::releaseMouse;
+#endif
 
         return windowInputs;
     }
@@ -136,6 +141,27 @@ namespace osv::KeyBinds {
 
             renderEngine->setModelPos(selectedModel, {rand() % 20 - 10, 0.f, rand() % 20 - 10});
         }
+
+        // World orientation control keybinds
+        void orientateRight(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            renderEngine->orientateWorld(1.f * delta, {0.0f, 1.f, .0f});
+        }
+
+        void orientateLeft(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            renderEngine->orientateWorld(-1.f * delta, {0.f, 1.f, .0f});
+        }
+
+        void orientateUp(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            renderEngine->orientateWorld(1.f * delta, {1.f, 0.f, .0f});
+        }
+
+        void orientateDown(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            renderEngine->orientateWorld(-1.f * delta, {1.f, 0.f, .0f});
+        }
+
+        void resetOrientation(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            renderEngine->resetWorldOrientation();
+        }
     }
 
     InputMode generateEditModeBinds() {
@@ -155,6 +181,14 @@ namespace osv::KeyBinds {
         modelBinds.binds[GLFW_KEY_S].keyActionCallback = EditModeControl::moveDown;
 
         modelBinds.binds[GLFW_KEY_SPACE].keyActionCallback = EditModeControl::randPos;
+
+        // World orientation control keybinds
+        modelBinds.binds[GLFW_KEY_RIGHT].keyActionCallback = EditModeControl::orientateRight;
+        modelBinds.binds[GLFW_KEY_LEFT].keyActionCallback = EditModeControl::orientateLeft;
+        modelBinds.binds[GLFW_KEY_UP].keyActionCallback = EditModeControl::orientateUp;
+        modelBinds.binds[GLFW_KEY_DOWN].keyActionCallback = EditModeControl::orientateDown;
+
+        modelBinds.binds[GLFW_KEY_HOME].keyActionCallback = EditModeControl::resetOrientation;
 
         modelBinds.mousePosCallback = MouseInput::editModeInputCallback;
 

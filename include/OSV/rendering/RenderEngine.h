@@ -39,6 +39,7 @@ private:
 
     glm::mat4 view;
     glm::mat4 projection;
+    glm::mat4 worldOrientation = glm::mat4(1.f);
 
     Camera camera;
 
@@ -104,6 +105,10 @@ public:
     GLFWwindow *getWindow() const;
 
     void toggleMouseRelease();
+
+    void orientateWorld(float angle, glm::vec3 rotation);
+
+    void resetWorldOrientation();
 
     static void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
         glViewport(0, 0, width, height);
