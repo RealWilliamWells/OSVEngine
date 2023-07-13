@@ -35,9 +35,6 @@ class osv::RenderEngine {
 private:
     GLFWwindow* window;
 
-    // TODO: all shapes and other renderables should be in a scene or screen class that the rendering engine will draw
-    std::vector<osv::Model> vertexShapes;
-
     const unsigned int SCR_WIDTH = 800;
     const unsigned int SCR_HEIGHT = 600;
 
@@ -54,6 +51,8 @@ private:
     GLenum renderOverrideMode = GL_TRIANGLES;
 
 public:
+    std::vector<osv::Model> models;
+
     RenderEngine();
 
     void initWindow();
@@ -66,7 +65,7 @@ public:
 
     void addModels(std::vector<osv::Model> newModels);
 
-    void renderVerticesShapes();
+    void renderModels();
 
     void clearBuffers();
 

@@ -35,7 +35,8 @@ private:
     std::string directory;
 
     glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.0f);
-    glm::mat4 model = glm::mat4(1.0f); // TODO: Allow to be settable
+    glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 baseModel = glm::mat4(1.0f);
 
     void loadModel(std::string path);
     void processNode(aiNode *node, const aiScene *scene);
@@ -58,6 +59,8 @@ public:
     void rotate(float angle, glm::vec3 rotation);
 
     void scale(glm::vec3 scale);
+
+    void scaleRelative(glm::vec3 scale);
 
     void addMesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture> &textures, GLenum mode);
 };

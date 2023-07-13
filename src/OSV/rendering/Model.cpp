@@ -141,14 +141,21 @@ void osv::Model::deleteBuffers() {
 
 void osv::Model::translate(glm::vec3 translation) {
     model = glm::translate(model, translation);
+    baseModel = model;
 }
 
 void osv::Model::rotate(float angle, glm::vec3 rotation) {
     model = glm::rotate(model, angle, rotation);
+    baseModel = model;
 }
 
 void osv::Model::scale(glm::vec3 scale) {
-    model = glm::scale(model, scale);
+    model = glm::scale(baseModel, scale);
+    baseModel = model;
+}
+
+void osv::Model::scaleRelative(glm::vec3 scale) {
+    model = glm::scale(baseModel, scale);
 }
 
 void osv::Model::addMesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture> &textures,

@@ -36,8 +36,8 @@ void osv::RenderEngine::openWindow() {
     }
     glfwMakeContextCurrent(window);
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetCursorPosCallback(window, osv::LookInput::mouseInputCallback);
+//    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+//    glfwSetCursorPosCallback(window, osv::LookInput::mouseInputCallback);
 
 //    glewExperimental = true; // Needed for core profile
 #ifdef OS_SWITCH
@@ -73,7 +73,7 @@ void osv::RenderEngine::updateCoordinateSystem() {
 }
 
 void osv::RenderEngine::addModel(osv::Model newModel) {
-    vertexShapes.push_back(newModel);
+    models.push_back(newModel);
 }
 
 void osv::RenderEngine::addModels(std::vector<osv::Model> newModels) {
@@ -82,14 +82,14 @@ void osv::RenderEngine::addModels(std::vector<osv::Model> newModels) {
     }
 }
 
-void osv::RenderEngine::renderVerticesShapes() {
-    for (Model& shape : vertexShapes) {
+void osv::RenderEngine::renderModels() {
+    for (Model& shape : models) {
         shape.render(*mainShader, view, projection, renderOverrideMode);
     }
 }
 
 void osv::RenderEngine::clearBuffers() {
-    for (Model& shape : vertexShapes) {
+    for (Model& shape : models) {
         shape.deleteBuffers();
     }
 }
@@ -107,7 +107,7 @@ bool osv::RenderEngine::update() {
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
-    KeyInputHandler::processInput(window);
+    KeyInputHandler::processInput(window, deltaTime);
 
     if (glfwWindowShouldClose(window)){
 //        ImGui_ImplOpenGL3_Shutdown();
@@ -183,7 +183,7 @@ void osv::RenderEngine::renderScreen() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    renderVerticesShapes();
+    renderModels();
 
 //    ImGui_ImplOpenGL3_NewFrame();
 //    ImGui_ImplGlfw_NewFrame();
@@ -248,6 +248,8 @@ void osv::RenderEngine::addDisplayGrid() {
 
 void osv::RenderEngine::setupKeyBinds() {
     KeyInputHandler::addBindings(KeyBinds::generateWindowBinds(window, this));
+
+    KeyInputHandler::addSwitchingBindings(KeyBinds::generateEditModeBinds(this));
     KeyInputHandler::addSwitchingBindings(KeyBinds::generateFreeFlyBinds(camera));
 }
 

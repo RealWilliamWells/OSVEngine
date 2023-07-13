@@ -56,6 +56,77 @@ namespace osv::KeyBinds {
         return windowBinds;
     }
 
+    namespace EditModeControl {
+        RenderEngine *engine = nullptr;
+        unsigned int selectedModel = 1;
+        float currentScale = 1.f;
+
+        void swapModels() {
+            if (KeyInputHandler::delayPress()) {
+                return;
+            }
+
+            std::vector<Model> &models = engine->models;
+
+            selectedModel++;
+            selectedModel = selectedModel >= models.size() ? 0 : selectedModel;
+
+            currentScale = 1.f;
+        }
+
+        void scaleUp() {
+            std::vector<Model> &models = engine->models;
+            currentScale += .25f * KeyInputHandler::delta;
+
+            models.at(selectedModel).scaleRelative({currentScale, currentScale, currentScale});
+        }
+
+        void scaleDown() {
+            std::vector<Model> &models = engine->models;
+            currentScale -= .25f * KeyInputHandler::delta;
+
+            models.at(selectedModel).scaleRelative({currentScale, currentScale, currentScale});
+        }
+
+        void rotateLeft() {
+            if (KeyInputHandler::delayPress()) {
+                return;
+            }
+
+            std::vector<Model> &models = engine->models;
+            float rotation = 8.f * KeyInputHandler::delta;
+
+            models.at(selectedModel).rotate(rotation, {0.f, 1.f, 0.f});
+        }
+
+        void rotateRight() {
+            if (KeyInputHandler::delayPress()) {
+                return;
+            }
+
+            std::vector<Model> &models = engine->models;
+            float rotation = -8.f * KeyInputHandler::delta;
+
+            models.at(selectedModel).rotate(rotation, {0.f, 1.f, 0.f});
+        }
+    }
+
+    std::map<unsigned int, KeyActionCallback> generateEditModeBinds(RenderEngine *renderEngine) {
+        EditModeControl::engine = renderEngine;
+
+        std::map<unsigned int, KeyActionCallback> modelBinds;
+
+        modelBinds[GLFW_KEY_E] = EditModeControl::swapModels;
+
+        modelBinds[GLFW_KEY_U] = EditModeControl::scaleUp;
+        modelBinds[GLFW_KEY_J] = EditModeControl::scaleDown;
+
+        modelBinds[GLFW_KEY_Z] = EditModeControl::rotateLeft;
+        modelBinds[GLFW_KEY_X] = EditModeControl::rotateRight;
+
+        return modelBinds;
+    }
+
     namespace CameraControl {
         Camera *cam = nullptr;
 
