@@ -6,6 +6,7 @@
 #define WIZENGINE3D_RENDERENGINE_H
 
 #include <memory>
+#include <vector>
 
 #include "Shader.h"
 #include "Model.h"
@@ -24,9 +25,6 @@
 #include "GLFW/glfw3.h"
 
 #endif
-
-#include <vector>
-
 
 
 namespace osv {
@@ -81,6 +79,8 @@ public:
     void setMainShader(const std::shared_ptr<Shader> &mainShader);
 
     void addDisplayGrid();
+
+    void setupKeyBinds();
 
     static void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
         glViewport(0, 0, width, height);

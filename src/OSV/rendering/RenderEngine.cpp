@@ -1,12 +1,13 @@
+#include <iostream>
+
 #include "OSV/rendering/RenderEngine.h"
 #include "OSV/input/LookInput.h"
 #include "OSV/audio/Music.h"
+#include "OSV/input/keyConfigs/keyBinds.h"
 
-#include "imgui.h"
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_opengl3.h"
-
-#include <iostream>
+//#include "imgui.h"
+//#include "backends/imgui_impl_glfw.h"
+//#include "backends/imgui_impl_opengl3.h"
 
 osv::RenderEngine::RenderEngine() : camera() {
     view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f),
@@ -94,8 +95,6 @@ void osv::RenderEngine::clearBuffers() {
 }
 
 bool osv::RenderEngine::update() {
-    processInput();
-
     updateCoordinateSystem();
     updateView();
 
@@ -107,6 +106,8 @@ bool osv::RenderEngine::update() {
     float currentFrame = glfwGetTime();
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
+
+    KeyInputHandler::processInput(window);
 
     if (glfwWindowShouldClose(window)){
 //        ImGui_ImplOpenGL3_Shutdown();
@@ -121,6 +122,8 @@ bool osv::RenderEngine::update() {
 }
 
 void osv::RenderEngine::processInput() {
+    // TODO: remove after implementing joystick control
+
     float leftYAxis = 0.f;
     float leftXAxis = 0.f;
 
@@ -239,6 +242,11 @@ void osv::RenderEngine::addDisplayGrid() {
     std::vector<Texture> textures;
 
     grid.addMesh(vertices, indices, textures, GL_LINES);
-
+ 
     addModel(grid);
+}
+
+void osv::RenderEngine::setupKeyBinds() {
+    KeyInputHandler::addBindings(KeyBinds::generateWindowBinds(window));
+    KeyInputHandler::addSwitchingBindings(KeyBinds::generateFreeFlyBinds(camera));
 }

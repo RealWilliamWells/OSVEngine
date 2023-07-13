@@ -53,6 +53,7 @@ int main() {
 
     renderEngine->setMainShader(shader);
 
+    // Add models
     osv::Model coorModel(ASSET("models/coor_axis/coor_axis.dae"));
     coorModel.scale({0.19f, 0.19f, 0.19f});
 
@@ -69,6 +70,8 @@ int main() {
     renderEngine->addModel(backdropModel);
 
     renderEngine->addDisplayGrid();
+
+    renderEngine->setupKeyBinds();
 
 //    Music backgroundMusic(ASSET("sfx/background.wav"));
 //    backgroundMusic.play();
