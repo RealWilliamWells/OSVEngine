@@ -31,7 +31,7 @@ Additionally the mouse input is covered by the callbacks located in "include/OSV
 ### Assets and Shader Code
 All assets can be located under "res/". The models and shader vertex and fragment codes used are all located here. The CMake script of the project copies these assets to the build directory and loads them into the asset files necessary in the case of the web and Nintendo Switch builds.
 
-#### Submission Program Entry Point
+### Submission Program Entry Point
 The driver for the rendering engine and input handler is "src/OSV/main.cpp". This uses the two drivers to produce the program for the assignment submissions.
 
 ### Major External Libraries
