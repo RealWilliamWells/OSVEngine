@@ -11,7 +11,7 @@ This project contains many different components. It takes advantage of libraries
 * Adaptable input handling allowing for easily changable controls. (still requires minor code edits to change controls)
 * Ability to swap between control schems. The controls required for this assignment are used by default, but can be changed to freefly controls on the fly with hotkey Q
 * Basic sound support via OpenAL.
-* Full cross capablilty with WebGL via WebAssembly and Nintendo Switch via homebrew. Check out the WebGL version [here](wwells.net/)! (takes awhile to load and there is no loading bar implemented yet!)
+* Full cross capablilty with WebGL via WebAssembly and Nintendo Switch via homebrew. Check out the WebGL version [here](http://wwells.net/)! (takes awhile to load and there is no loading bar implemented yet!)
 * Joystick support. (except for WebGL unfortunately.
 * Importation of many different 3D model assets formats. (Mainly .dae, aka COLLADA,  was tested)
 
