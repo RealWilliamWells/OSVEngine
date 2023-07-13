@@ -5,7 +5,8 @@
 #include "OSV/rendering/Mesh.h"
 #include "gtc/type_ptr.hpp"
 
-osv::Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, GLenum mode) {
+osv::Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, GLenum mode,
+                bool &modeCanBeOverridden) : modeCanBeOverridden(modeCanBeOverridden) {
     this->vertices = vertices;
     this->indices = indices;
     this->textures = textures;
@@ -16,6 +17,8 @@ osv::Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
 }
 
 void osv::Mesh::setupMesh() {
+    glEnable(GL_PROGRAM_POINT_SIZE);
+
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
@@ -42,8 +45,7 @@ void osv::Mesh::setupMesh() {
     glBindVertexArray(0);
 }
 
-void osv::Mesh::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, glm::mat4 &model)
-{
+void osv::Mesh::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, glm::mat4 &model, GLenum& overrideMode) {
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
     for(unsigned int i = 0; i < textures.size(); i++) {
@@ -71,7 +73,10 @@ void osv::Mesh::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, g
 
     // draw mesh
     glBindVertexArray(VAO);
-    glDrawElements(mode, indices.size(), GL_UNSIGNED_INT, 0);  // TODO: Add ability to change to points and lines
+
+    // Allow rendering mode to be overridden except for models that should not be affected
+    GLenum setMode = modeCanBeOverridden != false ? overrideMode : mode;
+    glDrawElements(setMode, indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 

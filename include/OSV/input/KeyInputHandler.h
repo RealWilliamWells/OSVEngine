@@ -26,17 +26,6 @@ namespace osv::KeyInputHandler {
         switchingKeyBinds.push_back(bind);
     }
 
-    void checkAndActInput(GLFWwindow *pWwindow, std::map<unsigned int, KeyActionCallback> map1);
-
-    void processInput(GLFWwindow* window) {
-        for (auto& bind : keyBinds) {
-            checkAndActInput(window, bind);
-
-        }
-
-        checkAndActInput(window, switchingKeyBinds.at(currentSwitchingBind));
-    }
-
     void checkAndActInput(GLFWwindow* window, std::map<unsigned int, KeyActionCallback> keyBinds) {
         for (auto keyBind : keyBinds) {
             unsigned int key = keyBind.first;
@@ -46,6 +35,15 @@ namespace osv::KeyInputHandler {
                 action();
             }
         }
+    }
+
+    void processInput(GLFWwindow* window) {
+        for (auto& bind : keyBinds) {
+            checkAndActInput(window, bind);
+
+        }
+
+        checkAndActInput(window, switchingKeyBinds.at(currentSwitchingBind));
     }
 };
 

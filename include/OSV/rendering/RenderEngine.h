@@ -51,6 +51,8 @@ private:
 
     std::shared_ptr<Shader> mainShader;
 
+    GLenum renderOverrideMode = GL_TRIANGLES;
+
 public:
     RenderEngine();
 
@@ -81,6 +83,8 @@ public:
     void addDisplayGrid();
 
     void setupKeyBinds();
+
+    void setRenderOverrideMode(GLenum renderOverrideMode);
 
     static void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
         glViewport(0, 0, width, height);

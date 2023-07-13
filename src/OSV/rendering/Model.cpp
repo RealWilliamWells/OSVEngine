@@ -5,10 +5,10 @@
 #include "OSV/rendering/Model.h"
 #include "OSV/rendering/texture.h"
 
-osv::Model::Model() {
+osv::Model::Model(bool renderCanBeOverridden) : renderCanBeOverridden(renderCanBeOverridden) {
 }
 
-osv::Model::Model(std::string path) {
+osv::Model::Model(std::string path, bool renderCanBeOverridden) : renderCanBeOverridden(renderCanBeOverridden) {
     loadModel(path);
 }
 
@@ -97,7 +97,7 @@ osv::Mesh osv::Model::processMesh(aiMesh *mesh, const aiScene *scene, const aiMa
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     }
 
-    return Mesh(vertices, indices, textures, GL_TRIANGLES);
+    return Mesh(vertices, indices, textures, GL_TRIANGLES, renderCanBeOverridden);
 }
 
 std::vector<osv::Texture> osv::Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName) {
@@ -127,9 +127,9 @@ std::vector<osv::Texture> osv::Model::loadMaterialTextures(aiMaterial *mat, aiTe
     return textures;
 }
 
-void osv::Model::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection) {
+void osv::Model::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, GLenum& overrideMode) {
     for (unsigned int i = 0; i < meshes.size(); i++) {
-        meshes.at(i).render(shader, view, projection, model);
+        meshes.at(i).render(shader, view, projection, model, overrideMode);
     }
 }
 
@@ -153,5 +153,5 @@ void osv::Model::scale(glm::vec3 scale) {
 
 void osv::Model::addMesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture> &textures,
                          GLenum mode) {
-    meshes.push_back(Mesh(vertices, indices, textures, mode));
+    meshes.push_back(Mesh(vertices, indices, textures, mode, renderCanBeOverridden));
 }

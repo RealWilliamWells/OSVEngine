@@ -15,18 +15,43 @@
 namespace osv::KeyBinds {
     namespace WindowControl {
         GLFWwindow *window = nullptr;
+        RenderEngine *engine = nullptr;
 
         void closeWindow() {
             glfwSetWindowShouldClose(window, true);
         }
+
+        void swapControls() {
+            unsigned int &currentBind = KeyInputHandler::currentSwitchingBind;
+            currentBind++;
+            currentBind = currentBind >= KeyInputHandler::switchingKeyBinds.size() ? 0 : currentBind;
+        }
+
+        void setPointsRendering() {
+            engine->setRenderOverrideMode(GL_POINTS);
+        }
+
+        void setLinesRendering() {
+            engine->setRenderOverrideMode(GL_LINES);
+        }
+
+        void setTrianglesRendering() {
+            engine->setRenderOverrideMode(GL_TRIANGLES);
+        }
     }
 
-    std::map<unsigned int, KeyActionCallback> generateWindowBinds(GLFWwindow *win) {
+    std::map<unsigned int, KeyActionCallback> generateWindowBinds(GLFWwindow *win, RenderEngine *renderEngine) {
         WindowControl::window = win;
+        WindowControl::engine = renderEngine;
 
         std::map<unsigned int, KeyActionCallback> windowBinds;
 
         windowBinds[GLFW_KEY_ESCAPE] = WindowControl::closeWindow;
+        windowBinds[GLFW_KEY_Q] = WindowControl::swapControls;
+
+        windowBinds[GLFW_KEY_P] = WindowControl::setPointsRendering;
+        windowBinds[GLFW_KEY_L] = WindowControl::setLinesRendering;
+        windowBinds[GLFW_KEY_T] = WindowControl::setTrianglesRendering;
 
         return windowBinds;
     }

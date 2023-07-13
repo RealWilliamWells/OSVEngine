@@ -42,14 +42,16 @@ private:
     Mesh processMesh(aiMesh *mesh, const aiScene *scene, const aiMatrix4x4 *transformation);
     std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
 
-public:
-    Model(std::string path);
+    bool renderCanBeOverridden = true;
 
-    Model();
+public:
+    Model(std::string path, bool renderCanBeOverridden);
+
+    Model(bool renderCanBeOverridden);
 
     void deleteBuffers();
 
-    void render(Shader &shader, glm::mat4 &view, glm::mat4 &projection);
+    void render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, GLenum& overrideMode);
 
     void translate(glm::vec3 translation);
 

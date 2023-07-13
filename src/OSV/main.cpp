@@ -54,15 +54,15 @@ int main() {
     renderEngine->setMainShader(shader);
 
     // Add models
-    osv::Model coorModel(ASSET("models/coor_axis/coor_axis.dae"));
+    osv::Model coorModel(ASSET("models/coor_axis/coor_axis.dae"), false);
     coorModel.scale({0.19f, 0.19f, 0.19f});
 
-    osv::Model armModel(ASSET("models/arm/arm.dae"));
+    osv::Model armModel(ASSET("models/arm/arm.dae"), true);
     armModel.translate({-2.f, 0.f, -2.f});
     armModel.scale({.25f, .25f, .25f});
     armModel.rotate(-45.f, {0.f, 1.f, 0.f});
 
-    osv::Model backdropModel(ASSET("models/backdrop/backdrop.dae"));
+    osv::Model backdropModel(ASSET("models/backdrop/backdrop.dae"), true);
     backdropModel.translate({0.f, 0.f, -5.f});
 
     renderEngine->addModel(coorModel); // TODO: use references to models instead, or only pass path and create model inside of addModel.

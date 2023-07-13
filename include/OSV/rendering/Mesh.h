@@ -37,13 +37,16 @@ private:
 
     void setupMesh();
 
+    bool modeCanBeOverridden;
+
 public:
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture> textures;
 
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, GLenum mode);
-    void render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, glm::mat4 &model);
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, GLenum mode,
+         bool &modeCanBeOverridden);
+    void render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, glm::mat4 &model, GLenum& overrideMode);
 
     void deleteBuffers();
 };

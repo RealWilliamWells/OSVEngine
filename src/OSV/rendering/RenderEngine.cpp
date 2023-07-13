@@ -84,7 +84,7 @@ void osv::RenderEngine::addModels(std::vector<osv::Model> newModels) {
 
 void osv::RenderEngine::renderVerticesShapes() {
     for (Model& shape : vertexShapes) {
-        shape.render(*mainShader, view, projection);
+        shape.render(*mainShader, view, projection, renderOverrideMode);
     }
 }
 
@@ -237,7 +237,7 @@ void osv::RenderEngine::addDisplayGrid() {
         }
     }
 
-    Model grid;
+    Model grid(false);
 
     std::vector<Texture> textures;
 
@@ -247,6 +247,10 @@ void osv::RenderEngine::addDisplayGrid() {
 }
 
 void osv::RenderEngine::setupKeyBinds() {
-    KeyInputHandler::addBindings(KeyBinds::generateWindowBinds(window));
+    KeyInputHandler::addBindings(KeyBinds::generateWindowBinds(window, this));
     KeyInputHandler::addSwitchingBindings(KeyBinds::generateFreeFlyBinds(camera));
+}
+
+void osv::RenderEngine::setRenderOverrideMode(GLenum renderOverrideMode) {
+    RenderEngine::renderOverrideMode = renderOverrideMode;
 }
