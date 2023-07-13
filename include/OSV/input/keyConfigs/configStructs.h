@@ -21,10 +21,16 @@ namespace osv {
 
 struct osv::KeyAction {
     KeyActionCallback keyActionCallback;
+
+    bool joyStickDir; // true is towards the pos axis, false is towards the neg axis
 };
 
 struct osv::InputMode {
-    std::map<unsigned int, KeyAction> binds;
+    std::map<unsigned int, KeyAction> keyBinds;
+
+    std::map<unsigned int, KeyAction> joyButtonBinds;
+
+    std::map<unsigned int, KeyAction> joyAxisBinds;
 
     GLFWcursorposfun mousePosCallback;
 };

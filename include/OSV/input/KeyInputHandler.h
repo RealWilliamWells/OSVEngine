@@ -24,7 +24,13 @@ private:
     float timeSinceLastPressed = 0.f;
     float pressDelay = 0.5f;
 
-    void checkAndActInput(GLFWwindow* window, std::map<unsigned int, KeyAction> keyBinds);
+    void checkAndActInput(GLFWwindow* window, InputMode binds);
+
+    void checkAndActKeys(GLFWwindow* window, std::map<unsigned int, KeyAction>& binds);
+
+    void checkAndActButtons(GLFWgamepadstate& state, std::map<unsigned int, KeyAction>& binds);
+
+    void checkAndActAxes(GLFWgamepadstate& state, std::map<unsigned int, KeyAction>& binds);
 
 public:
     static std::vector<InputMode> switchingInputs;

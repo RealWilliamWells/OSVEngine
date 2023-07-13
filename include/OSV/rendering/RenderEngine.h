@@ -74,8 +74,6 @@ public:
 
     bool update();
 
-    void processInput();
-
     void updateView();
 
     void renderScreen();

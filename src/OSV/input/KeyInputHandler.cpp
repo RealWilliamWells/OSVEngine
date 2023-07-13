@@ -11,12 +11,46 @@ osv::KeyInputHandler::KeyInputHandler(std::shared_ptr<osv::RenderEngine> renderE
     this->renderEngine = renderEngine;
 }
 
-void osv::KeyInputHandler::checkAndActInput(GLFWwindow* window, std::map<unsigned int, KeyAction> keyBinds) {
-    for (auto keyBind : keyBinds) {
+void osv::KeyInputHandler::checkAndActInput(GLFWwindow* window, InputMode binds) {
+    checkAndActKeys(window, binds.keyBinds);
+
+    GLFWgamepadstate state;
+    glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
+    checkAndActButtons(state, binds.joyButtonBinds);
+    checkAndActAxes(state, binds.joyAxisBinds);
+}
+
+void osv::KeyInputHandler::checkAndActKeys(GLFWwindow* window, std::map<unsigned int, KeyAction>& binds) {
+
+
+    for (auto keyBind : binds) {
         unsigned int key = keyBind.first;
         auto action = keyBind.second.keyActionCallback;
 
         if (glfwGetKey(window, key) == GLFW_PRESS) {
+            action(renderEngine, delayPress(), delta);
+        }
+    }
+}
+
+void osv::KeyInputHandler::checkAndActButtons(GLFWgamepadstate& state, std::map<unsigned int, KeyAction>& binds) {
+    for (auto keyBind : binds) {
+        unsigned int key = keyBind.first;
+        auto action = keyBind.second.keyActionCallback;
+
+        if (state.buttons[key] == GLFW_PRESS) {
+            action(renderEngine, delayPress(), delta);
+        }
+    }
+}
+
+void osv::KeyInputHandler::checkAndActAxes(GLFWgamepadstate& state, std::map<unsigned int, KeyAction>& binds) {
+    for (auto keyBind : binds) {
+        unsigned int key = keyBind.first;
+        auto action = keyBind.second.keyActionCallback;
+        bool dir = keyBind.second.joyStickDir;
+
+        if (abs(state.axes[key] - (dir ? 0.5f : -0.5f)) > 0) {
             action(renderEngine, delayPress(), delta);
         }
     }
@@ -27,10 +61,10 @@ bool osv::KeyInputHandler::processInput(GLFWwindow* window, float& deltaTime) {
     timeSinceLastPressed += deltaTime;
 
     for (auto& inputMode : mainInputs) {
-        checkAndActInput(window, inputMode.binds);
+        checkAndActInput(window, inputMode);
     }
 
-    checkAndActInput(window, switchingInputs.at(currentSwitchingBind).binds);
+    checkAndActInput(window, switchingInputs.at(currentSwitchingBind));
 
     return true;
 }

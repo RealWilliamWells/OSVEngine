@@ -119,47 +119,6 @@ bool osv::RenderEngine::update() {
     return true;
 }
 
-void osv::RenderEngine::processInput() {
-    // TODO: remove after implementing joystick control
-
-    float leftYAxis = 0.f;
-    float leftXAxis = 0.f;
-
-    char buttonB = 0;
-    char buttonA = 0;
-
-    char buttonStart = 0;
-
-#ifndef __EMSCRIPTEN__
-    GLFWgamepadstate state;
-    glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
-
-    leftYAxis = state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y];
-    leftXAxis = state.axes[GLFW_GAMEPAD_AXIS_LEFT_X];
-
-    buttonB = state.buttons[GLFW_GAMEPAD_BUTTON_B];
-    buttonA = state.buttons[GLFW_GAMEPAD_BUTTON_A];
-
-    buttonStart = state.buttons[GLFW_GAMEPAD_BUTTON_START];
-#endif
-
-//    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || leftYAxis < -0.5f)
-//        camera.moveFrontAndBack(true);
-//    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS  || leftYAxis > 0.5f)
-//        camera.moveFrontAndBack(false);
-//    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || leftXAxis < -0.5f)
-//        camera.moveSideways(true);
-//    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || leftXAxis > 0.5f)
-//        camera.moveSideways(false);
-//    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || buttonB == GLFW_PRESS)
-//        camera.moveUpAndDown(true);
-//    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || buttonA == GLFW_PRESS)
-//        camera.moveUpAndDown(false);
-
-    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || buttonStart == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-}
-
 void osv::RenderEngine::updateView() {
 #ifndef __EMSCRIPTEN__
 //    GLFWgamepadstate state;

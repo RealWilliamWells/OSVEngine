@@ -56,16 +56,26 @@ namespace osv::KeyBinds {
     InputMode generateWindowBinds() {
         InputMode windowInputs;
 
-        windowInputs.binds[GLFW_KEY_ESCAPE].keyActionCallback = WindowControl::closeWindow;
-        windowInputs.binds[GLFW_KEY_Q].keyActionCallback = WindowControl::swapControls;
+#ifndef OS_SWITCH
+        windowInputs.keyBinds[GLFW_KEY_ESCAPE].keyActionCallback = WindowControl::closeWindow;
+        windowInputs.keyBinds[GLFW_KEY_Q].keyActionCallback = WindowControl::swapControls;
 
-        windowInputs.binds[GLFW_KEY_P].keyActionCallback = WindowControl::setPointsRendering;
-        windowInputs.binds[GLFW_KEY_L].keyActionCallback = WindowControl::setLinesRendering;
-        windowInputs.binds[GLFW_KEY_T].keyActionCallback = WindowControl::setTrianglesRendering;
+        windowInputs.keyBinds[GLFW_KEY_P].keyActionCallback = WindowControl::setPointsRendering;
+        windowInputs.keyBinds[GLFW_KEY_L].keyActionCallback = WindowControl::setLinesRendering;
+        windowInputs.keyBinds[GLFW_KEY_T].keyActionCallback = WindowControl::setTrianglesRendering;
 
 #ifndef __EMSCRIPTEN__
-        windowInputs.binds[GLFW_KEY_LEFT_CONTROL].keyActionCallback = WindowControl::releaseMouse;
+        windowInputs.keyBinds[GLFW_KEY_LEFT_CONTROL].keyActionCallback = WindowControl::releaseMouse;
 #endif
+#endif
+
+        // Joystick controls
+        windowInputs.joyButtonBinds[GLFW_GAMEPAD_BUTTON_START].keyActionCallback = WindowControl::closeWindow;
+        windowInputs.joyButtonBinds[GLFW_GAMEPAD_BUTTON_BACK].keyActionCallback = WindowControl::swapControls;
+
+//        windowInputs.joyButtonBinds[GLFW_GAMEPAD_BUTTON_DPAD_LEFT].keyActionCallback = WindowControl::setPointsRendering;
+        windowInputs.joyButtonBinds[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT].keyActionCallback = WindowControl::setLinesRendering;
+        windowInputs.joyButtonBinds[GLFW_GAMEPAD_BUTTON_DPAD_LEFT].keyActionCallback = WindowControl::setTrianglesRendering;
 
         return windowInputs;
     }
@@ -142,7 +152,7 @@ namespace osv::KeyBinds {
             renderEngine->setModelPos(selectedModel, {rand() % 20 - 10, 0.f, rand() % 20 - 10});
         }
 
-        // World orientation control keybinds
+        // World orientation control keyBinds
         void orientateRight(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
             renderEngine->orientateWorld(1.f * delta, {0.0f, 1.f, .0f});
         }
@@ -167,28 +177,61 @@ namespace osv::KeyBinds {
     InputMode generateEditModeBinds() {
         InputMode modelBinds;
 
-        modelBinds.binds[GLFW_KEY_E].keyActionCallback = EditModeControl::swapModels;
+#ifndef OS_SWITCH
+        modelBinds.keyBinds[GLFW_KEY_E].keyActionCallback = EditModeControl::swapModels;
 
-        modelBinds.binds[GLFW_KEY_U].keyActionCallback = EditModeControl::scaleUp;
-        modelBinds.binds[GLFW_KEY_J].keyActionCallback = EditModeControl::scaleDown;
+        modelBinds.keyBinds[GLFW_KEY_U].keyActionCallback = EditModeControl::scaleUp;
+        modelBinds.keyBinds[GLFW_KEY_J].keyActionCallback = EditModeControl::scaleDown;
 
-        modelBinds.binds[GLFW_KEY_Z].keyActionCallback = EditModeControl::rotateLeft;
-        modelBinds.binds[GLFW_KEY_X].keyActionCallback = EditModeControl::rotateRight;
+        modelBinds.keyBinds[GLFW_KEY_Z].keyActionCallback = EditModeControl::rotateLeft;
+        modelBinds.keyBinds[GLFW_KEY_X].keyActionCallback = EditModeControl::rotateRight;
 
-        modelBinds.binds[GLFW_KEY_D].keyActionCallback = EditModeControl::moveRight;
-        modelBinds.binds[GLFW_KEY_A].keyActionCallback = EditModeControl::moveLeft;
-        modelBinds.binds[GLFW_KEY_W].keyActionCallback = EditModeControl::moveUp;
-        modelBinds.binds[GLFW_KEY_S].keyActionCallback = EditModeControl::moveDown;
+        modelBinds.keyBinds[GLFW_KEY_D].keyActionCallback = EditModeControl::moveRight;
+        modelBinds.keyBinds[GLFW_KEY_A].keyActionCallback = EditModeControl::moveLeft;
+        modelBinds.keyBinds[GLFW_KEY_W].keyActionCallback = EditModeControl::moveUp;
+        modelBinds.keyBinds[GLFW_KEY_S].keyActionCallback = EditModeControl::moveDown;
 
-        modelBinds.binds[GLFW_KEY_SPACE].keyActionCallback = EditModeControl::randPos;
+        modelBinds.keyBinds[GLFW_KEY_SPACE].keyActionCallback = EditModeControl::randPos;
 
         // World orientation control keybinds
-        modelBinds.binds[GLFW_KEY_RIGHT].keyActionCallback = EditModeControl::orientateRight;
-        modelBinds.binds[GLFW_KEY_LEFT].keyActionCallback = EditModeControl::orientateLeft;
-        modelBinds.binds[GLFW_KEY_UP].keyActionCallback = EditModeControl::orientateUp;
-        modelBinds.binds[GLFW_KEY_DOWN].keyActionCallback = EditModeControl::orientateDown;
+        modelBinds.keyBinds[GLFW_KEY_RIGHT].keyActionCallback = EditModeControl::orientateRight;
+        modelBinds.keyBinds[GLFW_KEY_LEFT].keyActionCallback = EditModeControl::orientateLeft;
+        modelBinds.keyBinds[GLFW_KEY_UP].keyActionCallback = EditModeControl::orientateUp;
+        modelBinds.keyBinds[GLFW_KEY_DOWN].keyActionCallback = EditModeControl::orientateDown;
 
-        modelBinds.binds[GLFW_KEY_HOME].keyActionCallback = EditModeControl::resetOrientation;
+        modelBinds.keyBinds[GLFW_KEY_HOME].keyActionCallback = EditModeControl::resetOrientation;
+#endif
+
+        // Joystick controls
+        modelBinds.joyButtonBinds[GLFW_GAMEPAD_BUTTON_DPAD_UP].keyActionCallback = EditModeControl::swapModels;
+
+//        modelBinds.keyBinds[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER].keyActionCallback = EditModeControl::scaleUp;
+//        modelBinds.keyBinds[GLFW_KEY_J].keyActionCallback = EditModeControl::scaleDown;
+
+//        modelBinds.keyBinds[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER].keyActionCallback = EditModeControl::rotateLeft;
+//        modelBinds.keyBinds[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER].keyActionCallback = EditModeControl::rotateRight;
+
+//        modelBinds.joyButtonBinds[GLFW_GAMEPAD_BUTTON_A].keyActionCallback = EditModeControl::moveRight;
+        modelBinds.joyButtonBinds[GLFW_GAMEPAD_BUTTON_Y].keyActionCallback = EditModeControl::moveLeft;
+        modelBinds.joyButtonBinds[GLFW_GAMEPAD_BUTTON_X].keyActionCallback = EditModeControl::moveUp;
+        modelBinds.joyButtonBinds[GLFW_GAMEPAD_BUTTON_B].keyActionCallback = EditModeControl::moveDown;
+
+        modelBinds.joyButtonBinds[GLFW_GAMEPAD_BUTTON_RIGHT_THUMB].keyActionCallback = EditModeControl::randPos;
+
+        // World orientation control keybinds
+        modelBinds.joyAxisBinds[GLFW_GAMEPAD_AXIS_LEFT_X].joyStickDir = true;
+        modelBinds.joyAxisBinds[GLFW_GAMEPAD_AXIS_LEFT_X].keyActionCallback = EditModeControl::orientateRight;
+
+        modelBinds.joyAxisBinds[GLFW_GAMEPAD_AXIS_LEFT_X].joyStickDir = false;
+        modelBinds.joyAxisBinds[GLFW_GAMEPAD_AXIS_LEFT_X].keyActionCallback = EditModeControl::orientateLeft;
+
+        modelBinds.joyAxisBinds[GLFW_GAMEPAD_AXIS_LEFT_Y].joyStickDir = true;
+        modelBinds.joyAxisBinds[GLFW_GAMEPAD_AXIS_LEFT_Y].keyActionCallback = EditModeControl::orientateUp;
+
+        modelBinds.joyAxisBinds[GLFW_GAMEPAD_AXIS_LEFT_Y].joyStickDir = false;
+        modelBinds.joyAxisBinds[GLFW_GAMEPAD_AXIS_LEFT_Y].keyActionCallback = EditModeControl::orientateDown;
+
+        modelBinds.joyButtonBinds[GLFW_GAMEPAD_BUTTON_LEFT_THUMB].keyActionCallback = EditModeControl::resetOrientation;
 
         modelBinds.mousePosCallback = MouseInput::editModeInputCallback;
 
@@ -230,14 +273,26 @@ namespace osv::KeyBinds {
     InputMode generateFreeFlyBinds() {
         InputMode freeFly;
 
-        freeFly.binds[GLFW_KEY_W].keyActionCallback = CameraControl::moveCamForward;
-        freeFly.binds[GLFW_KEY_S].keyActionCallback = CameraControl::moveCamBack;
+#ifndef OS_SWITCH
+        freeFly.keyBinds[GLFW_KEY_W].keyActionCallback = CameraControl::moveCamForward;
+        freeFly.keyBinds[GLFW_KEY_S].keyActionCallback = CameraControl::moveCamBack;
 
-        freeFly.binds[GLFW_KEY_A].keyActionCallback = CameraControl::moveCamLeft;
-        freeFly.binds[GLFW_KEY_D].keyActionCallback = CameraControl::moveCamRight;
+        freeFly.keyBinds[GLFW_KEY_A].keyActionCallback = CameraControl::moveCamLeft;
+        freeFly.keyBinds[GLFW_KEY_D].keyActionCallback = CameraControl::moveCamRight;
 
-        freeFly.binds[GLFW_KEY_LEFT_SHIFT].keyActionCallback = CameraControl::moveCamUp;
-        freeFly.binds[GLFW_KEY_SPACE].keyActionCallback = CameraControl::moveCamDown;
+        freeFly.keyBinds[GLFW_KEY_LEFT_SHIFT].keyActionCallback = CameraControl::moveCamUp;
+        freeFly.keyBinds[GLFW_KEY_SPACE].keyActionCallback = CameraControl::moveCamDown;
+#endif
+
+        // Joystick control
+        freeFly.joyButtonBinds[GLFW_GAMEPAD_BUTTON_X].keyActionCallback = CameraControl::moveCamForward;
+        freeFly.joyButtonBinds[GLFW_GAMEPAD_BUTTON_B].keyActionCallback = CameraControl::moveCamBack;
+
+        freeFly.joyButtonBinds[GLFW_GAMEPAD_BUTTON_Y].keyActionCallback = CameraControl::moveCamLeft;
+        freeFly.joyButtonBinds[GLFW_GAMEPAD_BUTTON_A].keyActionCallback = CameraControl::moveCamRight;
+
+        freeFly.joyButtonBinds[GLFW_GAMEPAD_BUTTON_DPAD_UP].keyActionCallback = CameraControl::moveCamUp;
+        freeFly.joyButtonBinds[GLFW_GAMEPAD_BUTTON_DPAD_DOWN].keyActionCallback = CameraControl::moveCamDown;
 
         freeFly.mousePosCallback = MouseInput::freeFlyInputCallback;
 
