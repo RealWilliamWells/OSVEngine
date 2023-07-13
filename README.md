@@ -7,6 +7,7 @@ OpenGL scene viewer developed for COMP371 at Concordia University
 
 ### Building
 `cmake -G "Unix Makefiles" --toolchain=DevkitA64Libnx.cmake -S .. -B ./`
+`make`
 
 Cmake is currently not properly adding the romfs, so this must be done for now:
 `/opt/devkitpro/tools/bin/elf2nro OSVEngine OSVCUSTOM.nro --nacp=OSVEngine.nacp --romfsdir=res`

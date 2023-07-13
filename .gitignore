@@ -1,5 +1,6 @@
 bin/
 build/
 build-wasm/
+build-switch/
 cmake-build-*
 .idea/

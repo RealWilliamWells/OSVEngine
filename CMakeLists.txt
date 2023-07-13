@@ -12,7 +12,7 @@ set(GTEST_COMMIT e2239ee6043f73722e7aa812a459f54a28552929) # Version 1.11.0
 
 if(CMAKE_COMPILER_IS_GNUCXX AND NOT WIN32)
     # Not for windows because windres.exe doesn't support those
-    add_definitions(-Wall -ansi -Wno-deprecated -pthread -Wpedantic -fexceptions -Wno-dangling-reference) # removed from list: -frtti
+    add_definitions(-Wall -ansi -Wno-deprecated -pthread -Wpedantic -fexceptions -Wno-dangling-reference)
 endif()
 
 # applies OS type C++ macro
@@ -77,6 +77,8 @@ FetchContent_Declare(assimp
         GIT_TAG ${ASSIMP_COMMIT})
 FetchContent_MakeAvailable(assimp)
 FetchContent_GetProperties(assimp SOURCE_DIR ASSIMP_SOURCE_DIR)
+target_compile_options(assimp PRIVATE $<$<COMPILE_LANG_AND_ID:CXX,GNU>:-frtti>) # Without this, cross platform builds fall (Switch)
+SET(ASSIMP_BUILD_TESTS OFF)
 
 # Other dependencies
 
@@ -163,6 +165,7 @@ if(SWITCH)
             ${LIBNX}/lib/libnx.a
             sndfile
             assimp)
+
     add_nro_target(${PROJECT_NAME})
 endif()
 
