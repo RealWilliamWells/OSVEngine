@@ -6,90 +6,76 @@
 #define WIZENGINE3D_MOUSE_H
 
 #include "GLFW/glfw3.h"
+#include "OSV/rendering/Camera.h"
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 
-namespace osv::MouseInput {
-    bool firstMouse = true;
-    const float mouseSensitivity = 0.1f;
-    const float joyStickSensitivity = .7f;
+namespace osv {
+    class MouseInput;
 
-    float lastX = 0.f;
-    float lastY = 0.f;
-    float yaw = -90.f;
-    float pitch = 0.f;
+    static bool firstMouse = true;
+    static const float mouseSensitivity = 0.1f;
 
-    namespace EditMode {
-        void updateYawAndPitch(float& xoffset, float& yoffset) {
-            yaw   += xoffset;
-            pitch += yoffset;
+    namespace Mouse {
+        static Camera *camera;
+    }
 
-            if(pitch > 89.0f)
-                pitch =  89.0f;
-            if(pitch < -89.0f)
-                pitch = -89.0f;
-        }
+}
 
-        void mouseInputCallback(GLFWwindow* window, double xpos, double ypos) {
-            if (firstMouse)
-            {
-                lastX = xpos;
-                lastY = ypos;
-                firstMouse = false;
-            }
-
-            float xoffset = xpos - lastX;
-            float yoffset = lastY - ypos; // reversed since y-coordinates range from bottom to top
+class osv::MouseInput {
+private:
+    static void calcMouseOffsets(double &xpos, double &ypos, float& xoffset, float& yoffset) {
+        if (firstMouse)
+        {
             lastX = xpos;
             lastY = ypos;
+            firstMouse = false;
+        }
 
-            xoffset *= mouseSensitivity;
-            yoffset *= mouseSensitivity;
+        xoffset = xpos - lastX;
+        yoffset = lastY - ypos; // reversed since y-coordinates range from bottom to top
+        lastX = xpos;
+        lastY = ypos;
 
-            updateYawAndPitch(xoffset, yoffset);
+        xoffset *= mouseSensitivity;
+        yoffset *= mouseSensitivity;
+    }
+
+public:
+    static float lastX;
+    static float lastY;
+    static float yaw;
+    static float pitch;
+
+    static void editModeInputCallback(GLFWwindow* window, double xpos, double ypos) {
+        float xoffset;
+        float yoffset;
+
+        calcMouseOffsets(xpos, ypos, xoffset, yoffset);
+
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
+            Mouse::camera->moveSideways(xoffset);
+        } else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE)) {
+            pitch += yoffset;
+        } else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)) {
+            Mouse::camera->moveFrontAndBack(yoffset);
         }
     }
 
-    namespace FreeFly {
-        void updateYawAndPitch(float& xoffset, float& yoffset) {
-            yaw   += xoffset;
-            pitch += yoffset;
+    static void freeFlyInputCallback(GLFWwindow* window, double xpos, double ypos) {
+        float xoffset;
+        float yoffset;
 
-            if(pitch > 89.0f)
-                pitch =  89.0f;
-            if(pitch < -89.0f)
-                pitch = -89.0f;
-        }
+        calcMouseOffsets(xpos, ypos, xoffset, yoffset);
 
-        void mouseInputCallback(GLFWwindow* window, double xpos, double ypos) {
-            if (firstMouse)
-            {
-                lastX = xpos;
-                lastY = ypos;
-                firstMouse = false;
-            }
-
-            float xoffset = xpos - lastX;
-            float yoffset = lastY - ypos; // reversed since y-coordinates range from bottom to top
-            lastX = xpos;
-            lastY = ypos;
-
-            xoffset *= mouseSensitivity;
-            yoffset *= mouseSensitivity;
-
-            updateYawAndPitch(xoffset, yoffset);
-        }
-
-        void joyStickInputHandler(float xAxis, float yAxis) {
-            float xoffset = joyStickSensitivity * xAxis;
-            float yoffset = joyStickSensitivity * yAxis;
-
-            updateYawAndPitch(xoffset, yoffset);
-        }
+        yaw   += xoffset;
+        pitch += yoffset;
+        if(pitch > 89.0f)
+            pitch =  89.0f;
+        if(pitch < -89.0f)
+            pitch = -89.0f;
     }
 };
-
-
 
 #endif //WIZENGINE3D_MOUSE_H

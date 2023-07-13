@@ -5,11 +5,7 @@
 #ifndef WIZENGINE3D_TEXTURED_H
 #define WIZENGINE3D_TEXTURED_H
 
-#ifdef OS_SWITCH
-#include <glad/glad.h>
-#else
-#include "GL/glew.h"
-#endif
+#include "OSV/rendering/RenderEngine.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"

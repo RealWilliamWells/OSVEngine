@@ -7,50 +7,51 @@
 
 #include <functional>
 #include <map>
-#include <GLFW/glfw3.h>
-#include "OSV/rendering/Camera.h"
-
+#include "OSV/input/keyConfigs/configStructs.h"
 #include "OSV/input/KeyInputHandler.h"
+#include "OSV/rendering/RenderEngine.h"
 
 namespace osv::KeyBinds {
-    namespace WindowControl {
-        GLFWwindow *window = nullptr;
-        RenderEngine *engine = nullptr;
+    float delta = 0.f;
 
-        void closeWindow() {
-            glfwSetWindowShouldClose(window, true);
+    float timeSinceLastPressed = 0.f;
+    float pressDelay = 0.5f;
+
+    namespace WindowControl {
+        void closeWindow(std::shared_ptr<RenderEngine> renderEngine, bool delayPress, float delta) {
+            renderEngine->closeWindow();
         }
 
-        void swapControls() {
-            if (KeyInputHandler::delayPress())
+        void swapControls(std::shared_ptr<RenderEngine> renderEngine, bool delayPress, float delta) {
+            if (delayPress)
                 return;
 
-            unsigned int &currentBind = KeyInputHandler::currentSwitchingBind;
-            currentBind++;
-            currentBind = currentBind >= KeyInputHandler::switchingInputs.size() ? 0 : currentBind;
+            KeyInputHandler::currentSwitchingBind++;
 
-            // Change mouse controls to suit
-            glfwSetCursorPosCallback(window, KeyInputHandler::switchingInputs.at(currentBind).mousePosCallback);
+            KeyInputHandler::currentSwitchingBind = KeyInputHandler::currentSwitchingBind >=
+                    KeyInputHandler::switchingInputs.size() ? 0 : KeyInputHandler::currentSwitchingBind;
+            renderEngine->setCursorPosCallback(KeyInputHandler::switchingInputs.at(KeyInputHandler::currentSwitchingBind).mousePosCallback);
         }
 
-        void setPointsRendering() {
-            engine->setRenderOverrideMode(GL_POINTS);
+        void setPointsRendering(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            renderEngine->setRenderOverrideMode(GL_POINTS);
         }
 
-        void setLinesRendering() {
-            engine->setRenderOverrideMode(GL_LINES);
+        void setLinesRendering(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            renderEngine->setRenderOverrideMode(GL_LINES);
         }
 
-        void setTrianglesRendering() {
-            engine->setRenderOverrideMode(GL_TRIANGLES);
+        void setTrianglesRendering(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            renderEngine->setRenderOverrideMode(GL_TRIANGLES);
+        }
+
+        void releaseMouse(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            renderEngine->toggleMouseRelease();
         }
     }
 
-    KeyInputHandler::InputMode generateWindowBinds(GLFWwindow *win, RenderEngine *renderEngine) {
-        WindowControl::window = win;
-        WindowControl::engine = renderEngine;
-
-        KeyInputHandler::InputMode windowInputs;
+    InputMode generateWindowBinds() {
+        InputMode windowInputs;
 
         windowInputs.binds[GLFW_KEY_ESCAPE].keyActionCallback = WindowControl::closeWindow;
         windowInputs.binds[GLFW_KEY_Q].keyActionCallback = WindowControl::swapControls;
@@ -59,20 +60,21 @@ namespace osv::KeyBinds {
         windowInputs.binds[GLFW_KEY_L].keyActionCallback = WindowControl::setLinesRendering;
         windowInputs.binds[GLFW_KEY_T].keyActionCallback = WindowControl::setTrianglesRendering;
 
+        windowInputs.binds[GLFW_KEY_LEFT_CONTROL].keyActionCallback = WindowControl::releaseMouse;
+
         return windowInputs;
     }
 
     namespace EditModeControl {
-        RenderEngine *engine = nullptr;
         unsigned int selectedModel = 1;
         float currentScale = 1.f;
 
-        void swapModels() {
-            if (KeyInputHandler::delayPress()) {
+        void swapModels(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            if (delayPress) {
                 return;
             }
 
-            std::vector<Model> &models = engine->models;
+            const std::vector<Model> &models = renderEngine->getModels();
 
             selectedModel++;
             selectedModel = selectedModel >= models.size() ? 0 : selectedModel;
@@ -80,47 +82,41 @@ namespace osv::KeyBinds {
             currentScale = 1.f;
         }
 
-        void scaleUp() {
-            std::vector<Model> &models = engine->models;
-            currentScale += .25f * KeyInputHandler::delta;
+        void scaleUp(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            currentScale += .25f * delta;
 
-            models.at(selectedModel).scaleRelative({currentScale, currentScale, currentScale});
+            renderEngine->relativeScaleModel(selectedModel, {currentScale, currentScale, currentScale});
         }
 
-        void scaleDown() {
-            std::vector<Model> &models = engine->models;
-            currentScale -= .25f * KeyInputHandler::delta;
+        void scaleDown(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            currentScale -= .25f * delta;
 
-            models.at(selectedModel).scaleRelative({currentScale, currentScale, currentScale});
+            renderEngine->relativeScaleModel(selectedModel, {currentScale, currentScale, currentScale});
         }
 
-        void rotateLeft() {
-            if (KeyInputHandler::delayPress()) {
+        void rotateLeft(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            if (delayPress) {
                 return;
             }
 
-            std::vector<Model> &models = engine->models;
-            float rotation = 8.f * KeyInputHandler::delta;
+            float rotation = 8.f * delta;
 
-            models.at(selectedModel).rotate(rotation, {0.f, 1.f, 0.f});
+            renderEngine->rotateModel(selectedModel, rotation, {0.f, 1.f, 0.f});
         }
 
-        void rotateRight() {
-            if (KeyInputHandler::delayPress()) {
+        void rotateRight(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            if (delayPress) {
                 return;
             }
 
-            std::vector<Model> &models = engine->models;
-            float rotation = -8.f * KeyInputHandler::delta;
+            float rotation = -8.f * delta;
 
-            models.at(selectedModel).rotate(rotation, {0.f, 1.f, 0.f});
+            renderEngine->rotateModel(selectedModel, rotation, {0.f, 1.f, 0.f});
         }
     }
 
-    KeyInputHandler::InputMode generateEditModeBinds(RenderEngine *renderEngine) {
-        EditModeControl::engine = renderEngine;
-
-        KeyInputHandler::InputMode modelBinds;
+    InputMode generateEditModeBinds() {
+        InputMode modelBinds;
 
         modelBinds.binds[GLFW_KEY_E].keyActionCallback = EditModeControl::swapModels;
 
@@ -130,43 +126,45 @@ namespace osv::KeyBinds {
         modelBinds.binds[GLFW_KEY_Z].keyActionCallback = EditModeControl::rotateLeft;
         modelBinds.binds[GLFW_KEY_X].keyActionCallback = EditModeControl::rotateRight;
 
-        modelBinds.mousePosCallback = MouseInput::EditMode::mouseInputCallback;
+        modelBinds.mousePosCallback = MouseInput::editModeInputCallback;
 
         return modelBinds;
     }
 
     namespace CameraControl {
-        Camera *cam = nullptr;
-
-        void moveCamForward() {
-            cam->moveFrontAndBack(true);
+        void moveCamForward(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            Camera* camera = renderEngine->getCamera();
+            camera->moveFrontAndBack(camera->getDefaultMoveSpeed());
         }
 
-        void moveCamBack() {
-            cam->moveFrontAndBack(false);
+        void moveCamBack(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            Camera* camera = renderEngine->getCamera();
+            camera->moveFrontAndBack(-camera->getDefaultMoveSpeed());
         }
 
-        void moveCamLeft() {
-            cam->moveSideways(true);
+        void moveCamLeft(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            Camera* camera = renderEngine->getCamera();
+            camera->moveSideways(-camera->getDefaultMoveSpeed());
         }
 
-        void moveCamRight() {
-            cam->moveSideways(false);
+        void moveCamRight(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            Camera* camera = renderEngine->getCamera();
+            camera->moveSideways(camera->getDefaultMoveSpeed());
         }
 
-        void moveCamUp() {
-            cam->moveUpAndDown(true);
+        void moveCamUp(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            Camera* camera = renderEngine->getCamera();
+            camera->moveUpAndDown(camera->getDefaultMoveSpeed());
         }
 
-        void moveCamDown() {
-            cam->moveUpAndDown(false);
+        void moveCamDown(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            Camera* camera = renderEngine->getCamera();
+            camera->moveUpAndDown(-camera->getDefaultMoveSpeed());
         }
     }
 
-    KeyInputHandler::InputMode generateFreeFlyBinds(Camera &camera) {
-        KeyInputHandler::InputMode freeFly;
-
-        CameraControl::cam = &camera;
+    InputMode generateFreeFlyBinds() {
+        InputMode freeFly;
 
         freeFly.binds[GLFW_KEY_W].keyActionCallback = CameraControl::moveCamForward;
         freeFly.binds[GLFW_KEY_S].keyActionCallback = CameraControl::moveCamBack;
@@ -177,7 +175,7 @@ namespace osv::KeyBinds {
         freeFly.binds[GLFW_KEY_LEFT_SHIFT].keyActionCallback = CameraControl::moveCamUp;
         freeFly.binds[GLFW_KEY_SPACE].keyActionCallback = CameraControl::moveCamDown;
 
-        freeFly.mousePosCallback = MouseInput::FreeFly::mouseInputCallback;
+        freeFly.mousePosCallback = MouseInput::freeFlyInputCallback;
 
         return freeFly;
     }

@@ -5,13 +5,6 @@
 #ifndef WIZENGINE3D_RENDERENGINE_H
 #define WIZENGINE3D_RENDERENGINE_H
 
-#include <memory>
-#include <vector>
-
-#include "Shader.h"
-#include "Model.h"
-#include "Camera.h"
-
 #ifdef __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
 #define GLFW_INCLUDE_ES3
@@ -23,8 +16,14 @@
 #else
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
-
 #endif
+
+#include <memory>
+#include <vector>
+
+#include "Shader.h"
+#include "Model.h"
+#include "Camera.h"
 
 
 namespace osv {
@@ -43,15 +42,18 @@ private:
 
     Camera camera;
 
-    float deltaTime = 0.f;
+    std::vector<osv::Model> models;
+
     float lastFrame = 0.f;
 
     std::shared_ptr<Shader> mainShader;
 
     GLenum renderOverrideMode = GL_TRIANGLES;
 
+    bool captureMouse = true;
+
 public:
-    std::vector<osv::Model> models;
+    float deltaTime = 0.f;
 
     RenderEngine();
 
@@ -81,9 +83,23 @@ public:
 
     void addDisplayGrid();
 
-    void setupKeyBinds();
-
     void setRenderOverrideMode(GLenum renderOverrideMode);
+
+    void relativeScaleModel(unsigned int index, glm::vec3 scale);
+
+    void rotateModel(unsigned int index, float angle, glm::vec3 rotation);
+
+    const std::vector<osv::Model> &getModels() const;
+
+    void closeWindow();
+
+    void setCursorPosCallback(GLFWcursorposfun callback);
+
+    Camera *getCamera();
+
+    GLFWwindow *getWindow() const;
+
+    void toggleMouseRelease();
 
     static void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
         glViewport(0, 0, width, height);

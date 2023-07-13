@@ -20,8 +20,8 @@ class osv::Camera {
     glm::vec3 right;
     glm::vec3 up;
 
-    float moveSpeed = 2.5f;
-    float deltaMoveSpeed = 0.f;
+    float defaultMoveSpeed = 2.5f;
+    float delta = 0.f;
 
 public:
     Camera();
@@ -34,13 +34,15 @@ public:
 
     const glm::vec3 &getUp() const;
 
-    void moveFrontAndBack(bool dir); // Forwards: true | Backwards: false
+    void moveFrontAndBack(float speed);
 
-    void moveSideways(bool dir); // Left: true | Right: false
+    void moveSideways(float speed);
 
-    void moveUpAndDown(bool dir); // down: true | up: false
+    void moveUpAndDown(float speed);
 
     void look(float pitch, float yaw);
+
+    float getDefaultMoveSpeed() const;
 };
 
 #endif //WIZENGINE3D_CAMERA_H

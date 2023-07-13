@@ -8,71 +8,41 @@
 #include <GLFW/glfw3.h>
 #include <functional>
 #include <map>
+#include "OSV/input/keyConfigs/configStructs.h"
+#include "OSV/input/MouseInput.h"
 
-class test{};
+namespace osv {
+    class RenderEngine;
+    class KeyInputHandler;
+}
 
-typedef void (* KeyActionCallback)();
-
-namespace osv::KeyInputHandler {
-    struct KeyAction {
-        KeyActionCallback keyActionCallback;
-    };
-
-    struct InputMode {
-        std::map<unsigned int, KeyAction> binds;
-
-        GLFWcursorposfun mousePosCallback = MouseInput::EditMode::mouseInputCallback;
-    };
-
-    // TODO: Allow button combinations
+class osv::KeyInputHandler {
+private:
+    std::shared_ptr<osv::RenderEngine> renderEngine;
     std::vector<InputMode> mainInputs;
-    std::vector<InputMode> switchingInputs;
-    unsigned int currentSwitchingBind = 0;
-
     float delta = 0.f;
-
     float timeSinceLastPressed = 0.f;
     float pressDelay = 0.5f;
 
-    void addBindings(InputMode bind) {
-        mainInputs.push_back(bind);
-    }
+    void checkAndActInput(GLFWwindow* window, std::map<unsigned int, KeyAction> keyBinds);
 
-    void addSwitchingBindings(InputMode bind) {
-        switchingInputs.push_back(bind);
-    }
+public:
+    static std::vector<InputMode> switchingInputs;
+    static unsigned int currentSwitchingBind;
 
-    void checkAndActInput(GLFWwindow* window, std::map<unsigned int, KeyAction> keyBinds) {
-        for (auto keyBind : keyBinds) {
-            unsigned int key = keyBind.first;
-            auto action = keyBind.second.keyActionCallback;
+    KeyInputHandler(std::shared_ptr<osv::RenderEngine> renderEngine);
 
-            if (glfwGetKey(window, key) == GLFW_PRESS) {
-                action();
-            }
-        }
-    }
+    bool processInput(GLFWwindow* window, float& deltaTime);
 
-    void processInput(GLFWwindow* window, float &deltaTime) {
-        delta = deltaTime;
-        timeSinceLastPressed += deltaTime;
+    void addBindings(InputMode bind);
 
-        for (auto& inputMode : mainInputs) {
-            checkAndActInput(window, inputMode.binds);
+    void addSwitchingBindings(InputMode bind);
 
-        }
+    bool delayPress();
 
-        checkAndActInput(window, switchingInputs.at(currentSwitchingBind).binds);
-    }
+    const std::vector<InputMode>& getSwitchingInputs() const;
 
-    bool delayPress() {
-        if (timeSinceLastPressed >= pressDelay) {
-            timeSinceLastPressed = 0.f;
-            return false;
-        }
-
-        return true;
-    }
-}
+    float getDelta() const;
+};
 
 #endif //OSVENGINE_KEYINPUTHANDLER_H

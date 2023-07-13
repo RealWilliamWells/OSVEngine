@@ -3,6 +3,8 @@
 //
 
 #include "OSV/rendering/RenderEngine.h"
+#include "OSV/input/KeyInputHandler.h"
+#include "OSV/input/keyConfigs/keyBinds.h"
 
 #ifndef OS_SWITCH
 #define ASSET(_str) "./res/" _str
@@ -32,10 +34,12 @@ void userAppExit()
 
 std::shared_ptr<osv::RenderEngine> renderEngine;
 std::shared_ptr<osv::Shader> shader;
+std::shared_ptr<osv::KeyInputHandler> keyInputHandler;
 
 #ifdef __EMSCRIPTEN__
 static void emscriptenMainLoop() {
     renderEngine->update();
+    keyInputHandler->processInput(renderEngine->getWindow(), renderEngine->deltaTime);
 }
 #endif
 
@@ -71,7 +75,17 @@ int main() {
 
     renderEngine->addDisplayGrid();
 
-    renderEngine->setupKeyBinds();
+    // Input handling
+    // TODO: remove this cringe
+    osv::Mouse::camera = renderEngine->getCamera();
+
+    keyInputHandler = std::shared_ptr<osv::KeyInputHandler>(new osv::KeyInputHandler(renderEngine));
+    keyInputHandler->addBindings(osv::KeyBinds::generateWindowBinds());
+
+    keyInputHandler->addSwitchingBindings(osv::KeyBinds::generateEditModeBinds());
+    keyInputHandler->addSwitchingBindings(osv::KeyBinds::generateFreeFlyBinds());
+
+    renderEngine->setCursorPosCallback(keyInputHandler->getSwitchingInputs().at(keyInputHandler->currentSwitchingBind).mousePosCallback);
 
 //    Music backgroundMusic(ASSET("sfx/background.wav"));
 //    backgroundMusic.play();
@@ -83,11 +97,12 @@ int main() {
 
     while (appletMainLoop()) {
         renderEngine->update();
+        keyInputHandler->processInput(renderEngine->getWindow(), renderEngine->deltaTime);
     }
 
     userAppExit();
 #else
-    while (renderEngine->update());
+    while (renderEngine->update() && keyInputHandler->processInput(renderEngine->getWindow(), renderEngine->deltaTime));
 #endif
 
     return 0;

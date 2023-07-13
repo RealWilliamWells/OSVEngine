@@ -1,9 +1,8 @@
-#include <iostream>
-
 #include "OSV/rendering/RenderEngine.h"
-#include "OSV/input/MouseInput.h"
+#include <iostream>
 #include "OSV/audio/Music.h"
-#include "OSV/input/keyConfigs/keyBinds.h"
+#include "OSV/rendering/Model.h"
+#include "OSV/input/MouseInput.h"
 
 //#include "imgui.h"
 //#include "backends/imgui_impl_glfw.h"
@@ -37,7 +36,6 @@ void osv::RenderEngine::openWindow() {
     glfwMakeContextCurrent(window);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-//    glfwSetCursorPosCallback(window, LookInput::FreeFly::mouseInputCallback);
 
 //    glewExperimental = true; // Needed for core profile
 #ifdef OS_SWITCH
@@ -107,7 +105,7 @@ bool osv::RenderEngine::update() {
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
-    KeyInputHandler::processInput(window, deltaTime);
+    camera.update(deltaTime, osv::MouseInput::pitch, osv::MouseInput::yaw);
 
     if (glfwWindowShouldClose(window)){
 //        ImGui_ImplOpenGL3_Shutdown();
@@ -145,18 +143,18 @@ void osv::RenderEngine::processInput() {
     buttonStart = state.buttons[GLFW_GAMEPAD_BUTTON_START];
 #endif
 
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || leftYAxis < -0.5f)
-        camera.moveFrontAndBack(true);
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS  || leftYAxis > 0.5f)
-        camera.moveFrontAndBack(false);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || leftXAxis < -0.5f)
-        camera.moveSideways(true);
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || leftXAxis > 0.5f)
-        camera.moveSideways(false);
-    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || buttonB == GLFW_PRESS)
-        camera.moveUpAndDown(true);
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || buttonA == GLFW_PRESS)
-        camera.moveUpAndDown(false);
+//    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || leftYAxis < -0.5f)
+//        camera.moveFrontAndBack(true);
+//    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS  || leftYAxis > 0.5f)
+//        camera.moveFrontAndBack(false);
+//    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || leftXAxis < -0.5f)
+//        camera.moveSideways(true);
+//    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || leftXAxis > 0.5f)
+//        camera.moveSideways(false);
+//    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || buttonB == GLFW_PRESS)
+//        camera.moveUpAndDown(true);
+//    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || buttonA == GLFW_PRESS)
+//        camera.moveUpAndDown(false);
 
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || buttonStart == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
@@ -164,17 +162,16 @@ void osv::RenderEngine::processInput() {
 
 void osv::RenderEngine::updateView() {
 #ifndef __EMSCRIPTEN__
-    GLFWgamepadstate state;
-    glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
-    float xAxis = state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X];
-    float yAxis = state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y];
+//    GLFWgamepadstate state;
+//    glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
+//    float xAxis = state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X];
+//    float yAxis = state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y];
 
-    if (std::abs(xAxis) > 0.2 || std::abs(yAxis) > 0.2) {
-        osv::MouseInput::FreeFly::joyStickInputHandler(xAxis, -yAxis);
-    }
+//    if (std::abs(xAxis) > 0.2 || std::abs(yAxis) > 0.2) {
+//        osv::MouseInput::FreeFly::joyStickInputHandler(xAxis, -yAxis);
+//    }
 #endif
 
-    camera.update(deltaTime, osv::MouseInput::pitch, osv::MouseInput::yaw);
     view = glm::lookAt(camera.getPosition(), camera.getPosition() + camera.getFront(), camera.getUp());
 }
 
@@ -246,13 +243,40 @@ void osv::RenderEngine::addDisplayGrid() {
     addModel(grid);
 }
 
-void osv::RenderEngine::setupKeyBinds() {
-    KeyInputHandler::addBindings(KeyBinds::generateWindowBinds(window, this));
-
-    KeyInputHandler::addSwitchingBindings(KeyBinds::generateEditModeBinds(this));
-    KeyInputHandler::addSwitchingBindings(KeyBinds::generateFreeFlyBinds(camera));
-}
-
 void osv::RenderEngine::setRenderOverrideMode(GLenum renderOverrideMode) {
     RenderEngine::renderOverrideMode = renderOverrideMode;
+}
+
+void osv::RenderEngine::relativeScaleModel(unsigned int index,glm::vec3 scale) {
+    models.at(index).scaleRelative(scale);
+}
+
+void osv::RenderEngine::rotateModel(unsigned int index, float angle, glm::vec3 rotation) {
+    models.at(index).rotate(angle, rotation);
+}
+
+const std::vector<osv::Model> &osv::RenderEngine::getModels() const {
+    return models;
+}
+
+void osv::RenderEngine::closeWindow() {
+    glfwSetWindowShouldClose(window, true);
+}
+
+void osv::RenderEngine::setCursorPosCallback(GLFWcursorposfun callback) {
+    glfwSetCursorPosCallback(window, callback);
+}
+
+osv::Camera *osv::RenderEngine::getCamera() {
+    return &camera;
+}
+
+GLFWwindow *osv::RenderEngine::getWindow() const {
+    return window;
+}
+
+void osv::RenderEngine::toggleMouseRelease() {
+    captureMouse = !captureMouse;
+    int value = captureMouse ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL;
+    glfwSetInputMode(window, GLFW_CURSOR, captureMouse);
 }
