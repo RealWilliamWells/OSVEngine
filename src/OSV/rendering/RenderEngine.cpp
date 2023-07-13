@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "OSV/rendering/RenderEngine.h"
-#include "OSV/input/LookInput.h"
+#include "OSV/input/MouseInput.h"
 #include "OSV/audio/Music.h"
 #include "OSV/input/keyConfigs/keyBinds.h"
 
@@ -36,8 +36,8 @@ void osv::RenderEngine::openWindow() {
     }
     glfwMakeContextCurrent(window);
 
-//    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-//    glfwSetCursorPosCallback(window, osv::LookInput::mouseInputCallback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+//    glfwSetCursorPosCallback(window, LookInput::FreeFly::mouseInputCallback);
 
 //    glewExperimental = true; // Needed for core profile
 #ifdef OS_SWITCH
@@ -170,11 +170,11 @@ void osv::RenderEngine::updateView() {
     float yAxis = state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y];
 
     if (std::abs(xAxis) > 0.2 || std::abs(yAxis) > 0.2) {
-        osv::LookInput::joyStickInputHandler(xAxis, -yAxis);
+        osv::MouseInput::FreeFly::joyStickInputHandler(xAxis, -yAxis);
     }
 #endif
 
-    camera.update(deltaTime, osv::LookInput::pitch, osv::LookInput::yaw);
+    camera.update(deltaTime, osv::MouseInput::pitch, osv::MouseInput::yaw);
     view = glm::lookAt(camera.getPosition(), camera.getPosition() + camera.getFront(), camera.getUp());
 }
 

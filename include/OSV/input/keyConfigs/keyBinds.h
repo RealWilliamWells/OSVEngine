@@ -22,9 +22,15 @@ namespace osv::KeyBinds {
         }
 
         void swapControls() {
+            if (KeyInputHandler::delayPress())
+                return;
+
             unsigned int &currentBind = KeyInputHandler::currentSwitchingBind;
             currentBind++;
-            currentBind = currentBind >= KeyInputHandler::switchingKeyBinds.size() ? 0 : currentBind;
+            currentBind = currentBind >= KeyInputHandler::switchingInputs.size() ? 0 : currentBind;
+
+            // Change mouse controls to suit
+            glfwSetCursorPosCallback(window, KeyInputHandler::switchingInputs.at(currentBind).mousePosCallback);
         }
 
         void setPointsRendering() {
@@ -40,20 +46,20 @@ namespace osv::KeyBinds {
         }
     }
 
-    std::map<unsigned int, KeyActionCallback> generateWindowBinds(GLFWwindow *win, RenderEngine *renderEngine) {
+    KeyInputHandler::InputMode generateWindowBinds(GLFWwindow *win, RenderEngine *renderEngine) {
         WindowControl::window = win;
         WindowControl::engine = renderEngine;
 
-        std::map<unsigned int, KeyActionCallback> windowBinds;
+        KeyInputHandler::InputMode windowInputs;
 
-        windowBinds[GLFW_KEY_ESCAPE] = WindowControl::closeWindow;
-        windowBinds[GLFW_KEY_Q] = WindowControl::swapControls;
+        windowInputs.binds[GLFW_KEY_ESCAPE].keyActionCallback = WindowControl::closeWindow;
+        windowInputs.binds[GLFW_KEY_Q].keyActionCallback = WindowControl::swapControls;
 
-        windowBinds[GLFW_KEY_P] = WindowControl::setPointsRendering;
-        windowBinds[GLFW_KEY_L] = WindowControl::setLinesRendering;
-        windowBinds[GLFW_KEY_T] = WindowControl::setTrianglesRendering;
+        windowInputs.binds[GLFW_KEY_P].keyActionCallback = WindowControl::setPointsRendering;
+        windowInputs.binds[GLFW_KEY_L].keyActionCallback = WindowControl::setLinesRendering;
+        windowInputs.binds[GLFW_KEY_T].keyActionCallback = WindowControl::setTrianglesRendering;
 
-        return windowBinds;
+        return windowInputs;
     }
 
     namespace EditModeControl {
@@ -111,18 +117,20 @@ namespace osv::KeyBinds {
         }
     }
 
-    std::map<unsigned int, KeyActionCallback> generateEditModeBinds(RenderEngine *renderEngine) {
+    KeyInputHandler::InputMode generateEditModeBinds(RenderEngine *renderEngine) {
         EditModeControl::engine = renderEngine;
 
-        std::map<unsigned int, KeyActionCallback> modelBinds;
+        KeyInputHandler::InputMode modelBinds;
 
-        modelBinds[GLFW_KEY_E] = EditModeControl::swapModels;
+        modelBinds.binds[GLFW_KEY_E].keyActionCallback = EditModeControl::swapModels;
 
-        modelBinds[GLFW_KEY_U] = EditModeControl::scaleUp;
-        modelBinds[GLFW_KEY_J] = EditModeControl::scaleDown;
+        modelBinds.binds[GLFW_KEY_U].keyActionCallback = EditModeControl::scaleUp;
+        modelBinds.binds[GLFW_KEY_J].keyActionCallback = EditModeControl::scaleDown;
 
-        modelBinds[GLFW_KEY_Z] = EditModeControl::rotateLeft;
-        modelBinds[GLFW_KEY_X] = EditModeControl::rotateRight;
+        modelBinds.binds[GLFW_KEY_Z].keyActionCallback = EditModeControl::rotateLeft;
+        modelBinds.binds[GLFW_KEY_X].keyActionCallback = EditModeControl::rotateRight;
+
+        modelBinds.mousePosCallback = MouseInput::EditMode::mouseInputCallback;
 
         return modelBinds;
     }
@@ -155,19 +163,21 @@ namespace osv::KeyBinds {
         }
     }
 
-    std::map<unsigned int, KeyActionCallback> generateFreeFlyBinds(Camera &camera) {
-        std::map<unsigned int, KeyActionCallback> freeFly;
+    KeyInputHandler::InputMode generateFreeFlyBinds(Camera &camera) {
+        KeyInputHandler::InputMode freeFly;
 
         CameraControl::cam = &camera;
 
-        freeFly[GLFW_KEY_W] = CameraControl::moveCamForward;
-        freeFly[GLFW_KEY_S] = CameraControl::moveCamBack;
+        freeFly.binds[GLFW_KEY_W].keyActionCallback = CameraControl::moveCamForward;
+        freeFly.binds[GLFW_KEY_S].keyActionCallback = CameraControl::moveCamBack;
 
-        freeFly[GLFW_KEY_A] = CameraControl::moveCamLeft;
-        freeFly[GLFW_KEY_D] = CameraControl::moveCamRight;
+        freeFly.binds[GLFW_KEY_A].keyActionCallback = CameraControl::moveCamLeft;
+        freeFly.binds[GLFW_KEY_D].keyActionCallback = CameraControl::moveCamRight;
 
-        freeFly[GLFW_KEY_LEFT_SHIFT] = CameraControl::moveCamUp;
-        freeFly[GLFW_KEY_SPACE] = CameraControl::moveCamDown;
+        freeFly.binds[GLFW_KEY_LEFT_SHIFT].keyActionCallback = CameraControl::moveCamUp;
+        freeFly.binds[GLFW_KEY_SPACE].keyActionCallback = CameraControl::moveCamDown;
+
+        freeFly.mousePosCallback = MouseInput::FreeFly::mouseInputCallback;
 
         return freeFly;
     }

@@ -14,28 +14,38 @@ class test{};
 typedef void (* KeyActionCallback)();
 
 namespace osv::KeyInputHandler {
+    struct KeyAction {
+        KeyActionCallback keyActionCallback;
+    };
+
+    struct InputMode {
+        std::map<unsigned int, KeyAction> binds;
+
+        GLFWcursorposfun mousePosCallback = MouseInput::EditMode::mouseInputCallback;
+    };
+
     // TODO: Allow button combinations
-    std::vector<std::map<unsigned int, KeyActionCallback>> keyBinds;
-    std::vector<std::map<unsigned int, KeyActionCallback>> switchingKeyBinds;
+    std::vector<InputMode> mainInputs;
+    std::vector<InputMode> switchingInputs;
     unsigned int currentSwitchingBind = 0;
 
     float delta = 0.f;
 
-    float timeSinceLastPressed = 100.f;
-    float pressDelay = .500f;
+    float timeSinceLastPressed = 0.f;
+    float pressDelay = 0.5f;
 
-    void addBindings(std::map<unsigned int, KeyActionCallback> bind) {
-        keyBinds.push_back(bind);
+    void addBindings(InputMode bind) {
+        mainInputs.push_back(bind);
     }
 
-    void addSwitchingBindings(std::map<unsigned int, KeyActionCallback> bind) {
-        switchingKeyBinds.push_back(bind);
+    void addSwitchingBindings(InputMode bind) {
+        switchingInputs.push_back(bind);
     }
 
-    void checkAndActInput(GLFWwindow* window, std::map<unsigned int, KeyActionCallback> keyBinds) {
+    void checkAndActInput(GLFWwindow* window, std::map<unsigned int, KeyAction> keyBinds) {
         for (auto keyBind : keyBinds) {
             unsigned int key = keyBind.first;
-            auto action = keyBind.second;
+            auto action = keyBind.second.keyActionCallback;
 
             if (glfwGetKey(window, key) == GLFW_PRESS) {
                 action();
@@ -47,12 +57,12 @@ namespace osv::KeyInputHandler {
         delta = deltaTime;
         timeSinceLastPressed += deltaTime;
 
-        for (auto& bind : keyBinds) {
-            checkAndActInput(window, bind);
+        for (auto& inputMode : mainInputs) {
+            checkAndActInput(window, inputMode.binds);
 
         }
 
-        checkAndActInput(window, switchingKeyBinds.at(currentSwitchingBind));
+        checkAndActInput(window, switchingInputs.at(currentSwitchingBind).binds);
     }
 
     bool delayPress() {
