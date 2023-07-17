@@ -15,6 +15,29 @@ This project contains many different components. It takes advantage of libraries
 * Joystick support. (except for WebGL unfortunately.
 * Importation of many different 3D model assets formats. (Mainly .dae, aka COLLADA,  was tested)
 
+### Controls
+WSAD - Move model
+ZX - Rotate model around Y-axis
+SPACE - Move model to random position within grid
+E - Change between models to move
+
+Direction arrows - Change world orientation
+HOME - Return world oreintation to original position
+
+P - Set rendering mode to points
+L - Set rendering mode to lines
+T - Set rendering mode to triangles
+
+Left mouse button held - Zoom into/out of scene (camera moves forwards and backwards)
+Right mouse button held - Pan camera
+Middle mouse button held - Tilt camera
+
+Left Control - Toggle mouse capture
+
+ESC - Quit
+
+Q - Toggle freefly mode (allows free movement of camera with mouse and WSAD control, disabling other controls)
+
 ### Project Structure Breakdown
 ### Rendering Engine
 Almost everything pretaining to rendering related roles is located under "src/OSV/rendering/". The "glue" class that holds everything together is "RenderEngine.cpp" under that directory.
