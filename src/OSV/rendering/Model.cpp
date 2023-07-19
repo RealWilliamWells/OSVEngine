@@ -139,6 +139,10 @@ void osv::Model::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, 
     for (unsigned int i = 0; i < meshes.size(); i++) {
         meshes.at(i).render(shader, view, projection, model, overrideMode);
     }
+
+    for (Model& child : childrenModels) {
+        child.render(shader, view, projection, overrideMode);
+    }
 }
 
 void osv::Model::deleteBuffers() {
@@ -150,20 +154,36 @@ void osv::Model::deleteBuffers() {
 void osv::Model::translate(glm::vec3 translation) {
     model = glm::translate(model, translation);
     baseModel = model;
+
+    for (Model& child : childrenModels) {
+        child.translate(translation);
+    }
 }
 
 void osv::Model::rotate(float angle, glm::vec3 rotation) {
     model = glm::rotate(model, angle, rotation);
     baseModel = model;
+
+    for (Model& child : childrenModels) {
+        child.rotate(angle, rotation);
+    }
 }
 
 void osv::Model::scale(glm::vec3 scale) {
     model = glm::scale(baseModel, scale);
     baseModel = model;
+
+    for (Model& child : childrenModels) {
+        child.scale(scale);
+    }
 }
 
 void osv::Model::scaleRelative(glm::vec3 scale) {
     model = glm::scale(baseModel, scale);
+
+    for (Model& child : childrenModels) {
+        child.scaleRelative(scale);
+    }
 }
 
 void osv::Model::addMesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture> &textures,
@@ -174,4 +194,8 @@ void osv::Model::addMesh(std::vector<Vertex> &vertices, std::vector<unsigned int
 void osv::Model::setPosition(glm::vec3 position) {
     model = glm::translate(startingModel, position);
     baseModel = model;
+}
+
+void osv::Model::addChild(osv::Model &model) {
+    childrenModels.push_back(model);
 }

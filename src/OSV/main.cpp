@@ -64,17 +64,29 @@ int main() {
     osv::Model netModel(ASSET("models/tenis_net/tenis_net.dae"), false,
                          {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.07f, 0.07f, 0.07f});
 
+    osv::Model sLetterModel(ASSET("models/letters/s/s.dae"), false,
+                            {25.f, 25.f, 15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f});
     osv::Model racket1Model(ASSET("models/tenis_racket/tenis_racket.dae"), false,
                         {25.f, 0.f, 15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f});
+    racket1Model.addChild(sLetterModel);
 
+    osv::Model lLetterModel(ASSET("models/letters/l/l.dae"), false,
+                            {25.f, 25.f, -15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f});
     osv::Model racket2Model(ASSET("models/tenis_racket/tenis_racket.dae"), false,
                            {25.f, 0.f, -15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f});
+    racket2Model.addChild(lLetterModel);
 
+    osv::Model wLetterModel(ASSET("models/letters/w/w.dae"), false,
+                            {-25.f, 25.f, 15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f});
     osv::Model racket3Model(ASSET("models/tenis_racket/tenis_racket.dae"), false,
                            {-25.f, 0.f, 15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f});
+    racket3Model.addChild(wLetterModel);
 
+    osv::Model eLetterModel(ASSET("models/letters/e/e.dae"), false,
+                            {-25.f, 25.f, -15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f});
     osv::Model racket4Model(ASSET("models/tenis_racket/tenis_racket.dae"), false,
                            {-25.f, 0.f, -15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f});
+    racket4Model.addChild(eLetterModel);
 
     osv::Model skyBoxModel(ASSET("models/skybox/skybox.dae"), false,
                         {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {6.f, 6.f, 6.f});

@@ -29,6 +29,8 @@ namespace osv {
 
 class osv::Model {
 private:
+    std::vector<Model> childrenModels;
+
     std::vector<Texture> textures_loaded;
 
     std::vector<osv::Mesh> meshes;
@@ -68,6 +70,7 @@ public:
 
     void setPosition(glm::vec3 position);
 
+    void addChild(Model& model);
 };
 
 
