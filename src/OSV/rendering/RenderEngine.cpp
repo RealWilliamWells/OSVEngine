@@ -161,24 +161,25 @@ void osv::RenderEngine::addDisplayGrid() {
     glEnable(GL_LINE_SMOOTH);
     glEnable(GL_BLEND);
 
-    float gridSize = 100.f; // Size of the grid
+    float gridWidth = 78.f; // Size of the grid
+    float gridHeight = 36.f;
     float stepSize = .1f;
 
     std::vector<Vertex> vertices;
     Vertex vertex;
 
-    for(float j=0.f; j<=gridSize; j++) {
-        for(int i=0.f; i<=gridSize; i++) {
-            vertex.position = glm::vec3(i*stepSize - (gridSize/2.f) * stepSize, 0.f, j*stepSize - (gridSize/2.f) * stepSize);
+    for(float j=0.f; j<=gridHeight; j++) {
+        for(int i=0.f; i<=gridWidth; i++) {
+            vertex.position = glm::vec3(i*stepSize - (gridWidth/2.f) * stepSize, 0.f, j*stepSize - (gridHeight/2.f) * stepSize);
             vertices.push_back(vertex);
         }
     }
 
     std::vector<unsigned int> indices;
-    for(int j=0; j<gridSize; ++j) {
-        for(int i=0; i<gridSize; ++i) {
-            int row1 = j * (gridSize+1);
-            int row2 = (j+1) * (gridSize+1);
+    for(int j=0; j<gridHeight; ++j) {
+        for(int i=0; i<gridWidth; ++i) {
+            int row1 = j * (gridWidth+1);
+            int row2 = (j+1) * (gridWidth+1);
 
             indices.push_back(row1+i);
             indices.push_back(row1+i+1);
