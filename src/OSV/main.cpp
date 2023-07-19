@@ -64,8 +64,17 @@ int main() {
     osv::Model netModel(ASSET("models/tenis_net/tenis_net.dae"), false,
                          {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.07f, 0.07f, 0.07f});
 
-    osv::Model racketModel(ASSET("models/tenis_racket/tenis_racket.dae"), false,
-                        {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f});
+    osv::Model racket1Model(ASSET("models/tenis_racket/tenis_racket.dae"), false,
+                        {25.f, 0.f, 15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f});
+
+    osv::Model racket2Model(ASSET("models/tenis_racket/tenis_racket.dae"), false,
+                           {25.f, 0.f, -15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f});
+
+    osv::Model racket3Model(ASSET("models/tenis_racket/tenis_racket.dae"), false,
+                           {-25.f, 0.f, 15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f});
+
+    osv::Model racket4Model(ASSET("models/tenis_racket/tenis_racket.dae"), false,
+                           {-25.f, 0.f, -15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f});
 
     osv::Model skyBoxModel(ASSET("models/skybox/skybox.dae"), false,
                         {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {6.f, 6.f, 6.f});
@@ -73,7 +82,10 @@ int main() {
     renderEngine->addModel(skyBoxModel);
     renderEngine->addModel(coorModel); // TODO: use references to models instead, or only pass path and create model inside of addModel.
     renderEngine->addModel(netModel);
-    renderEngine->addModel(racketModel);
+    renderEngine->addModel(racket1Model);
+    renderEngine->addModel(racket2Model);
+    renderEngine->addModel(racket3Model);
+    renderEngine->addModel(racket4Model);
 
     renderEngine->addDisplayGrid();
 
