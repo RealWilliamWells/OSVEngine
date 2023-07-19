@@ -59,7 +59,7 @@ public:
         glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
 
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) || state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER] == GLFW_PRESS) {
-            Mouse::camera->moveSideways(xoffset);
+            yaw += xoffset;
         } else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) || state.buttons[GLFW_GAMEPAD_BUTTON_A] == GLFW_PRESS) {
             pitch += yoffset;
         } else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT || state.buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER] == GLFW_PRESS)) {
