@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 3.6.0 commit date:2023-06-27, commit time:08:08, hash:c7fc78b81ecb</authoring_tool>
     </contributor>
-    <created>2023-07-19T13:02:33</created>
-    <modified>2023-07-19T13:02:33</modified>
+    <created>2023-07-19T16:21:06</created>
+    <modified>2023-07-19T16:21:06</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -78,14 +78,14 @@
   <library_effects>
     <effect id="Material-effect">
       <profile_COMMON>
-        <newparam sid="Material_Base_Color-surface">
+        <newparam sid="skybox-surface">
           <surface type="2D">
-            <init_from>Material_Base_Color</init_from>
+            <init_from>skybox</init_from>
           </surface>
         </newparam>
-        <newparam sid="Material_Base_Color-sampler">
+        <newparam sid="skybox-sampler">
           <sampler2D>
-            <source>Material_Base_Color-surface</source>
+            <source>skybox-surface</source>
           </sampler2D>
         </newparam>
         <technique sid="common">
@@ -94,7 +94,7 @@
               <color sid="emission">0 0 0 1</color>
             </emission>
             <diffuse>
-              <texture texture="Material_Base_Color-sampler" texcoord="UVMap"/>
+              <texture texture="skybox-sampler" texcoord="UVMap"/>
             </diffuse>
             <index_of_refraction>
               <float sid="ior">1.45</float>
@@ -105,8 +105,8 @@
     </effect>
   </library_effects>
   <library_images>
-    <image id="Material_Base_Color" name="Material_Base_Color">
-      <init_from>Material%20Base%20Color.png</init_from>
+    <image id="skybox" name="skybox">
+      <init_from>skybox.png</init_from>
     </image>
   </library_images>
   <library_materials>

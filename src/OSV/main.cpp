@@ -61,11 +61,19 @@ int main() {
     osv::Model coorModel(ASSET("models/coor_axis/coor_axis.dae"), false,
                          {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.19f, 0.19f, 0.19f});
 
-    osv::Model armModel(ASSET("models/arm/arm.dae"), true,
-                        {-2.f, 0.f, -2.f}, -45.f, {0.f, 1.f, 0.f}, {.25f, .25f, .25f});
+    osv::Model netModel(ASSET("models/tenis_net/tenis_net.dae"), false,
+                         {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.07f, 0.07f, 0.07f});
 
+    osv::Model racketModel(ASSET("models/tenis_racket/tenis_racket.dae"), false,
+                        {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f});
+
+    osv::Model skyBoxModel(ASSET("models/skybox/skybox.dae"), false,
+                        {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {6.f, 6.f, 6.f});
+
+    renderEngine->addModel(skyBoxModel);
     renderEngine->addModel(coorModel); // TODO: use references to models instead, or only pass path and create model inside of addModel.
-    renderEngine->addModel(armModel);
+    renderEngine->addModel(netModel);
+    renderEngine->addModel(racketModel);
 
     renderEngine->addDisplayGrid();
 
