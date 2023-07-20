@@ -30,6 +30,8 @@ public:
 
     const glm::vec3 &getPosition() const;
 
+    void setPosition(const glm::vec3 &position);
+
     const glm::vec3 &getFront() const;
 
     const glm::vec3 &getUp() const;

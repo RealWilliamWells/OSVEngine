@@ -55,3 +55,7 @@ void osv::Camera::look(float pitch, float yaw) {
 float osv::Camera::getDefaultMoveSpeed() const {
     return defaultMoveSpeed;
 }
+
+void osv::Camera::setPosition(const glm::vec3 &position) {
+    Camera::position = position;
+}

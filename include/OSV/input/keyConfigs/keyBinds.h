@@ -298,6 +298,78 @@ namespace osv::KeyBinds {
 
         return freeFly;
     }
+
+    namespace Quiz1Control {
+        unsigned int selectedModel = 3;
+
+        void setNewCameraView(std::shared_ptr<osv::RenderEngine> renderEngine) {
+            Camera* cam = renderEngine->getCamera();
+
+            float behindOffset = 2.f;
+
+            float x = selectedModel == 1 || selectedModel == 2 ? 25.f + behindOffset: -25.f - behindOffset;
+
+            float z = selectedModel == 1 || selectedModel == 3 ? 15.f + behindOffset : -15.f - behindOffset;
+
+            cam->setPosition({x, 2.f, z});
+        }
+
+        void selectRacket(std::shared_ptr<osv::RenderEngine> renderEngine, int racketNum) {
+            selectedModel = 2 + racketNum;
+
+            setNewCameraView(renderEngine);
+        }
+
+        void selectRacket1(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            selectRacket(renderEngine, 1);
+        }
+
+        void selectRacket2(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            selectRacket(renderEngine, 2);
+        }
+
+        void selectRacket3(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            selectRacket(renderEngine, 3);
+        }
+
+        void selectRacket4(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            selectRacket(renderEngine, 4);
+        }
+
+        void rotateLeft(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            if (delayPress) {
+                return;
+            }
+
+            float rotation = 8.f * delta;
+
+            renderEngine->rotateModel(selectedModel, rotation, {0.f, 1.f, 0.f});
+        }
+
+        void rotateRight(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            if (delayPress) {
+                return;
+            }
+
+            float rotation = -8.f * delta;
+
+            renderEngine->rotateModel(selectedModel, rotation, {0.f, 1.f, 0.f});
+        }
+    }
+
+    InputMode generateQuiz1Binds() {
+        InputMode quiz1Binds;
+
+        quiz1Binds.keyBinds[GLFW_KEY_1].keyActionCallback = Quiz1Control::selectRacket1;
+        quiz1Binds.keyBinds[GLFW_KEY_2].keyActionCallback = Quiz1Control::selectRacket2;
+        quiz1Binds.keyBinds[GLFW_KEY_3].keyActionCallback = Quiz1Control::selectRacket3;
+        quiz1Binds.keyBinds[GLFW_KEY_4].keyActionCallback = Quiz1Control::selectRacket4;
+
+        quiz1Binds.keyBinds[GLFW_KEY_Q].keyActionCallback = Quiz1Control::rotateLeft;
+        quiz1Binds.keyBinds[GLFW_KEY_E].keyActionCallback = Quiz1Control::rotateRight;
+
+        return quiz1Binds;
+    }
 }
 
 #endif //OSVENGINE_FREEFLYBINDS_H
