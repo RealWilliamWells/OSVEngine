@@ -15,8 +15,7 @@ namespace osv {
 
 class osv::Camera {
     glm::vec3 position = glm::vec3(0.0f, 1.0f, 6.0f);
-    glm::vec3 target = glm::vec3(0.0f, 0.0f, 4.0f);
-    glm::vec3 front;
+    glm::vec3 front = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 right;
     glm::vec3 up;
 
@@ -26,13 +25,15 @@ class osv::Camera {
 public:
     Camera();
 
-    void update(float delta, float pitch, float yaw);
+    void update(float delta);
 
     const glm::vec3 &getPosition() const;
 
     void setPosition(const glm::vec3 &position);
 
     const glm::vec3 &getFront() const;
+
+    void setFront(const glm::vec3 &front);
 
     const glm::vec3 &getUp() const;
 

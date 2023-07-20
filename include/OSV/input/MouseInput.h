@@ -79,6 +79,11 @@ public:
             pitch =  89.0f;
         if(pitch < -89.0f)
             pitch = -89.0f;
+
+        Mouse::camera->look(pitch, yaw);
+    }
+
+    static void quiz1Callback(GLFWwindow* window, double xpos, double ypos) {
     }
 };
 

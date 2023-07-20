@@ -105,7 +105,7 @@ bool osv::RenderEngine::update() {
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
-    camera.update(deltaTime, osv::MouseInput::pitch, osv::MouseInput::yaw);
+    camera.update(deltaTime);
 
     if (glfwWindowShouldClose(window)){
 //        ImGui_ImplOpenGL3_Shutdown();

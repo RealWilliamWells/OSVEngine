@@ -108,7 +108,7 @@ int main() {
     keyInputHandler = std::shared_ptr<osv::KeyInputHandler>(new osv::KeyInputHandler(renderEngine));
     keyInputHandler->addBindings(osv::KeyBinds::generateWindowBinds());
 
-    keyInputHandler->addSwitchingBindings(osv::KeyBinds::generateEditModeBinds());
+    keyInputHandler->addSwitchingBindings(osv::KeyBinds::generateQuiz1Binds());
     keyInputHandler->addSwitchingBindings(osv::KeyBinds::generateFreeFlyBinds());
 
     renderEngine->setCursorPosCallback(keyInputHandler->getSwitchingInputs().at(keyInputHandler->currentSwitchingBind).mousePosCallback);
