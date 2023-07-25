@@ -64,7 +64,11 @@ public:
 
     void scaleRelative(glm::vec3 scale);
 
-    void addMesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture> &textures, GLenum mode);
+    void addMesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture> &textures,
+                 GLenum mode);
+
+    void addMesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, glm::vec4 color,
+                 GLenum mode);
 
     void setPosition(glm::vec3 position);
 

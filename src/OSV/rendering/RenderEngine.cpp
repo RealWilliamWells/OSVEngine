@@ -197,7 +197,7 @@ void osv::RenderEngine::addDisplayGrid() {
 
     std::vector<Texture> textures;
 
-    grid.addMesh(vertices, indices, textures, GL_LINES);
+    grid.addMesh(vertices, indices, {0.75f, 1.f, 0.f, 1.f}, GL_LINES);
  
     addModel(grid);
 }

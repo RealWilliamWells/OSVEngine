@@ -16,6 +16,17 @@ osv::Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
     setupMesh();
 }
 
+osv::Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, glm::vec4 color, GLenum mode,
+                bool &modeCanBeOverridden) : modeCanBeOverridden(modeCanBeOverridden) {
+    this->vertices = vertices;
+    this->indices = indices;
+    this->color = color;
+
+    this->mode = mode;
+
+    setupMesh();
+}
+
 void osv::Mesh::setupMesh() {
     glEnable(GL_PROGRAM_POINT_SIZE);
 
@@ -70,6 +81,9 @@ void osv::Mesh::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, g
 
     int projectionLoc = glGetUniformLocation(shader.programID, "projection");
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+    int colorLoc = glGetUniformLocation(shader.programID, "Color");
+    glUniform4f(colorLoc, color.x, color.y, color.z, color.w);
 
     // draw mesh
     glBindVertexArray(VAO);

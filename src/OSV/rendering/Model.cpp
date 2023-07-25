@@ -171,6 +171,11 @@ void osv::Model::addMesh(std::vector<Vertex> &vertices, std::vector<unsigned int
     meshes.push_back(Mesh(vertices, indices, textures, mode, renderCanBeOverridden));
 }
 
+void osv::Model::addMesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, glm::vec4 color,
+                         GLenum mode) {
+    meshes.push_back(Mesh(vertices, indices, color, mode, renderCanBeOverridden));
+}
+
 void osv::Model::setPosition(glm::vec3 position) {
     model = glm::translate(startingModel, position);
     baseModel = model;
