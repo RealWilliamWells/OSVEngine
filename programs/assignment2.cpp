@@ -34,6 +34,7 @@ void userAppExit()
 
 std::shared_ptr<osv::RenderEngine> renderEngine;
 std::shared_ptr<osv::Shader> shader;
+std::shared_ptr<osv::Shader> lightShader;
 std::shared_ptr<osv::KeyInputHandler> keyInputHandler;
 
 #ifdef __EMSCRIPTEN__
@@ -54,8 +55,10 @@ int main() {
     renderEngine->openWindow();
 
     shader = std::shared_ptr<osv::Shader>(new osv::Shader(ASSET("shaders/defaultVertex.fs"), ASSET("shaders/defaultFragment.fs")));
+//    lightShader = std::shared_ptr<osv::Shader>(new osv::Shader(ASSET("shaders/light/defaultLightVertex.fs"), ASSET("shaders/light/defaultLightFragment.fs")));
 
     renderEngine->setMainShader(shader);
+    renderEngine->setLightShader(shader);
 
     // Add models
     osv::Model coorModel(ASSET("models/coor_axis/coor_axis.dae"), false,
@@ -68,6 +71,11 @@ int main() {
     renderEngine->addModel(tennisBall);
 
     renderEngine->addDisplayGrid();
+
+    // Add lights
+    osv::Light light({1.f, 1.f, 1.f, 1.f}, {1.f, 1.f, 1.f});
+
+    renderEngine->addLight(light);
 
     // Input handling
     // TODO: remove this cringe

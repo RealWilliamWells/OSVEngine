@@ -24,7 +24,7 @@
 #include "Shader.h"
 #include "Model.h"
 #include "Camera.h"
-#include "light/light.h"
+#include "Light.h"
 
 
 namespace osv {
@@ -50,6 +50,7 @@ private:
     float lastFrame = 0.f;
 
     std::shared_ptr<Shader> mainShader;
+    std::shared_ptr<Shader> lightShader;
 
     GLenum renderOverrideMode = GL_TRIANGLES;
 
@@ -72,6 +73,8 @@ public:
 
     void renderModels();
 
+    void renderLights();
+
     void clearBuffers();
 
     bool update();
@@ -81,6 +84,8 @@ public:
     void renderScreen();
 
     void setMainShader(const std::shared_ptr<Shader> &mainShader);
+
+    void setLightShader(const std::shared_ptr<Shader> &lightShader);
 
     void addDisplayGrid();
 

@@ -35,7 +35,7 @@ void osv::RenderEngine::openWindow() {
     }
     glfwMakeContextCurrent(window);
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+//    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 //    glewExperimental = true; // Needed for core profile
 #ifdef OS_SWITCH
@@ -81,6 +81,12 @@ void osv::RenderEngine::addLight(osv::Light& light) {
 void osv::RenderEngine::renderModels() {
     for (Model& shape : models) {
         shape.render(*mainShader, view, projection, renderOverrideMode);
+    }
+}
+
+void osv::RenderEngine::renderLights() {
+    for (Light& light : lights) {
+        light.render(*lightShader, view, projection, renderOverrideMode);
     }
 }
 
@@ -137,6 +143,7 @@ void osv::RenderEngine::renderScreen() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    renderLights();
     renderModels();
 
 //    ImGui_ImplOpenGL3_NewFrame();
@@ -153,6 +160,10 @@ void osv::RenderEngine::renderScreen() {
 
 void osv::RenderEngine::setMainShader(const std::shared_ptr<Shader> &mainShader) {
     RenderEngine::mainShader = mainShader;
+}
+
+void osv::RenderEngine::setLightShader(const std::shared_ptr<Shader> &lightShader) {
+    RenderEngine::lightShader = lightShader;
 }
 
 void osv::RenderEngine::addDisplayGrid() {
