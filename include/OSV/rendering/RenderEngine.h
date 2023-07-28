@@ -24,6 +24,7 @@
 #include "Shader.h"
 #include "Model.h"
 #include "Camera.h"
+#include "light/light.h"
 
 
 namespace osv {
@@ -44,6 +45,7 @@ private:
     Camera camera;
 
     std::vector<osv::Model> models;
+    std::vector<osv::Light> lights;
 
     float lastFrame = 0.f;
 
@@ -66,7 +68,7 @@ public:
 
     void addModel(osv::Model newModel);
 
-    void addModels(std::vector<osv::Model> newModels);
+    void addLight(osv::Light& light);
 
     void renderModels();
 

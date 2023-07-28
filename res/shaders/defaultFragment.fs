@@ -5,9 +5,12 @@ out vec4 FragColor;
 in vec2 TexCoord;
 
 uniform sampler2D ourTexture;
-uniform vec4 Color;
+uniform vec4 objectColor;
+uniform vec3 lightColor;
 
-void main()
-{
-    FragColor = TexCoord != vec2(0,0) ? texture(ourTexture, TexCoord) : vec4(Color.xyzw);
+void main() {
+//     vec4 mainColor = TexCoord != vec2(0,0) ? texture(ourTexture, TexCoord) * objectColor : objectColor;
+    vec4 mainColor = TexCoord != vec2(0,0) ? texture(ourTexture, TexCoord) : objectColor;
+//     FragColor = mainColor * vec4(lightColor, 1.0);
+    FragColor = mainColor;
 }

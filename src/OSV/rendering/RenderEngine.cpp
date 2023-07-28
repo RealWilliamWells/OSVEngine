@@ -74,10 +74,8 @@ void osv::RenderEngine::addModel(osv::Model newModel) {
     models.push_back(newModel);
 }
 
-void osv::RenderEngine::addModels(std::vector<osv::Model> newModels) {
-    for (Model& model : newModels) {
-        addModel(model);
-    }
+void osv::RenderEngine::addLight(osv::Light& light) {
+    lights.push_back(light);
 }
 
 void osv::RenderEngine::renderModels() {

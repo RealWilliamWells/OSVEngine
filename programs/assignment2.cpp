@@ -53,7 +53,7 @@ int main() {
     renderEngine->initWindow();
     renderEngine->openWindow();
 
-    shader = std::shared_ptr<osv::Shader>(new osv::Shader(ASSET("shaders/defaultVertex.vs"), ASSET("shaders/defaultFragment.fs")));
+    shader = std::shared_ptr<osv::Shader>(new osv::Shader(ASSET("shaders/defaultVertex.fs"), ASSET("shaders/defaultFragment.fs")));
 
     renderEngine->setMainShader(shader);
 

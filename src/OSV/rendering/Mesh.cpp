@@ -82,7 +82,7 @@ void osv::Mesh::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, g
     int projectionLoc = glGetUniformLocation(shader.programID, "projection");
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-    int colorLoc = glGetUniformLocation(shader.programID, "Color");
+    int colorLoc = glGetUniformLocation(shader.programID, "objectColor");
     glUniform4f(colorLoc, color.x, color.y, color.z, color.w);
 
     // draw mesh
@@ -90,7 +90,11 @@ void osv::Mesh::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, g
 
     // Allow rendering mode to be overridden except for models that should not be affected
     GLenum setMode = modeCanBeOverridden != false ? overrideMode : mode;
-    glDrawElements(setMode, indices.size(), GL_UNSIGNED_INT, 0);
+    if (indices.size() != 0) {
+        glDrawElements(setMode, indices.size(), GL_UNSIGNED_INT, 0);
+    } else {
+        glDrawArrays(setMode, 0, vertices.size());
+    }
     glBindVertexArray(0);
 }
 

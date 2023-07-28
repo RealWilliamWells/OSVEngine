@@ -113,6 +113,10 @@ file(GLOB SOURCE_FILES
         ${PROJECT_SOURCE_DIR}/include/*/*/*.inl
         ${PROJECT_SOURCE_DIR}/include/*/*/*.h
         ${PROJECT_SOURCE_DIR}/include/*/*/*.hpp
+        ${PROJECT_SOURCE_DIR}/src/*/*/*/*.cpp
+        ${PROJECT_SOURCE_DIR}/include/*/*/*/*.inl
+        ${PROJECT_SOURCE_DIR}/include/*/*/*/*.h
+        ${PROJECT_SOURCE_DIR}/include/*/*/*/*.hpp
 
         ${imgui_SOURCE_DIR}/*.h
         ${imgui_SOURCE_DIR}/*.cpp

@@ -5,6 +5,7 @@
 #include "OSV/rendering/RenderEngine.h"
 #include "OSV/input/KeyInputHandler.h"
 #include "OSV/input/keyConfigs/keyBinds.h"
+#include "OSV/rendering/unit_models/Cube.h"
 
 #ifndef OS_SWITCH
 #define ASSET(_str) "./res/" _str
@@ -53,7 +54,7 @@ int main() {
     renderEngine->initWindow();
     renderEngine->openWindow();
 
-    shader = std::shared_ptr<osv::Shader>(new osv::Shader(ASSET("shaders/defaultVertex.vs"), ASSET("shaders/defaultFragment.fs")));
+    shader = std::shared_ptr<osv::Shader>(new osv::Shader(ASSET("shaders/defaultVertex.fs"), ASSET("shaders/defaultFragment.fs")));
 
     renderEngine->setMainShader(shader);
 
@@ -64,8 +65,12 @@ int main() {
     osv::Model armModel(ASSET("models/arm/arm.dae"), true,
                         {-2.f, 0.f, -2.f}, -45.f, {0.f, 1.f, 0.f}, {.25f, .25f, .25f});
 
+    osv::model::Cube cube({0.f, 0.f, 1.f, 1.f});
+    cube.translate({-2.f, 1.f, 0.f});
+
     renderEngine->addModel(coorModel); // TODO: use references to models instead, or only pass path and create model inside of addModel.
     renderEngine->addModel(armModel);
+    renderEngine->addModel(cube);
 
     renderEngine->addDisplayGrid();
 
