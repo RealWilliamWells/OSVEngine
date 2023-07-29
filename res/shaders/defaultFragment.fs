@@ -6,7 +6,6 @@ in vec2 TexCoord;
 
 uniform sampler2D ourTexture;
 uniform vec4 objectColor;
-uniform vec3 lightColor;
 
 void main() {
 //     vec4 mainColor = TexCoord != vec2(0,0) ? texture(ourTexture, TexCoord) * objectColor : objectColor;

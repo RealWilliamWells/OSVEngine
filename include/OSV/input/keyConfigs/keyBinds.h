@@ -81,7 +81,7 @@ namespace osv::KeyBinds {
     }
 
     namespace EditModeControl {
-        unsigned int selectedModel = 1;
+        unsigned int selectedModel = 0;
         float currentScale = 1.f;
 
         void swapModels(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {

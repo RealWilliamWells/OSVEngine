@@ -79,6 +79,8 @@ void osv::RenderEngine::addLight(osv::Light& light) {
 }
 
 void osv::RenderEngine::renderModels() {
+    mainShader->setVec3("viewPos", camera.getPosition()); // TODO: handle data transfer to lighting shader better
+
     for (Model& shape : models) {
         shape.render(*mainShader, view, projection, renderOverrideMode);
     }

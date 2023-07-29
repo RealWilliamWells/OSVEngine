@@ -68,7 +68,7 @@ void osv::Mesh::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, g
         else if(name == "texture_specular")
             number = std::to_string(specularNr++);
 
-        shader.setInt(("material." + name + number).c_str(), i); // TODO: Lighting and materials are not in shader code yet
+//        shader.setInt(("material." + name + number).c_str(), i); // TODO: Lighting and materials are not in shader code yet
         glBindTexture(GL_TEXTURE_2D, textures.at(i).id);
     }
     glActiveTexture(GL_TEXTURE0);
@@ -84,6 +84,15 @@ void osv::Mesh::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, g
 
     int colorLoc = glGetUniformLocation(shader.programID, "objectColor");
     glUniform4f(colorLoc, color.x, color.y, color.z, color.w);
+
+    // Lighting test
+    shader.setVec3("lightColor", {0.25f, .25f, .25f});
+    shader.setVec3("lightPos", {-100.f, 100.f, 0.f});
+
+    shader.setVec3("material.ambient", {1.0f, 1.f, 1.f});
+    shader.setVec3("material.diffuse", {1.0f, 0.5f, 0.31f});
+    shader.setVec3("material.specular", {0.1f, 0.1f, 0.1f});
+    shader.setFloat("material.shininess", 32.0f);
 
     // draw mesh
     glBindVertexArray(VAO);
