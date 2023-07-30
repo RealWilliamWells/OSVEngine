@@ -86,7 +86,7 @@ void osv::Mesh::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, g
     glUniform4f(colorLoc, color.x, color.y, color.z, color.w);
 
     // Lighting test
-    shader.setVec3("lightColor", {0.25f, .25f, .25f});
+    shader.setVec3("lightColor", {1.f, 1.f, 1.f});
     shader.setVec3("lightPos", {-100.f, 100.f, 0.f});
 
     shader.setVec3("material.ambient", {1.0f, 1.f, 1.f});
