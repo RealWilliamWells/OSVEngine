@@ -55,27 +55,23 @@ int main() {
     renderEngine->openWindow();
 
     shader = std::shared_ptr<osv::Shader>(new osv::Shader(ASSET("shaders/defaultVertex.fs"), ASSET("shaders/defaultFragment.fs")));
-//    lightShader = std::shared_ptr<osv::Shader>(new osv::Shader(ASSET("shaders/light/defaultLightVertex.fs"), ASSET("shaders/light/defaultLightFragment.fs")));
-
-    renderEngine->setMainShader(shader);
-    renderEngine->setLightShader(shader);
 
     // Add models
-    osv::Model coorModel(ASSET("models/coor_axis/coor_axis.dae"), false,
-                         {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.19f, 0.19f, 0.19f});
+    osv::Model coorModel(shader, ASSET("models/coor_axis/coor_axis.dae"), false,
+                         {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.19f, 0.19f, 0.19f}, true);
 
-    osv::Model tennisBall(ASSET("models/tennis_ball/tennis_ball.dae"), true,
-                         {3.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.19f, 0.19f, 0.19f});
+    osv::Model tennisBall(shader, ASSET("models/tennis_ball/tennis_ball.dae"), true,
+                         {3.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.19f, 0.19f, 0.19f}, true);
 
     renderEngine->addModel(coorModel);
     renderEngine->addModel(tennisBall);
 
-    renderEngine->addDisplayGrid();
+    renderEngine->addDisplayGrid(shader);
 
     // Add lights
-    osv::Light light({1.f, 1.f, 1.f, 1.f}, {1.f, 1.f, 1.f});
-
-    renderEngine->addLight(light);
+//    osv::Light light({1.f, 1.f, 1.f, 1.f}, {1.f, 1.f, 1.f});
+//
+//    renderEngine->addLight(light);
 
     // Input handling
     // TODO: remove this cringe

@@ -19,6 +19,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <memory>
 
 #include "Mesh.h"
 #include "Shader.h"
@@ -29,6 +30,8 @@ namespace osv {
 
 class osv::Model {
 private:
+    std::shared_ptr<Shader> shader;
+
     std::vector<Texture> textures_loaded;
 
     std::vector<osv::Mesh> meshes;
@@ -45,16 +48,17 @@ private:
     std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
 
     bool renderCanBeOverridden = true;
+    bool useLighting;
 
 public:
-    Model(std::string path, bool renderCanBeOverridden, glm::vec3 position, float angle, glm::vec3 rotation,
-          glm::vec3 scale);
+    Model(std::shared_ptr<Shader> shader, std::string path, bool renderCanBeOverridden, glm::vec3 position, float angle,
+          glm::vec3 rotation, glm::vec3 scale, bool useLighting);
 
-    Model(bool renderCanBeOverridden);
+    Model(std::shared_ptr<Shader> shader, bool renderCanBeOverridden, bool useLighting);
 
     void deleteBuffers();
 
-    void render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, GLenum& overrideMode);
+    void render(glm::mat4 &view, glm::mat4 &projection, GLenum& overrideMode);
 
     void translate(glm::vec3 translation);
 

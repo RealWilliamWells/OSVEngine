@@ -57,7 +57,7 @@ private:
     void initCube(glm::vec4 color);
 
 public:
-    Cube(glm::vec4 color);
+    Cube(std::shared_ptr<Shader> shader, glm::vec4 color);
 };
 
 #endif //OSVENGINE_CUBE_H

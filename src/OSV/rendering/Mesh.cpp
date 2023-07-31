@@ -56,7 +56,8 @@ void osv::Mesh::setupMesh() {
     glBindVertexArray(0);
 }
 
-void osv::Mesh::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, glm::mat4 &model, GLenum& overrideMode) {
+void osv::Mesh::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, glm::mat4 &model, GLenum& overrideMode,
+                       bool useLighting) {
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
     for(unsigned int i = 0; i < textures.size(); i++) {
@@ -84,6 +85,8 @@ void osv::Mesh::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, g
 
     int colorLoc = glGetUniformLocation(shader.programID, "objectColor");
     glUniform4f(colorLoc, color.x, color.y, color.z, color.w);
+
+    shader.setBool("useLighting", useLighting);
 
     // Lighting test
     shader.setVec3("lightColor", {1.f, 1.f, 1.f});

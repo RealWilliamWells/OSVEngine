@@ -49,9 +49,6 @@ private:
 
     float lastFrame = 0.f;
 
-    std::shared_ptr<Shader> mainShader;
-    std::shared_ptr<Shader> lightShader;
-
     GLenum renderOverrideMode = GL_TRIANGLES;
 
     bool captureMouse = true;
@@ -83,11 +80,7 @@ public:
 
     void renderScreen();
 
-    void setMainShader(const std::shared_ptr<Shader> &mainShader);
-
-    void setLightShader(const std::shared_ptr<Shader> &lightShader);
-
-    void addDisplayGrid();
+    void addDisplayGrid(std::shared_ptr<Shader> shader);
 
     void setRenderOverrideMode(GLenum renderOverrideMode);
 

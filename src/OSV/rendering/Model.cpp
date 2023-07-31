@@ -5,11 +5,13 @@
 #include "OSV/rendering/Model.h"
 #include "OSV/rendering/texture.h"
 
-osv::Model::Model(bool renderCanBeOverridden) : renderCanBeOverridden(renderCanBeOverridden) {
+osv::Model::Model(std::shared_ptr<Shader> shader, bool renderCanBeOverridden, bool useLighting) :
+    renderCanBeOverridden(renderCanBeOverridden), shader(shader) {
 }
 
-osv::Model::Model(std::string path, bool renderCanBeOverridden, glm::vec3 position, float angle, glm::vec3 rotation,
-                  glm::vec3 scale) : renderCanBeOverridden(renderCanBeOverridden) {
+osv::Model::Model(std::shared_ptr<Shader> shader, std::string path, bool renderCanBeOverridden, glm::vec3 position, float angle, glm::vec3 rotation,
+                  glm::vec3 scale, bool useLighting) : renderCanBeOverridden(renderCanBeOverridden), shader(shader),
+                  useLighting(useLighting) {
     startingModel = glm::rotate(startingModel, angle, rotation);
     startingModel = glm::scale(startingModel, scale);
 
@@ -135,9 +137,9 @@ std::vector<osv::Texture> osv::Model::loadMaterialTextures(aiMaterial *mat, aiTe
     return textures;
 }
 
-void osv::Model::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, GLenum& overrideMode) {
+void osv::Model::render(glm::mat4 &view, glm::mat4 &projection, GLenum& overrideMode) {
     for (unsigned int i = 0; i < meshes.size(); i++) {
-        meshes.at(i).render(shader, view, projection, model, overrideMode);
+        meshes.at(i).render(*shader, view, projection, model, overrideMode, useLighting);
     }
 }
 

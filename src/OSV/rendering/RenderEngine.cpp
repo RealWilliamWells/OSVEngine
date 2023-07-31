@@ -79,16 +79,14 @@ void osv::RenderEngine::addLight(osv::Light& light) {
 }
 
 void osv::RenderEngine::renderModels() {
-    mainShader->setVec3("viewPos", camera.getPosition()); // TODO: handle data transfer to lighting shader better
-
     for (Model& shape : models) {
-        shape.render(*mainShader, view, projection, renderOverrideMode);
+        shape.render(view, projection, renderOverrideMode);
     }
 }
 
 void osv::RenderEngine::renderLights() {
     for (Light& light : lights) {
-        light.render(*lightShader, view, projection, renderOverrideMode);
+        light.render(view, projection, renderOverrideMode);
     }
 }
 
@@ -160,15 +158,7 @@ void osv::RenderEngine::renderScreen() {
 //    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void osv::RenderEngine::setMainShader(const std::shared_ptr<Shader> &mainShader) {
-    RenderEngine::mainShader = mainShader;
-}
-
-void osv::RenderEngine::setLightShader(const std::shared_ptr<Shader> &lightShader) {
-    RenderEngine::lightShader = lightShader;
-}
-
-void osv::RenderEngine::addDisplayGrid() {
+void osv::RenderEngine::addDisplayGrid(std::shared_ptr<Shader> shader) {
     glEnable(GL_LINE_SMOOTH);
     glEnable(GL_BLEND);
 
@@ -181,6 +171,7 @@ void osv::RenderEngine::addDisplayGrid() {
     for(float j=0.f; j<=gridSize; j++) {
         for(int i=0.f; i<=gridSize; i++) {
             vertex.position = glm::vec3(i*stepSize - (gridSize/2.f) * stepSize, 0.f, j*stepSize - (gridSize/2.f) * stepSize);
+            vertex.texCoords = {0.f, 0.f};
             vertices.push_back(vertex);
         }
     }
@@ -204,7 +195,7 @@ void osv::RenderEngine::addDisplayGrid() {
         }
     }
 
-    Model grid(false);
+    Model grid(shader, false, false);
 
     std::vector<Texture> textures;
 

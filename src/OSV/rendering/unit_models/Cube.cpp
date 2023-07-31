@@ -4,7 +4,7 @@
 
 #include "OSV/rendering/unit_models/Cube.h"
 
-osv::model::Cube::Cube(glm::vec4 color) : Model(true) {
+osv::model::Cube::Cube(std::shared_ptr<Shader> shader, glm::vec4 color) : Model(shader, true, true) {
     initCube(color);
 }
 

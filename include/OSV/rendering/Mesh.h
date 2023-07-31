@@ -53,7 +53,8 @@ public:
     Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, glm::vec4 color, GLenum mode,
          bool &modeCanBeOverridden);
 
-    void render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, glm::mat4 &model, GLenum& overrideMode);
+    void render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, glm::mat4 &model, GLenum& overrideMode,
+                bool useLighting);
 
     void deleteBuffers();
 };
