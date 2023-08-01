@@ -61,7 +61,7 @@ int main() {
                          {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.19f, 0.19f, 0.19f}, true);
 
     osv::Model tennisBall(shader, ASSET("models/tennis_ball/tennis_ball.dae"), true,
-                         {3.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.19f, 0.19f, 0.19f}, true);
+                         {3.f, 1.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.19f, 0.19f, 0.19f}, true);
 
     renderEngine->addModel(coorModel);
     renderEngine->addModel(tennisBall);
