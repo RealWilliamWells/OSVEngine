@@ -65,6 +65,8 @@ public:
         } else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT || state.buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER] == GLFW_PRESS)) {
             Mouse::camera->moveFrontAndBack(yoffset);
         }
+
+        Mouse::camera->look(pitch, yaw);
     }
 
     static void freeFlyInputCallback(GLFWwindow* window, double xpos, double ypos) {
@@ -79,6 +81,11 @@ public:
             pitch =  89.0f;
         if(pitch < -89.0f)
             pitch = -89.0f;
+
+        Mouse::camera->look(pitch, yaw);
+    }
+
+    static void quiz1Callback(GLFWwindow* window, double xpos, double ypos) {
     }
 };
 

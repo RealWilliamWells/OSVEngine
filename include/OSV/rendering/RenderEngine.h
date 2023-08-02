@@ -78,7 +78,7 @@ public:
 
     void renderScreen();
 
-    void addDisplayGrid(std::shared_ptr<Shader> shader);
+    void addDisplayGrid(std::shared_ptr<Shader> shader, float width, float height);
 
     void setRenderOverrideMode(GLenum renderOverrideMode);
 
