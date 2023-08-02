@@ -50,6 +50,8 @@ private:
     bool renderCanBeOverridden = true;
     bool useLighting;
 
+    glm::vec3 position;
+
 public:
     Model(std::shared_ptr<Shader> shader, std::string path, bool renderCanBeOverridden, glm::vec3 position, float angle,
           glm::vec3 rotation, glm::vec3 scale, bool useLighting);
@@ -58,7 +60,7 @@ public:
 
     void deleteBuffers();
 
-    void render(glm::mat4 &view, glm::mat4 &projection, GLenum& overrideMode);
+    void render(glm::mat4 &view, glm::mat4 &projection, GLenum& overrideMode, Light& light);
 
     void translate(glm::vec3 translation);
 
@@ -76,6 +78,7 @@ public:
 
     void setPosition(glm::vec3 position);
 
+    const glm::vec3 &getPosition() const;
 };
 
 

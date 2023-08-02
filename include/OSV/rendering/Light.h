@@ -7,18 +7,20 @@
 
 #include "vec3.hpp"
 #include "vec4.hpp"
-#include "unit_models/Cube.h"
 
 namespace osv {
     class Light;
 }
 
-class osv::Light : public model::Cube {
-private:
-    glm::vec3 lightColor;
-
+class osv::Light {
 public:
-    Light(glm::vec4 objectColor, glm::vec3 lightColor);
+    glm::vec3 lightColor;
+    glm::vec3 diffuse;
+    glm::vec3 ambient;
+
+    glm::vec3 position;
+
+    Light(glm::vec3 lightColor, glm::vec3 diffuse, glm::vec3 ambient, glm::vec3 position);
 };
 
 #endif //OSVENGINE_LIGHT_H

@@ -11,6 +11,7 @@
 #include "vec3.hpp"
 #include "vec2.hpp"
 #include "fwd.hpp"
+#include "Light.h"
 
 namespace osv {
     struct Vertex;
@@ -54,7 +55,7 @@ public:
          bool &modeCanBeOverridden);
 
     void render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, glm::mat4 &model, GLenum& overrideMode,
-                bool useLighting);
+                bool useLighting, osv::Light& light);
 
     void deleteBuffers();
 };

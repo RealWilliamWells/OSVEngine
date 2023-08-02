@@ -80,13 +80,7 @@ void osv::RenderEngine::addLight(osv::Light& light) {
 
 void osv::RenderEngine::renderModels() {
     for (Model& shape : models) {
-        shape.render(view, projection, renderOverrideMode);
-    }
-}
-
-void osv::RenderEngine::renderLights() {
-    for (Light& light : lights) {
-        light.render(view, projection, renderOverrideMode);
+        shape.render(view, projection, renderOverrideMode, lights.at(0)); // For now only support one light source
     }
 }
 
@@ -143,7 +137,6 @@ void osv::RenderEngine::renderScreen() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    renderLights();
     renderModels();
 
 //    ImGui_ImplOpenGL3_NewFrame();

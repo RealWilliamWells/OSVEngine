@@ -70,8 +70,6 @@ public:
 
     void renderModels();
 
-    void renderLights();
-
     void clearBuffers();
 
     bool update();

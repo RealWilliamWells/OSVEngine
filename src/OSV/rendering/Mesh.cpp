@@ -57,7 +57,7 @@ void osv::Mesh::setupMesh() {
 }
 
 void osv::Mesh::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, glm::mat4 &model, GLenum& overrideMode,
-                       bool useLighting) {
+                       bool useLighting, Light& light) {
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
     for(unsigned int i = 0; i < textures.size(); i++) {
@@ -74,28 +74,25 @@ void osv::Mesh::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, g
     }
     glActiveTexture(GL_TEXTURE0);
 
-    int modelLoc = glGetUniformLocation(shader.programID, "model");
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
-    int viewLoc = glGetUniformLocation(shader.programID, "view");
-    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-
-    int projectionLoc = glGetUniformLocation(shader.programID, "projection");
-    glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-    int colorLoc = glGetUniformLocation(shader.programID, "objectColor");
-    glUniform4f(colorLoc, color.x, color.y, color.z, color.w);
+    shader.setMat4("model", model);
+    shader.setMat4("view", view);
+    shader.setMat4("projection", projection);
 
     shader.setBool("useLighting", useLighting);
 
-    // Lighting test
-    shader.setVec3("lightColor", {.5f, .5f, .5f});
-    shader.setVec3("lightPos", {-100.f, 100.f, 0.f});
+    if (useLighting) {
+        shader.setVec3("light.ambient", light.ambient);
+        shader.setVec3("light.diffuse", light.diffuse);
+        shader.setVec3("light.color", light.lightColor);
+        shader.setVec3("light.position", light.position);
 
-    shader.setVec3("material.ambient", {1.0f, 1.f, 1.f});
-    shader.setVec3("material.diffuse", {1.0f, 0.5f, 0.31f});
-    shader.setVec3("material.specular", {0.1f, 0.1f, 0.1f});
-    shader.setFloat("material.shininess", 32.0f);
+        // Use these default values for now
+        shader.setVec3("material.diffuse", {1.0f, 0.5f, 0.31f});
+        shader.setVec3("material.specular", {0.1f, 0.1f, 0.1f});
+        shader.setFloat("material.shininess", 32.0f);
+    } else {
+        shader.setVec4("objectColor", color);
+    }
 
     // draw mesh
     glBindVertexArray(VAO);

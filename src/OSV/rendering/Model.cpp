@@ -19,6 +19,8 @@ osv::Model::Model(std::shared_ptr<Shader> shader, std::string path, bool renderC
     model = glm::translate(model, position);
     baseModel = model;
 
+    this->position = position;
+
     loadModel(path);
 }
 
@@ -137,9 +139,9 @@ std::vector<osv::Texture> osv::Model::loadMaterialTextures(aiMaterial *mat, aiTe
     return textures;
 }
 
-void osv::Model::render(glm::mat4 &view, glm::mat4 &projection, GLenum& overrideMode) {
+void osv::Model::render(glm::mat4 &view, glm::mat4 &projection, GLenum& overrideMode, Light& light) {
     for (unsigned int i = 0; i < meshes.size(); i++) {
-        meshes.at(i).render(*shader, view, projection, model, overrideMode, useLighting);
+        meshes.at(i).render(*shader, view, projection, model, overrideMode, useLighting, light);
     }
 }
 
@@ -179,6 +181,11 @@ void osv::Model::addMesh(std::vector<Vertex> &vertices, std::vector<unsigned int
 }
 
 void osv::Model::setPosition(glm::vec3 position) {
+    this->position = position;
     model = glm::translate(startingModel, position);
     baseModel = model;
+}
+
+const glm::vec3 &osv::Model::getPosition() const {
+    return position;
 }

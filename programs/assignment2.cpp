@@ -5,6 +5,7 @@
 #include "OSV/rendering/RenderEngine.h"
 #include "OSV/input/KeyInputHandler.h"
 #include "OSV/input/keyConfigs/keyBinds.h"
+#include "OSV/rendering/unit_models/Cube.h"
 
 #ifndef OS_SWITCH
 #define ASSET(_str) "./res/" _str
@@ -57,21 +58,14 @@ int main() {
     shader = std::shared_ptr<osv::Shader>(new osv::Shader(ASSET("shaders/defaultVertex.fs"), ASSET("shaders/defaultFragment.fs")));
 
     // Add models
-    osv::Model coorModel(shader, ASSET("models/coor_axis/coor_axis.dae"), false,
-                         {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.19f, 0.19f, 0.19f}, true);
-
     osv::Model tennisBall(shader, ASSET("models/tennis_ball/tennis_ball.dae"), true,
-                         {3.f, 1.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.19f, 0.19f, 0.19f}, true);
-
-    renderEngine->addModel(coorModel);
+                         {0.f, 3.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.19f, 0.19f, 0.19f}, true);
     renderEngine->addModel(tennisBall);
 
-    renderEngine->addDisplayGrid(shader);
-
     // Add lights
-//    osv::Light light({1.f, 1.f, 1.f, 1.f}, {1.f, 1.f, 1.f});
-//
-//    renderEngine->addLight(light);
+    osv::Light light({1.f, 1.f, 1.f}, {1.f, 1.f, 1.f}, {1.f, 1.f, 1.f}, {0.f, 33.f, 0.f});
+
+    renderEngine->addLight(light);
 
     // Input handling
     // TODO: remove this cringe
@@ -100,7 +94,7 @@ int main() {
 
     userAppExit();
 #else
-    while (renderEngine->update() && keyInputHandler->processInput(renderEngine->getWindow(), renderEngine->deltaTime));
+    while (renderEngine->update() && keyInputHandler->processInput(renderEngine->getWindow(), renderEngine->deltaTime)) { shader->setVec3("viewPos", osv::Mouse::camera->getPosition());};
 #endif
 
     return 0;
