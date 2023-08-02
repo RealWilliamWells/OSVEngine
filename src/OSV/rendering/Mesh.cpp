@@ -16,6 +16,17 @@ osv::Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
     setupMesh();
 }
 
+osv::Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, glm::vec4 color, GLenum mode,
+                bool &modeCanBeOverridden) : modeCanBeOverridden(modeCanBeOverridden) {
+    this->vertices = vertices;
+    this->indices = indices;
+    this->color = color;
+
+    this->mode = mode;
+
+    setupMesh();
+}
+
 void osv::Mesh::setupMesh() {
     glEnable(GL_PROGRAM_POINT_SIZE);
 
@@ -45,7 +56,8 @@ void osv::Mesh::setupMesh() {
     glBindVertexArray(0);
 }
 
-void osv::Mesh::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, glm::mat4 &model, GLenum& overrideMode) {
+void osv::Mesh::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, glm::mat4 &model, GLenum& overrideMode,
+                       bool useLighting, Light& light) {
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
     for(unsigned int i = 0; i < textures.size(); i++) {
@@ -57,26 +69,41 @@ void osv::Mesh::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, g
         else if(name == "texture_specular")
             number = std::to_string(specularNr++);
 
-        shader.setInt(("material." + name + number).c_str(), i); // TODO: Lighting and materials are not in shader code yet
+//        shader.setInt(("material." + name + number).c_str(), i); // TODO: Lighting and materials are not in shader code yet
         glBindTexture(GL_TEXTURE_2D, textures.at(i).id);
     }
     glActiveTexture(GL_TEXTURE0);
 
-    int modelLoc = glGetUniformLocation(shader.programID, "model");
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+    shader.setMat4("model", model);
+    shader.setMat4("view", view);
+    shader.setMat4("projection", projection);
 
-    int viewLoc = glGetUniformLocation(shader.programID, "view");
-    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+    shader.setBool("useLighting", useLighting);
 
-    int projectionLoc = glGetUniformLocation(shader.programID, "projection");
-    glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+    if (useLighting) {
+        shader.setVec3("light.ambient", light.ambient);
+        shader.setVec3("light.diffuse", light.diffuse);
+        shader.setVec3("light.color", light.lightColor);
+        shader.setVec3("light.position", light.position);
+
+        // Use these default values for now
+        shader.setVec3("material.diffuse", {1.0f, 0.5f, 0.31f});
+        shader.setVec3("material.specular", {0.1f, 0.1f, 0.1f});
+        shader.setFloat("material.shininess", 32.0f);
+    } else {
+        shader.setVec4("objectColor", color);
+    }
 
     // draw mesh
     glBindVertexArray(VAO);
 
     // Allow rendering mode to be overridden except for models that should not be affected
     GLenum setMode = modeCanBeOverridden != false ? overrideMode : mode;
-    glDrawElements(setMode, indices.size(), GL_UNSIGNED_INT, 0);
+    if (indices.size() != 0) {
+        glDrawElements(setMode, indices.size(), GL_UNSIGNED_INT, 0);
+    } else {
+        glDrawArrays(setMode, 0, vertices.size());
+    }
     glBindVertexArray(0);
 }
 

@@ -40,7 +40,6 @@ void osv::Camera::moveUpAndDown(float speed) {
     position -= (speed * delta) * up;
 }
 
-
 void osv::Camera::look(float pitch, float yaw) {
     glm::vec3 direction;
     direction.x = cos(glm::radians(yaw));

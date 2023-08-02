@@ -113,6 +113,10 @@ file(GLOB SOURCE_FILES
         ${PROJECT_SOURCE_DIR}/include/*/*/*.inl
         ${PROJECT_SOURCE_DIR}/include/*/*/*.h
         ${PROJECT_SOURCE_DIR}/include/*/*/*.hpp
+        ${PROJECT_SOURCE_DIR}/src/*/*/*/*.cpp
+        ${PROJECT_SOURCE_DIR}/include/*/*/*/*.inl
+        ${PROJECT_SOURCE_DIR}/include/*/*/*/*.h
+        ${PROJECT_SOURCE_DIR}/include/*/*/*/*.hpp
 
         ${imgui_SOURCE_DIR}/*.h
         ${imgui_SOURCE_DIR}/*.cpp
@@ -143,7 +147,10 @@ endif()
 #include(GoogleTest)
 #gtest_discover_tests(${PROJECT_NAME}_tests)
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+add_executable(${PROJECT_NAME}_ass1 ${SOURCE_FILES} programs/assignment1.cpp)
+add_executable(${PROJECT_NAME}_ass2 ${SOURCE_FILES} programs/assignment2.cpp)
+
+add_executable(${PROJECT_NAME}_quiz1 ${SOURCE_FILES} programs/quiz1.cpp)
 
 file(COPY res DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
@@ -170,7 +177,10 @@ if(SWITCH)
 endif()
 
 if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten" AND NOT SWITCH)
-    target_link_libraries(${PROJECT_NAME} OpenGL::GL GLEW::glew glfw openal sndfile assimp)
+    target_link_libraries(${PROJECT_NAME}_ass1 OpenGL::GL GLEW::glew glfw openal sndfile assimp)
+    target_link_libraries(${PROJECT_NAME}_ass2 OpenGL::GL GLEW::glew glfw openal sndfile assimp)
+
+    target_link_libraries(${PROJECT_NAME}_quiz1 OpenGL::GL GLEW::glew glfw openal sndfile assimp)
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
     target_link_libraries(${PROJECT_NAME} ${OPENGL_gl_LIBRARY} sndfile assimp)
     set_target_properties(${PROJECT_NAME}

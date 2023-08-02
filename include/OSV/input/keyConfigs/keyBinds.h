@@ -81,7 +81,7 @@ namespace osv::KeyBinds {
     }
 
     namespace EditModeControl {
-        unsigned int selectedModel = 1;
+        unsigned int selectedModel = 0;
         float currentScale = 1.f;
 
         void swapModels(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
@@ -110,21 +110,13 @@ namespace osv::KeyBinds {
         }
 
         void rotateLeft(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
-            if (delayPress) {
-                return;
-            }
-
-            float rotation = 8.f * delta;
+            float rotation = 3.f * delta;
 
             renderEngine->rotateModel(selectedModel, rotation, {0.f, 1.f, 0.f});
         }
 
         void rotateRight(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
-            if (delayPress) {
-                return;
-            }
-
-            float rotation = -8.f * delta;
+            float rotation = -3.f * delta;
 
             renderEngine->rotateModel(selectedModel, rotation, {0.f, 1.f, 0.f});
         }
@@ -318,6 +310,9 @@ namespace osv::KeyBinds {
             glm::vec3 camLook = {-xRacketPos, -1.f, 0.f};
 
             cam->setFront(glm::normalize(camLook));
+
+            osv::MouseInput::yaw = 0.f;
+            osv::MouseInput::pitch = 0.f;
         }
 
         void selectRacket(std::shared_ptr<osv::RenderEngine> renderEngine, int racketNum) {

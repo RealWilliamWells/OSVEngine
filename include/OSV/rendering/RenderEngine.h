@@ -24,6 +24,7 @@
 #include "Shader.h"
 #include "Model.h"
 #include "Camera.h"
+#include "Light.h"
 
 
 namespace osv {
@@ -44,10 +45,9 @@ private:
     Camera camera;
 
     std::vector<osv::Model> models;
+    std::vector<osv::Light> lights;
 
     float lastFrame = 0.f;
-
-    std::shared_ptr<Shader> mainShader;
 
     GLenum renderOverrideMode = GL_TRIANGLES;
 
@@ -66,7 +66,7 @@ public:
 
     void addModel(osv::Model newModel);
 
-    void addModels(std::vector<osv::Model> newModels);
+    void addLight(osv::Light& light);
 
     void renderModels();
 
@@ -78,9 +78,7 @@ public:
 
     void renderScreen();
 
-    void setMainShader(const std::shared_ptr<Shader> &mainShader);
-
-    void addDisplayGrid();
+    void addDisplayGrid(std::shared_ptr<Shader> shader);
 
     void setRenderOverrideMode(GLenum renderOverrideMode);
 

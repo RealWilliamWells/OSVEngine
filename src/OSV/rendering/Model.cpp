@@ -5,17 +5,21 @@
 #include "OSV/rendering/Model.h"
 #include "OSV/rendering/texture.h"
 
-osv::Model::Model(bool renderCanBeOverridden) : renderCanBeOverridden(renderCanBeOverridden) {
+osv::Model::Model(std::shared_ptr<Shader> shader, bool renderCanBeOverridden, bool useLighting) :
+    renderCanBeOverridden(renderCanBeOverridden), shader(shader) {
 }
 
-osv::Model::Model(std::string path, bool renderCanBeOverridden, glm::vec3 position, float angle, glm::vec3 rotation,
-                  glm::vec3 scale) : renderCanBeOverridden(renderCanBeOverridden) {
+osv::Model::Model(std::shared_ptr<Shader> shader, std::string path, bool renderCanBeOverridden, glm::vec3 position, float angle, glm::vec3 rotation,
+                  glm::vec3 scale, bool useLighting) : renderCanBeOverridden(renderCanBeOverridden), shader(shader),
+                  useLighting(useLighting) {
     startingModel = glm::rotate(startingModel, angle, rotation);
     startingModel = glm::scale(startingModel, scale);
 
     model = startingModel;
     model = glm::translate(model, position);
     baseModel = model;
+
+    this->position = position;
 
     loadModel(path);
 }
@@ -135,13 +139,13 @@ std::vector<osv::Texture> osv::Model::loadMaterialTextures(aiMaterial *mat, aiTe
     return textures;
 }
 
-void osv::Model::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, GLenum& overrideMode) {
+void osv::Model::render(glm::mat4 &view, glm::mat4 &projection, GLenum& overrideMode, Light& light) {
     for (unsigned int i = 0; i < meshes.size(); i++) {
-        meshes.at(i).render(shader, view, projection, model, overrideMode);
+        meshes.at(i).render(*shader, view, projection, model, overrideMode, useLighting, light);
     }
 
     for (Model& child : childrenModels) {
-        child.render(shader, view, projection, overrideMode);
+        child.render(view, projection, overrideMode, light);
     }
 }
 
@@ -191,9 +195,19 @@ void osv::Model::addMesh(std::vector<Vertex> &vertices, std::vector<unsigned int
     meshes.push_back(Mesh(vertices, indices, textures, mode, renderCanBeOverridden));
 }
 
+void osv::Model::addMesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, glm::vec4 color,
+                         GLenum mode) {
+    meshes.push_back(Mesh(vertices, indices, color, mode, renderCanBeOverridden));
+}
+
 void osv::Model::setPosition(glm::vec3 position) {
+    this->position = position;
     model = glm::translate(startingModel, position);
     baseModel = model;
+}
+
+const glm::vec3 &osv::Model::getPosition() const {
+    return position;
 }
 
 void osv::Model::addChild(osv::Model &model) {

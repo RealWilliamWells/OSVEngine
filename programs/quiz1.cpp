@@ -1,5 +1,5 @@
 //
-// Created by william on 13/03/23.
+// Created by william on 02/08/23.
 //
 
 #include "OSV/rendering/RenderEngine.h"
@@ -40,6 +40,7 @@ std::shared_ptr<osv::KeyInputHandler> keyInputHandler;
 static void emscriptenMainLoop() {
     renderEngine->update();
     keyInputHandler->processInput(renderEngine->getWindow(), renderEngine->deltaTime);
+    shader->setVec3("viewPos", osv::Mouse::camera->getPosition());
 }
 #endif
 
@@ -55,41 +56,39 @@ int main() {
 
     shader = std::shared_ptr<osv::Shader>(new osv::Shader(ASSET("shaders/defaultVertex.vs"), ASSET("shaders/defaultFragment.fs")));
 
-    renderEngine->setMainShader(shader);
-
     // Add models
-    osv::Model coorModel(ASSET("models/coor_axis/coor_axis.dae"), false,
-                         {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.19f, 0.19f, 0.19f});
+    osv::Model coorModel(shader, ASSET("models/coor_axis/coor_axis.dae"), false,
+                         {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.19f, 0.19f, 0.19f}, false);
 
-    osv::Model netModel(ASSET("models/tenis_net/tenis_net.dae"), false,
-                         {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.07f, 0.07f, 0.07f});
+    osv::Model netModel(shader, ASSET("models/tenis_net/tenis_net.dae"), false,
+                        {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.07f, 0.07f, 0.07f}, false);
 
-    osv::Model sLetterModel(ASSET("models/letters/s/s.dae"), false,
-                            {25.f, 25.f, 15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f});
-    osv::Model racket1Model(ASSET("models/tenis_racket/tenis_racket.dae"), false,
-                        {25.f, 0.f, 15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f});
+    osv::Model sLetterModel(shader, ASSET("models/letters/s/s.dae"), false,
+                            {25.f, 25.f, 15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, false);
+    osv::Model racket1Model(shader, ASSET("models/tenis_racket/tenis_racket.dae"), false,
+                            {25.f, 0.f, 15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, false);
     racket1Model.addChild(sLetterModel);
 
-    osv::Model lLetterModel(ASSET("models/letters/l/l.dae"), false,
-                            {25.f, 25.f, -15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f});
-    osv::Model racket2Model(ASSET("models/tenis_racket/tenis_racket.dae"), false,
-                           {25.f, 0.f, -15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f});
+    osv::Model lLetterModel(shader, ASSET("models/letters/l/l.dae"), false,
+                            {25.f, 25.f, -15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, false);
+    osv::Model racket2Model(shader, ASSET("models/tenis_racket/tenis_racket.dae"), false,
+                            {25.f, 0.f, -15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, false);
     racket2Model.addChild(lLetterModel);
 
-    osv::Model wLetterModel(ASSET("models/letters/w/w.dae"), false,
-                            {-25.f, 25.f, 15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f});
-    osv::Model racket3Model(ASSET("models/tenis_racket/tenis_racket.dae"), false,
-                           {-25.f, 0.f, 15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f});
+    osv::Model wLetterModel(shader, ASSET("models/letters/w/w.dae"), false,
+                            {-25.f, 25.f, 15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, false);
+    osv::Model racket3Model(shader, ASSET("models/tenis_racket/tenis_racket.dae"), false,
+                            {-25.f, 0.f, 15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, false);
     racket3Model.addChild(wLetterModel);
 
-    osv::Model eLetterModel(ASSET("models/letters/e/e.dae"), false,
-                            {-25.f, 25.f, -15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f});
-    osv::Model racket4Model(ASSET("models/tenis_racket/tenis_racket.dae"), false,
-                           {-25.f, 0.f, -15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f});
+    osv::Model eLetterModel(shader, ASSET("models/letters/e/e.dae"), false,
+                            {-25.f, 25.f, -15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, false);
+    osv::Model racket4Model(shader, ASSET("models/tenis_racket/tenis_racket.dae"), false,
+                            {-25.f, 0.f, -15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, false);
     racket4Model.addChild(eLetterModel);
 
-    osv::Model skyBoxModel(ASSET("models/skybox/skybox.dae"), false,
-                        {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {6.f, 6.f, 6.f});
+    osv::Model skyBoxModel(shader, ASSET("models/skybox/skybox.dae"), false,
+                           {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {6.f, 6.f, 6.f}, false);
 
     renderEngine->addModel(skyBoxModel);
     renderEngine->addModel(coorModel); // TODO: use references to models instead, or only pass path and create model inside of addModel.
@@ -99,7 +98,12 @@ int main() {
     renderEngine->addModel(racket3Model);
     renderEngine->addModel(racket4Model);
 
-    renderEngine->addDisplayGrid();
+    renderEngine->addDisplayGrid(shader);
+
+    // Add lights
+    osv::Light light({1.f, 1.f, 1.f}, {1.f, 1.f, 1.f}, {.2f, .2f, .2f}, {0.f, 3.f, 0.f});
+
+    renderEngine->addLight(light);
 
     // Input handling
     // TODO: remove this cringe
@@ -124,11 +128,12 @@ int main() {
     while (appletMainLoop()) {
         renderEngine->update();
         keyInputHandler->processInput(renderEngine->getWindow(), renderEngine->deltaTime);
+        shader->setVec3("viewPos", osv::Mouse::camera->getPosition());
     }
 
     userAppExit();
 #else
-    while (renderEngine->update() && keyInputHandler->processInput(renderEngine->getWindow(), renderEngine->deltaTime));
+    while (renderEngine->update() && keyInputHandler->processInput(renderEngine->getWindow(), renderEngine->deltaTime)) { shader->setVec3("viewPos", osv::Mouse::camera->getPosition());}
 #endif
 
     return 0;

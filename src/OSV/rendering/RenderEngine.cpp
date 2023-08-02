@@ -74,15 +74,13 @@ void osv::RenderEngine::addModel(osv::Model newModel) {
     models.push_back(newModel);
 }
 
-void osv::RenderEngine::addModels(std::vector<osv::Model> newModels) {
-    for (Model& model : newModels) {
-        addModel(model);
-    }
+void osv::RenderEngine::addLight(osv::Light& light) {
+    lights.push_back(light);
 }
 
 void osv::RenderEngine::renderModels() {
     for (Model& shape : models) {
-        shape.render(*mainShader, view, projection, renderOverrideMode);
+        shape.render(view, projection, renderOverrideMode, lights.at(0)); // For now only support one light source
     }
 }
 
@@ -153,11 +151,7 @@ void osv::RenderEngine::renderScreen() {
 //    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void osv::RenderEngine::setMainShader(const std::shared_ptr<Shader> &mainShader) {
-    RenderEngine::mainShader = mainShader;
-}
-
-void osv::RenderEngine::addDisplayGrid() {
+void osv::RenderEngine::addDisplayGrid(std::shared_ptr<Shader> shader) {
     glEnable(GL_LINE_SMOOTH);
     glEnable(GL_BLEND);
 
@@ -194,11 +188,9 @@ void osv::RenderEngine::addDisplayGrid() {
         }
     }
 
-    Model grid(false);
+    Model grid(shader, false, false);
 
-    std::vector<Texture> textures;
-
-    grid.addMesh(vertices, indices, textures, GL_LINES);
+    grid.addMesh(vertices, indices, {0.75f, 1.f, 0.f, 1.f}, GL_LINES);
  
     addModel(grid);
 }

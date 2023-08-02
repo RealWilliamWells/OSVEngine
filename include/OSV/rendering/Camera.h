@@ -14,7 +14,7 @@ namespace osv {
 }
 
 class osv::Camera {
-    glm::vec3 position = glm::vec3(0.0f, 1.0f, 6.0f);
+    glm::vec3 position = glm::vec3(0.0f, 1.0f, 2.0f);
     glm::vec3 front = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 right;
     glm::vec3 up;
@@ -29,11 +29,7 @@ public:
 
     const glm::vec3 &getPosition() const;
 
-    void setPosition(const glm::vec3 &position);
-
     const glm::vec3 &getFront() const;
-
-    void setFront(const glm::vec3 &front);
 
     const glm::vec3 &getUp() const;
 
@@ -46,6 +42,10 @@ public:
     void look(float pitch, float yaw);
 
     float getDefaultMoveSpeed() const;
+
+    void setPosition(const glm::vec3 &position);
+
+    void setFront(const glm::vec3 &front);
 };
 
 #endif //WIZENGINE3D_CAMERA_H
