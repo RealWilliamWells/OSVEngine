@@ -151,29 +151,27 @@ void osv::RenderEngine::renderScreen() {
 //    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void osv::RenderEngine::addDisplayGrid(std::shared_ptr<Shader> shader) {
+void osv::RenderEngine::addDisplayGrid(std::shared_ptr<Shader> shader, float width, float height) {
     glEnable(GL_LINE_SMOOTH);
     glEnable(GL_BLEND);
 
-    float gridWidth = 78.f; // Size of the grid
-    float gridHeight = 36.f;
     float stepSize = .1f;
 
     std::vector<Vertex> vertices;
     Vertex vertex;
 
-    for(float j=0.f; j<=gridHeight; j++) {
-        for(int i=0.f; i<=gridWidth; i++) {
-            vertex.position = glm::vec3(i*stepSize - (gridWidth/2.f) * stepSize, 0.f, j*stepSize - (gridHeight/2.f) * stepSize);
+    for(float j=0.f; j<=height; j++) {
+        for(int i=0.f; i<=width; i++) {
+            vertex.position = glm::vec3(i*stepSize - (width/2.f) * stepSize, 0.f, j*stepSize - (height/2.f) * stepSize);
             vertices.push_back(vertex);
         }
     }
 
     std::vector<unsigned int> indices;
-    for(int j=0; j<gridHeight; ++j) {
-        for(int i=0; i<gridWidth; ++i) {
-            int row1 = j * (gridWidth+1);
-            int row2 = (j+1) * (gridWidth+1);
+    for(int j=0; j<height; ++j) {
+        for(int i=0; i<width; ++i) {
+            int row1 = j * (width+1);
+            int row2 = (j+1) * (width+1);
 
             indices.push_back(row1+i);
             indices.push_back(row1+i+1);

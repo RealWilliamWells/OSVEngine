@@ -70,7 +70,7 @@ int main() {
     renderEngine->addModel(coorModel); // TODO: use references to models instead, or only pass path and create model inside of addModel.
     renderEngine->addModel(backdrop);
 
-    renderEngine->addDisplayGrid(shader);
+    renderEngine->addDisplayGrid(shader, 100.f, 100.f);
 
     // Add lights
     osv::Light light({1.f, 1.f, 1.f}, {1.f, 1.f, 1.f}, {.2f, .2f, .2f}, {0.f, 3.f, 0.f});

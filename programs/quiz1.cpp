@@ -98,7 +98,7 @@ int main() {
     renderEngine->addModel(racket3Model);
     renderEngine->addModel(racket4Model);
 
-    renderEngine->addDisplayGrid(shader);
+    renderEngine->addDisplayGrid(shader, 78.f, 36.f);
 
     // Add lights
     osv::Light light({1.f, 1.f, 1.f}, {1.f, 1.f, 1.f}, {.2f, .2f, .2f}, {0.f, 3.f, 0.f});

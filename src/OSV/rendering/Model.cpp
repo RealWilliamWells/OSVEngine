@@ -6,7 +6,7 @@
 #include "OSV/rendering/texture.h"
 
 osv::Model::Model(std::shared_ptr<Shader> shader, bool renderCanBeOverridden, bool useLighting) :
-    renderCanBeOverridden(renderCanBeOverridden), shader(shader) {
+    renderCanBeOverridden(renderCanBeOverridden), shader(shader), useLighting(useLighting) {
 }
 
 osv::Model::Model(std::shared_ptr<Shader> shader, std::string path, bool renderCanBeOverridden, glm::vec3 position, float angle, glm::vec3 rotation,
