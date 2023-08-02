@@ -58,23 +58,24 @@ int main() {
 
     // Add models
     osv::Model coorModel(shader, ASSET("models/coor_axis/coor_axis.dae"), false,
-                         {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.19f, 0.19f, 0.19f}, true);
+                         {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.19f, 0.19f, 0.19f}, false);
 
     osv::Model armModel(shader, ASSET("models/arm/arm.dae"), true,
-                        {-2.f, 0.f, -2.f}, -45.f, {0.f, 1.f, 0.f}, {.25f, .25f, .25f}, true);
+                        {-2.f, 0.f, -2.f}, 0.f, {1.f, 1.f, 1.f}, {.25f, .25f, .25f}, true);
 
     osv::Model backdrop(shader, ASSET("models/backdrop/backdrop.dae"), true,
                         {0.f, 0.f, -10.f}, 0.f, {1.f, 1.f, 1.f}, {1.f, 1.f, 1.f}, true);
 
-    osv::model::Cube cube(shader, {0.f, 0.f, 1.f, 1.f});
-    cube.translate({-2.f, 1.f, 0.f});
-
-    renderEngine->addModel(coorModel); // TODO: use references to models instead, or only pass path and create model inside of addModel.
     renderEngine->addModel(armModel);
-    renderEngine->addModel(cube);
+    renderEngine->addModel(coorModel); // TODO: use references to models instead, or only pass path and create model inside of addModel.
     renderEngine->addModel(backdrop);
 
-//    renderEngine->addDisplayGrid();
+    renderEngine->addDisplayGrid(shader);
+
+    // Add lights
+    osv::Light light({1.f, 1.f, 1.f}, {1.f, 1.f, 1.f}, {.2f, .2f, .2f}, {0.f, 3.f, 0.f});
+
+    renderEngine->addLight(light);
 
     // Input handling
     // TODO: remove this cringe

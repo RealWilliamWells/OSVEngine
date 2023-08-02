@@ -110,21 +110,13 @@ namespace osv::KeyBinds {
         }
 
         void rotateLeft(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
-            if (delayPress) {
-                return;
-            }
-
-            float rotation = 8.f * delta;
+            float rotation = 3.f * delta;
 
             renderEngine->rotateModel(selectedModel, rotation, {0.f, 1.f, 0.f});
         }
 
         void rotateRight(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
-            if (delayPress) {
-                return;
-            }
-
-            float rotation = -8.f * delta;
+            float rotation = -3.f * delta;
 
             renderEngine->rotateModel(selectedModel, rotation, {0.f, 1.f, 0.f});
         }
