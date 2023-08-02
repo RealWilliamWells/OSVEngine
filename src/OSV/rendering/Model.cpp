@@ -6,7 +6,7 @@
 #include "OSV/rendering/texture.h"
 
 osv::Model::Model(std::shared_ptr<Shader> shader, bool renderCanBeOverridden, bool useLighting) :
-    renderCanBeOverridden(renderCanBeOverridden), shader(shader) {
+    renderCanBeOverridden(renderCanBeOverridden), shader(shader), useLighting(useLighting) {
 }
 
 osv::Model::Model(std::shared_ptr<Shader> shader, std::string path, bool renderCanBeOverridden, glm::vec3 position, float angle, glm::vec3 rotation,
@@ -143,6 +143,10 @@ void osv::Model::render(glm::mat4 &view, glm::mat4 &projection, GLenum& override
     for (unsigned int i = 0; i < meshes.size(); i++) {
         meshes.at(i).render(*shader, view, projection, model, overrideMode, useLighting, light);
     }
+
+    for (Model& child : childrenModels) {
+        child.render(view, projection, overrideMode, light);
+    }
 }
 
 void osv::Model::deleteBuffers() {
@@ -154,20 +158,36 @@ void osv::Model::deleteBuffers() {
 void osv::Model::translate(glm::vec3 translation) {
     model = glm::translate(model, translation);
     baseModel = model;
+
+    for (Model& child : childrenModels) {
+        child.translate(translation);
+    }
 }
 
 void osv::Model::rotate(float angle, glm::vec3 rotation) {
     model = glm::rotate(model, angle, rotation);
     baseModel = model;
+
+    for (Model& child : childrenModels) {
+        child.rotate(angle, rotation);
+    }
 }
 
 void osv::Model::scale(glm::vec3 scale) {
     model = glm::scale(baseModel, scale);
     baseModel = model;
+
+    for (Model& child : childrenModels) {
+        child.scale(scale);
+    }
 }
 
 void osv::Model::scaleRelative(glm::vec3 scale) {
     model = glm::scale(baseModel, scale);
+
+    for (Model& child : childrenModels) {
+        child.scaleRelative(scale);
+    }
 }
 
 void osv::Model::addMesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture> &textures,
@@ -188,4 +208,8 @@ void osv::Model::setPosition(glm::vec3 position) {
 
 const glm::vec3 &osv::Model::getPosition() const {
     return position;
+}
+
+void osv::Model::addChild(osv::Model &model) {
+    childrenModels.push_back(model);
 }

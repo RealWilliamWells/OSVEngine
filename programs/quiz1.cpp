@@ -1,11 +1,10 @@
 //
-// Created by william on 13/03/23.
+// Created by william on 02/08/23.
 //
 
 #include "OSV/rendering/RenderEngine.h"
 #include "OSV/input/KeyInputHandler.h"
 #include "OSV/input/keyConfigs/keyBinds.h"
-#include "OSV/rendering/unit_models/Cube.h"
 
 #ifndef OS_SWITCH
 #define ASSET(_str) "./res/" _str
@@ -55,23 +54,51 @@ int main() {
     renderEngine->initWindow();
     renderEngine->openWindow();
 
-    shader = std::shared_ptr<osv::Shader>(new osv::Shader(ASSET("shaders/defaultVertex.fs"), ASSET("shaders/defaultFragment.fs")));
+    shader = std::shared_ptr<osv::Shader>(new osv::Shader(ASSET("shaders/defaultVertex.vs"), ASSET("shaders/defaultFragment.fs")));
 
     // Add models
     osv::Model coorModel(shader, ASSET("models/coor_axis/coor_axis.dae"), false,
                          {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.19f, 0.19f, 0.19f}, false);
 
-    osv::Model armModel(shader, ASSET("models/arm/arm.dae"), true,
-                        {-2.f, 0.f, -2.f}, 0.f, {1.f, 1.f, 1.f}, {.25f, .25f, .25f}, true);
+    osv::Model netModel(shader, ASSET("models/tenis_net/tenis_net.dae"), false,
+                        {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.07f, 0.07f, 0.07f}, false);
 
-    osv::Model backdrop(shader, ASSET("models/backdrop/backdrop.dae"), true,
-                        {0.f, 0.f, -10.f}, 0.f, {1.f, 1.f, 1.f}, {1.f, 1.f, 1.f}, true);
+    osv::Model sLetterModel(shader, ASSET("models/letters/s/s.dae"), false,
+                            {25.f, 25.f, 15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, false);
+    osv::Model racket1Model(shader, ASSET("models/tenis_racket/tenis_racket.dae"), false,
+                            {25.f, 0.f, 15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, false);
+    racket1Model.addChild(sLetterModel);
 
-    renderEngine->addModel(armModel);
+    osv::Model lLetterModel(shader, ASSET("models/letters/l/l.dae"), false,
+                            {25.f, 25.f, -15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, false);
+    osv::Model racket2Model(shader, ASSET("models/tenis_racket/tenis_racket.dae"), false,
+                            {25.f, 0.f, -15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, false);
+    racket2Model.addChild(lLetterModel);
+
+    osv::Model wLetterModel(shader, ASSET("models/letters/w/w.dae"), false,
+                            {-25.f, 25.f, 15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, false);
+    osv::Model racket3Model(shader, ASSET("models/tenis_racket/tenis_racket.dae"), false,
+                            {-25.f, 0.f, 15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, false);
+    racket3Model.addChild(wLetterModel);
+
+    osv::Model eLetterModel(shader, ASSET("models/letters/e/e.dae"), false,
+                            {-25.f, 25.f, -15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, false);
+    osv::Model racket4Model(shader, ASSET("models/tenis_racket/tenis_racket.dae"), false,
+                            {-25.f, 0.f, -15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, false);
+    racket4Model.addChild(eLetterModel);
+
+    osv::Model skyBoxModel(shader, ASSET("models/skybox/skybox.dae"), false,
+                           {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {6.f, 6.f, 6.f}, false);
+
+    renderEngine->addModel(skyBoxModel);
     renderEngine->addModel(coorModel); // TODO: use references to models instead, or only pass path and create model inside of addModel.
-    renderEngine->addModel(backdrop);
+    renderEngine->addModel(netModel);
+    renderEngine->addModel(racket1Model);
+    renderEngine->addModel(racket2Model);
+    renderEngine->addModel(racket3Model);
+    renderEngine->addModel(racket4Model);
 
-    renderEngine->addDisplayGrid(shader, 100.f, 100.f);
+    renderEngine->addDisplayGrid(shader, 78.f, 36.f);
 
     // Add lights
     osv::Light light({1.f, 1.f, 1.f}, {1.f, 1.f, 1.f}, {.2f, .2f, .2f}, {0.f, 3.f, 0.f});
@@ -85,7 +112,7 @@ int main() {
     keyInputHandler = std::shared_ptr<osv::KeyInputHandler>(new osv::KeyInputHandler(renderEngine));
     keyInputHandler->addBindings(osv::KeyBinds::generateWindowBinds());
 
-    keyInputHandler->addSwitchingBindings(osv::KeyBinds::generateEditModeBinds());
+    keyInputHandler->addSwitchingBindings(osv::KeyBinds::generateQuiz1Binds());
     keyInputHandler->addSwitchingBindings(osv::KeyBinds::generateFreeFlyBinds());
 
     renderEngine->setCursorPosCallback(keyInputHandler->getSwitchingInputs().at(keyInputHandler->currentSwitchingBind).mousePosCallback);

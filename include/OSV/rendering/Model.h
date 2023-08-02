@@ -32,6 +32,8 @@ class osv::Model {
 private:
     std::shared_ptr<Shader> shader;
 
+    std::vector<Model> childrenModels;
+
     std::vector<Texture> textures_loaded;
 
     std::vector<osv::Mesh> meshes;
@@ -77,6 +79,8 @@ public:
                  GLenum mode);
 
     void setPosition(glm::vec3 position);
+
+    void addChild(Model& model);
 
     const glm::vec3 &getPosition() const;
 };

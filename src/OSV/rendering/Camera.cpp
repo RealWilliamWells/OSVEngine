@@ -7,10 +7,8 @@
 osv::Camera::Camera() {
 }
 
-void osv::Camera::update(float delta, float pitch, float yaw) {
-    look(pitch, yaw);
-
-     this->delta = delta;
+void osv::Camera::update(float delta) {
+    this->delta = delta;
 
     glm::vec3 yUnit = glm::vec3(0.0f, 1.0f, 0.0f);
     right = glm::normalize(glm::cross(yUnit, front));
@@ -42,7 +40,6 @@ void osv::Camera::moveUpAndDown(float speed) {
     position -= (speed * delta) * up;
 }
 
-
 void osv::Camera::look(float pitch, float yaw) {
     glm::vec3 direction;
     direction.x = cos(glm::radians(yaw));
@@ -54,4 +51,12 @@ void osv::Camera::look(float pitch, float yaw) {
 
 float osv::Camera::getDefaultMoveSpeed() const {
     return defaultMoveSpeed;
+}
+
+void osv::Camera::setPosition(const glm::vec3 &position) {
+    Camera::position = position;
+}
+
+void osv::Camera::setFront(const glm::vec3 &front) {
+    Camera::front = front;
 }

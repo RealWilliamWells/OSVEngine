@@ -2,7 +2,13 @@
 OpenGL scene viewer developed for COMP371 at Concordia University
 
 # For Markers
-## Assignment 2
+## Quiz 1
+### Controls
+1,2,3,4 - Swap between rackets with
+
+A,D - Rotate racket
+
+## Assignment 1 and 2
 This project contains many different components. It takes advantage of libraries such as Assimp and stb (all linked below)  in order to import models that were custom made in Blender.
 
 ### Notable features

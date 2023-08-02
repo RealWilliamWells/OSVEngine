@@ -103,7 +103,7 @@ bool osv::RenderEngine::update() {
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
-    camera.update(deltaTime, osv::MouseInput::pitch, osv::MouseInput::yaw);
+    camera.update(deltaTime);
 
     if (glfwWindowShouldClose(window)){
 //        ImGui_ImplOpenGL3_Shutdown();
@@ -151,29 +151,27 @@ void osv::RenderEngine::renderScreen() {
 //    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void osv::RenderEngine::addDisplayGrid(std::shared_ptr<Shader> shader) {
+void osv::RenderEngine::addDisplayGrid(std::shared_ptr<Shader> shader, float width, float height) {
     glEnable(GL_LINE_SMOOTH);
     glEnable(GL_BLEND);
 
-    float gridSize = 100.f; // Size of the grid
     float stepSize = .1f;
 
     std::vector<Vertex> vertices;
     Vertex vertex;
 
-    for(float j=0.f; j<=gridSize; j++) {
-        for(int i=0.f; i<=gridSize; i++) {
-            vertex.position = glm::vec3(i*stepSize - (gridSize/2.f) * stepSize, 0.f, j*stepSize - (gridSize/2.f) * stepSize);
-            vertex.texCoords = {0.f, 0.f};
+    for(float j=0.f; j<=height; j++) {
+        for(int i=0.f; i<=width; i++) {
+            vertex.position = glm::vec3(i*stepSize - (width/2.f) * stepSize, 0.f, j*stepSize - (height/2.f) * stepSize);
             vertices.push_back(vertex);
         }
     }
 
     std::vector<unsigned int> indices;
-    for(int j=0; j<gridSize; ++j) {
-        for(int i=0; i<gridSize; ++i) {
-            int row1 = j * (gridSize+1);
-            int row2 = (j+1) * (gridSize+1);
+    for(int j=0; j<height; ++j) {
+        for(int i=0; i<width; ++i) {
+            int row1 = j * (width+1);
+            int row2 = (j+1) * (width+1);
 
             indices.push_back(row1+i);
             indices.push_back(row1+i+1);
@@ -189,8 +187,6 @@ void osv::RenderEngine::addDisplayGrid(std::shared_ptr<Shader> shader) {
     }
 
     Model grid(shader, false, false);
-
-    std::vector<Texture> textures;
 
     grid.addMesh(vertices, indices, {0.75f, 1.f, 0.f, 1.f}, GL_LINES);
  
