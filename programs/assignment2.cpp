@@ -58,12 +58,19 @@ int main() {
     shader = std::shared_ptr<osv::Shader>(new osv::Shader(ASSET("shaders/defaultVertex.fs"), ASSET("shaders/defaultFragment.fs")));
 
     // Add models
+    osv::Model arm(shader, ASSET("models/arm/arm.dae"), true,
+                      {2.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {.25f, .25f, .25f}, true);
     osv::Model tennisBall(shader, ASSET("models/tennis_ball/tennis_ball.dae"), true,
                          {0.f, 3.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.19f, 0.19f, 0.19f}, true);
+    osv::Model ground(shader, ASSET("models/ground/ground.dae"), true,
+                          {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {1.f, 1.f, 1.f}, true);
+
+    renderEngine->addModel(arm);
     renderEngine->addModel(tennisBall);
+    renderEngine->addModel(ground);
 
     // Add lights
-    osv::Light light({1.f, 1.f, 1.f}, {1.f, 1.f, 1.f}, {1.f, 1.f, 1.f}, {0.f, 33.f, 0.f});
+    osv::Light light({1.f, 1.f, 1.f}, {1.f, 1.f, 1.f}, {.2f, .2f, .2f}, {0.f, 3.f, 0.f});
 
     renderEngine->addLight(light);
 
