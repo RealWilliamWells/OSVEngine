@@ -13,11 +13,12 @@ osv::KeyInputHandler::KeyInputHandler(std::shared_ptr<osv::RenderEngine> renderE
 
 void osv::KeyInputHandler::checkAndActInput(GLFWwindow* window, InputMode binds) {
     checkAndActKeys(window, binds.keyBinds);
-
+#ifndef __EMSCRIPTEN__
     GLFWgamepadstate state;
     glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
     checkAndActButtons(state, binds.joyButtonBinds);
     checkAndActAxes(state, binds.joyAxisBinds);
+#endif
 }
 
 void osv::KeyInputHandler::checkAndActKeys(GLFWwindow* window, std::map<unsigned int, KeyAction>& binds) {

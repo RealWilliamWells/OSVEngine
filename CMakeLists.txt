@@ -178,9 +178,15 @@ if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten" AND NOT SWITCH)
     target_link_libraries(${PROJECT_NAME}_ass1 OpenGL::GL GLEW::glew glfw openal sndfile assimp)
     target_link_libraries(${PROJECT_NAME}_ass2 OpenGL::GL GLEW::glew glfw openal sndfile assimp)
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
-    target_link_libraries(${PROJECT_NAME} ${OPENGL_gl_LIBRARY} sndfile assimp)
-    set_target_properties(${PROJECT_NAME}
+    target_link_libraries(${PROJECT_NAME}_ass1 ${OPENGL_gl_LIBRARY} sndfile assimp)
+    set_target_properties(${PROJECT_NAME}_ass1
             PROPERTIES SUFFIX ".html"
             LINK_FLAGS "-Os -s USE_WEBGL2=1 -s FULL_ES3=1 -s USE_GLFW=3 -s WASM=1 -s TOTAL_MEMORY=128MB -s SAFE_HEAP=1 --preload-file res")
+
+    target_link_libraries(${PROJECT_NAME}_ass2 ${OPENGL_gl_LIBRARY} sndfile assimp)
+    set_target_properties(${PROJECT_NAME}_ass2
+            PROPERTIES SUFFIX ".html"
+            LINK_FLAGS "-Os -s USE_WEBGL2=1 -s FULL_ES3=1 -s USE_GLFW=3 -s WASM=1 -s TOTAL_MEMORY=128MB -s SAFE_HEAP=1 --preload-file res")
+
     em_link_js_library(wasm ${libraryJsFiles})
 endif()

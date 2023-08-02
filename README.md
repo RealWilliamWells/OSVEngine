@@ -2,7 +2,7 @@
 OpenGL scene viewer developed for COMP371 at Concordia University
 
 # For Markers
-## Assignment 1
+## Assignment 2
 This project contains many different components. It takes advantage of libraries such as Assimp and stb (all linked below)  in order to import models that were custom made in Blender.
 
 ### Notable features
@@ -11,7 +11,7 @@ This project contains many different components. It takes advantage of libraries
 * Adaptable input handling allowing for easily changable controls. (still requires minor code edits to change controls)
 * Ability to swap between control schems. The controls required for this assignment are used by default, but can be changed to freefly controls on the fly with hotkey Q
 * Basic sound support via OpenAL.
-* Full cross capablilty with WebGL via WebAssembly and Nintendo Switch via homebrew. Check out the WebGL version [here](http://wwells.net/)! (takes awhile to load and there is no loading bar implemented yet!)
+* Full cross capability with WebGL via WebAssembly and Nintendo Switch via homebrew. Check out the WebGL version [here](http://wwells.net/)! (takes awhile to load and there is no loading bar implemented yet!)
 * Joystick support. (except for WebGL unfortunately.
 * Importation of many different 3D model assets formats. (Mainly .dae, aka COLLADA,  was tested)
 
@@ -22,7 +22,7 @@ SPACE - Move model to random position within grid
 E - Change between models to move
 
 Direction arrows - Change world orientation
-HOME - Return world oreintation to original position
+HOME - Return world orientation to original position
 
 P - Set rendering mode to points
 L - Set rendering mode to lines

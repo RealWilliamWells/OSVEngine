@@ -56,7 +56,9 @@ public:
         calcMouseOffsets(xpos, ypos, xoffset, yoffset);
 
         GLFWgamepadstate state;
+#ifndef __EMSCRIPTEN__
         glfwGetGamepadState(GLFW_JOYSTICK_1, &state);
+#endif
 
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) || state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER] == GLFW_PRESS) {
             yaw += xoffset;

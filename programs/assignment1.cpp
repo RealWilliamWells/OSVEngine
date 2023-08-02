@@ -41,6 +41,7 @@ std::shared_ptr<osv::KeyInputHandler> keyInputHandler;
 static void emscriptenMainLoop() {
     renderEngine->update();
     keyInputHandler->processInput(renderEngine->getWindow(), renderEngine->deltaTime);
+    shader->setVec3("viewPos", osv::Mouse::camera->getPosition());
 }
 #endif
 
@@ -100,11 +101,12 @@ int main() {
     while (appletMainLoop()) {
         renderEngine->update();
         keyInputHandler->processInput(renderEngine->getWindow(), renderEngine->deltaTime);
+        shader->setVec3("viewPos", osv::Mouse::camera->getPosition());
     }
 
     userAppExit();
 #else
-    while (renderEngine->update() && keyInputHandler->processInput(renderEngine->getWindow(), renderEngine->deltaTime));
+    while (renderEngine->update() && keyInputHandler->processInput(renderEngine->getWindow(), renderEngine->deltaTime)) { shader->setVec3("viewPos", osv::Mouse::camera->getPosition());}
 #endif
 
     return 0;
