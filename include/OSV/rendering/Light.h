@@ -14,6 +14,9 @@ namespace osv {
 
 class osv::Light {
 public:
+    glm::vec3 spotDir = {0.f, 0.f, -1.f};
+    float spotCutOff = .5f;
+
     glm::vec3 lightColor;
     glm::vec3 diffuse;
     glm::vec3 ambient;

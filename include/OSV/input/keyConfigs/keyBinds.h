@@ -369,6 +369,7 @@ namespace osv::KeyBinds {
     namespace Quiz2Control {
         unsigned int selectedModel = 0;
         bool mainLightOn = true;
+        bool moveCamMode = false;
 
         void setNewCameraView(std::shared_ptr<osv::RenderEngine> renderEngine, int racketNum) {
             Camera* cam = renderEngine->getCamera();
@@ -393,6 +394,9 @@ namespace osv::KeyBinds {
             if (delayPress)
                 return;
 
+            moveCamMode = false;
+            renderEngine->lights.at(0).position = {0.f, 0.f, 3.f};
+
             selectedModel = selectedModel == 0 ? 1 : 0;
 
             setNewCameraView(renderEngine, selectedModel+1);
@@ -401,6 +405,9 @@ namespace osv::KeyBinds {
         void resetCameraToOrigin(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
             if (delayPress)
                 return;
+
+            moveCamMode = false;
+            renderEngine->lights.at(0).position = {0.f, 0.f, 3.f};
 
             selectedModel = 0;
 
@@ -432,12 +439,96 @@ namespace osv::KeyBinds {
 
             if (mainLightOn) {
                 renderEngine->lights.at(0).diffuse = {3.f, 3.f, 3.f};
-                renderEngine->lights.at(0).ambient = {.5f, .5f, .5f};
+                renderEngine->lights.at(0).ambient = {0.5f, 0.5f, 0.5f};
             } else {
                 renderEngine->lights.at(0).diffuse = {0.f, 0.f, 0.f};
-                renderEngine->lights.at(0).ambient = {0.f, 0.f, 0.f};
+                renderEngine->lights.at(0).ambient = {0.1f, 0.1f, 0.1f};
             }
-         }
+        }
+
+        void moveCamAroundOriginVer(std::shared_ptr<osv::RenderEngine> renderEngine, float delta, int dir) {
+            Camera* cam = renderEngine->getCamera();
+
+            if (!moveCamMode) {
+                cam->setPosition({0.0f, 1.0f, 6.0f});
+                cam->setFront({0.0f, 0.0f, -1.0f});
+
+                moveCamMode = true;
+            }
+
+            glm::vec3 currentPos = cam->getPosition();
+            glm::vec3 newPos;
+            float angle = dir*delta*1.f;
+
+            glm::mat3 rotationAlongX = glm::mat3{1.f, 0.f, 0.f,
+                                        0.f, cosf(angle), -sinf(angle),
+                                        0.f, sinf(angle), cosf(angle)};
+
+            glm::mat3 rotationAlongZ = glm::mat3{cosf(angle), -sinf(angle), 0.f,
+                                        sinf(angle), cosf(angle), 0.f,
+                                        0.f, 0.f, 1.f};
+
+            newPos = rotationAlongX * currentPos;
+
+            cam->setPosition(newPos);
+            cam->setFront(glm::normalize(-newPos));
+
+            renderEngine->lights.at(0).spotDir = glm::normalize(-newPos);
+            renderEngine->lights.at(0).position = newPos;
+
+            renderEngine->lights.at(0).diffuse = {3.f, 3.f, 3.f};
+            renderEngine->lights.at(0).ambient = {0.5f, 0.5f, 0.5f};
+
+            osv::MouseInput::yaw = 0.f;
+            osv::MouseInput::pitch = 0.f;
+        }
+
+        void moveCamAroundOriginHor(std::shared_ptr<osv::RenderEngine> renderEngine, float delta, int dir) {
+            Camera* cam = renderEngine->getCamera();
+
+            if (!moveCamMode) {
+                cam->setPosition({0.0f, 1.0f, 6.0f});
+                cam->setFront({0.0f, 0.0f, -1.0f});
+
+                moveCamMode = true;
+            }
+
+            glm::vec3 currentPos = cam->getPosition();
+            glm::vec3 newPos;
+            float angle = dir*delta*1.f;
+
+            newPos.x = currentPos.x*cosf(angle) - currentPos.z*sinf(angle);
+            newPos.y = currentPos.y;
+            newPos.z = currentPos.x*sinf(angle) + currentPos.z*cosf(angle);
+
+            cam->setPosition(newPos);
+            cam->setFront(glm::normalize(-newPos));
+
+            renderEngine->lights.at(0).spotDir = glm::normalize(-newPos);
+            renderEngine->lights.at(0).position = newPos;
+
+            renderEngine->lights.at(0).diffuse = {3.f, 3.f, 3.f};
+            renderEngine->lights.at(0).ambient = {0.5f, 0.5f, 0.5f};
+
+            osv::MouseInput::yaw = 0.f;
+            osv::MouseInput::pitch = 0.f;
+        }
+
+        void rotateCamUp(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            moveCamAroundOriginVer(renderEngine, delta, 1);
+        }
+
+        void rotateCamDown(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            moveCamAroundOriginVer(renderEngine, delta, -1);
+        }
+
+        void rotateCamLeft(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            moveCamAroundOriginHor(renderEngine, delta, 1);
+        }
+
+        void rotateCamRight(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            moveCamAroundOriginHor(renderEngine, delta, -1);
+        }
     }
 
     InputMode generateQuiz2Binds() {
@@ -446,11 +537,15 @@ namespace osv::KeyBinds {
         quiz1Binds.keyBinds[GLFW_KEY_M].keyActionCallback = Quiz2Control::swapRackets;
         quiz1Binds.keyBinds[GLFW_KEY_R].keyActionCallback = Quiz2Control::resetCameraToOrigin;
 
-        quiz1Binds.keyBinds[GLFW_KEY_K].keyActionCallback = Quiz2Control::toggleMainLight;
-
-
         quiz1Binds.keyBinds[GLFW_KEY_A].keyActionCallback = Quiz2Control::rotateLeft;
         quiz1Binds.keyBinds[GLFW_KEY_D].keyActionCallback = Quiz2Control::rotateRight;
+
+        quiz1Binds.keyBinds[GLFW_KEY_K].keyActionCallback = Quiz2Control::toggleMainLight;
+
+        quiz1Binds.keyBinds[GLFW_KEY_UP].keyActionCallback = Quiz2Control::rotateCamUp;
+        quiz1Binds.keyBinds[GLFW_KEY_DOWN].keyActionCallback = Quiz2Control::rotateCamDown;
+        quiz1Binds.keyBinds[GLFW_KEY_LEFT].keyActionCallback = Quiz2Control::rotateCamLeft;
+        quiz1Binds.keyBinds[GLFW_KEY_RIGHT].keyActionCallback = Quiz2Control::rotateCamRight;
 
         quiz1Binds.mousePosCallback = MouseInput::quiz1Callback;
 

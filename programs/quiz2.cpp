@@ -98,7 +98,7 @@ int main() {
     renderEngine->addDisplayGrid(shader, 78.f, 36.f);
 
     // Add lights
-    osv::Light light({1.f, 1.f, 1.f}, {3.f, 3.f, 3.f}, {.5f, .5f, .5f}, {0.f, 0.f, 3.f});
+    osv::Light light({1.f, 1.f, 1.f}, {3.f, 3.f, 3.f}, {0.5f, 0.5f, 0.5f}, {0.f, 0.f, 3.f});
 
     renderEngine->addLight(light);
 
