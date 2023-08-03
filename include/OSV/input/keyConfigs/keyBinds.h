@@ -365,6 +365,68 @@ namespace osv::KeyBinds {
 
         return quiz1Binds;
     }
+
+    namespace Quiz2Control {
+        unsigned int selectedModel = 0;
+
+        void setNewCameraView(std::shared_ptr<osv::RenderEngine> renderEngine, int racketNum) {
+            Camera* cam = renderEngine->getCamera();
+
+            float behindOffset = 2.f;
+
+            float xRacketPos = racketNum == 1 ? 3.f : -3.f;
+
+            float xBehindOffset = racketNum == 1 ? behindOffset : -behindOffset;
+
+            cam->setPosition({xRacketPos + xBehindOffset, 2.f, 0.f});
+
+            glm::vec3 camLook = {-xRacketPos, -1.f, 0.f};
+
+            cam->setFront(glm::normalize(camLook));
+
+            osv::MouseInput::yaw = 0.f;
+            osv::MouseInput::pitch = 0.f;
+        }
+
+        void selectRacket(std::shared_ptr<osv::RenderEngine> renderEngine, int racketNum) {
+            selectedModel = racketNum - 1;
+
+            setNewCameraView(renderEngine, racketNum);
+        }
+
+        void selectRacket1(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            selectRacket(renderEngine, 1);
+        }
+
+        void selectRacket2(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            selectRacket(renderEngine, 2);
+        }
+        void rotateLeft(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            float rotation = 2.f * delta;
+
+            renderEngine->rotateModel(selectedModel, rotation, {0.f, 1.f, 0.f});
+        }
+
+        void rotateRight(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            float rotation = -2.f * delta;
+
+            renderEngine->rotateModel(selectedModel, rotation, {0.f, 1.f, 0.f});
+        }
+    }
+
+    InputMode generateQuiz2Binds() {
+        InputMode quiz1Binds;
+
+        quiz1Binds.keyBinds[GLFW_KEY_1].keyActionCallback = Quiz2Control::selectRacket1;
+        quiz1Binds.keyBinds[GLFW_KEY_2].keyActionCallback = Quiz2Control::selectRacket2;
+
+        quiz1Binds.keyBinds[GLFW_KEY_A].keyActionCallback = Quiz2Control::rotateLeft;
+        quiz1Binds.keyBinds[GLFW_KEY_D].keyActionCallback = Quiz2Control::rotateRight;
+
+        quiz1Binds.mousePosCallback = MouseInput::quiz1Callback;
+
+        return quiz1Binds;
+    }
 }
 
 #endif //OSVENGINE_FREEFLYBINDS_H

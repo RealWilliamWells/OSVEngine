@@ -56,48 +56,50 @@ int main() {
 
     shader = std::shared_ptr<osv::Shader>(new osv::Shader(ASSET("shaders/defaultVertex.vs"), ASSET("shaders/defaultFragment.fs")));
 
-    // Add models
+    // Setup models
     osv::Model coorModel(shader, ASSET("models/coor_axis/coor_axis.dae"), false,
                          {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.19f, 0.19f, 0.19f}, false);
 
     osv::Model netModel(shader, ASSET("models/tenis_net/tenis_net.dae"), false,
                         {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.07f, 0.07f, 0.07f}, true);
 
-    osv::Model sLetterModel(shader, ASSET("models/letters/s/s.dae"), false,
-                            {25.f, 25.f, 15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, true);
-    osv::Model racket1Model(shader, ASSET("models/tenis_racket/tenis_racket.dae"), false,
-                            {25.f, 0.f, 15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, true);
-    racket1Model.addChild(sLetterModel);
-
-    osv::Model lLetterModel(shader, ASSET("models/letters/l/l.dae"), false,
-                            {25.f, 25.f, -15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, true);
-    osv::Model racket2Model(shader, ASSET("models/tenis_racket/tenis_racket.dae"), false,
-                            {25.f, 0.f, -15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, true);
-    racket2Model.addChild(lLetterModel);
-
+    // Racket 1
     osv::Model wLetterModel(shader, ASSET("models/letters/w/w.dae"), false,
-                            {-25.f, 25.f, 15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, true);
-    osv::Model racket3Model(shader, ASSET("models/tenis_racket/tenis_racket.dae"), false,
-                            {-25.f, 0.f, 15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, true);
-    racket3Model.addChild(wLetterModel);
-
+                            {20.f, 25.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, true);
     osv::Model eLetterModel(shader, ASSET("models/letters/e/e.dae"), false,
-                            {-25.f, 25.f, -15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, true);
-    osv::Model racket4Model(shader, ASSET("models/tenis_racket/tenis_racket.dae"), false,
-                            {-25.f, 0.f, -15.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, true);
-    racket4Model.addChild(eLetterModel);
+                            {30.f, 25.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, true);
+    osv::Model racket1Model(shader, ASSET("models/tenis_racket/tenis_racket.dae"), false,
+                            {25.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, true);
+    racket1Model.addChild(wLetterModel);
+    racket1Model.addChild(eLetterModel);
 
+    // Racket 2
+    osv::Model lLetterModel(shader, ASSET("models/letters/l/l.dae"), false,
+                            {-20.f, 25.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, true);
+    osv::Model sLetterModel(shader, ASSET("models/letters/s/s.dae"), false,
+                            {-30.f, 25.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, true);
+    osv::Model racket2Model(shader, ASSET("models/tenis_racket/tenis_racket.dae"), false,
+                            {-25.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.05f, 0.05f, 0.05f}, true);
+    racket2Model.addChild(lLetterModel);
+    racket2Model.addChild(sLetterModel);
+
+    // Skybox
     osv::Model skyBoxModel(shader, ASSET("models/skybox/skybox.dae"), false,
                            {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {6.f, 6.f, 6.f}, false);
 
+    // Add models to scene
+    renderEngine->addModel(racket1Model);
+    renderEngine->addModel(racket2Model);
     renderEngine->addModel(skyBoxModel);
     renderEngine->addModel(coorModel); // TODO: use references to models instead, or only pass path and create model inside of addModel.
     renderEngine->addModel(netModel);
-    renderEngine->addModel(racket1Model);
-    renderEngine->addModel(racket2Model);
-    renderEngine->addModel(racket3Model);
-    renderEngine->addModel(racket4Model);
 
+    // Test models
+    osv::Model tennisBall(shader, ASSET("models/tennis_ball/tennis_ball.dae"), true,
+                          {0.f, 3.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.19f, 0.19f, 0.19f}, true);
+    renderEngine->addModel(tennisBall);
+
+    // Add displaygrid
     renderEngine->addDisplayGrid(shader, 78.f, 36.f);
 
     // Add lights
@@ -112,7 +114,7 @@ int main() {
     keyInputHandler = std::shared_ptr<osv::KeyInputHandler>(new osv::KeyInputHandler(renderEngine));
     keyInputHandler->addBindings(osv::KeyBinds::generateWindowBinds());
 
-    keyInputHandler->addSwitchingBindings(osv::KeyBinds::generateQuiz1Binds());
+    keyInputHandler->addSwitchingBindings(osv::KeyBinds::generateQuiz2Binds());
     keyInputHandler->addSwitchingBindings(osv::KeyBinds::generateFreeFlyBinds());
 
     renderEngine->setCursorPosCallback(keyInputHandler->getSwitchingInputs().at(keyInputHandler->currentSwitchingBind).mousePosCallback);
