@@ -388,19 +388,29 @@ namespace osv::KeyBinds {
             osv::MouseInput::pitch = 0.f;
         }
 
-        void selectRacket(std::shared_ptr<osv::RenderEngine> renderEngine, int racketNum) {
-            selectedModel = racketNum - 1;
+        void swapRackets(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            if (delayPress)
+                return;
 
-            setNewCameraView(renderEngine, racketNum);
+            selectedModel = selectedModel == 0 ? 1 : 0;
+
+            setNewCameraView(renderEngine, selectedModel+1);
         }
 
-        void selectRacket1(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
-            selectRacket(renderEngine, 1);
+        void resetCameraToOrigin(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            if (delayPress)
+                return;
+
+            selectedModel = 0;
+
+            Camera* cam = renderEngine->getCamera();
+            cam->setPosition({0.0f, 1.0f, 6.0f});
+            cam->setFront({0.0f, 0.0f, -1.0f});
+
+            osv::MouseInput::yaw = 0.f;
+            osv::MouseInput::pitch = 0.f;
         }
 
-        void selectRacket2(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
-            selectRacket(renderEngine, 2);
-        }
         void rotateLeft(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
             float rotation = 2.f * delta;
 
@@ -417,8 +427,8 @@ namespace osv::KeyBinds {
     InputMode generateQuiz2Binds() {
         InputMode quiz1Binds;
 
-        quiz1Binds.keyBinds[GLFW_KEY_1].keyActionCallback = Quiz2Control::selectRacket1;
-        quiz1Binds.keyBinds[GLFW_KEY_2].keyActionCallback = Quiz2Control::selectRacket2;
+        quiz1Binds.keyBinds[GLFW_KEY_M].keyActionCallback = Quiz2Control::swapRackets;
+        quiz1Binds.keyBinds[GLFW_KEY_R].keyActionCallback = Quiz2Control::resetCameraToOrigin;
 
         quiz1Binds.keyBinds[GLFW_KEY_A].keyActionCallback = Quiz2Control::rotateLeft;
         quiz1Binds.keyBinds[GLFW_KEY_D].keyActionCallback = Quiz2Control::rotateRight;
