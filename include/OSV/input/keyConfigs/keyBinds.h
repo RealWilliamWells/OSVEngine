@@ -368,6 +368,7 @@ namespace osv::KeyBinds {
 
     namespace Quiz2Control {
         unsigned int selectedModel = 0;
+        bool mainLightOn = true;
 
         void setNewCameraView(std::shared_ptr<osv::RenderEngine> renderEngine, int racketNum) {
             Camera* cam = renderEngine->getCamera();
@@ -422,6 +423,21 @@ namespace osv::KeyBinds {
 
             renderEngine->rotateModel(selectedModel, rotation, {0.f, 1.f, 0.f});
         }
+
+        void toggleMainLight(std::shared_ptr<osv::RenderEngine> renderEngine, bool delayPress, float delta) {
+            if (delayPress)
+                return;
+
+            mainLightOn = !mainLightOn;
+
+            if (mainLightOn) {
+                renderEngine->lights.at(0).diffuse = {3.f, 3.f, 3.f};
+                renderEngine->lights.at(0).ambient = {.5f, .5f, .5f};
+            } else {
+                renderEngine->lights.at(0).diffuse = {0.f, 0.f, 0.f};
+                renderEngine->lights.at(0).ambient = {0.f, 0.f, 0.f};
+            }
+         }
     }
 
     InputMode generateQuiz2Binds() {
@@ -429,6 +445,9 @@ namespace osv::KeyBinds {
 
         quiz1Binds.keyBinds[GLFW_KEY_M].keyActionCallback = Quiz2Control::swapRackets;
         quiz1Binds.keyBinds[GLFW_KEY_R].keyActionCallback = Quiz2Control::resetCameraToOrigin;
+
+        quiz1Binds.keyBinds[GLFW_KEY_K].keyActionCallback = Quiz2Control::toggleMainLight;
+
 
         quiz1Binds.keyBinds[GLFW_KEY_A].keyActionCallback = Quiz2Control::rotateLeft;
         quiz1Binds.keyBinds[GLFW_KEY_D].keyActionCallback = Quiz2Control::rotateRight;

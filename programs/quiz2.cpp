@@ -85,7 +85,7 @@ int main() {
 
     // Skybox
     osv::Model skyBoxModel(shader, ASSET("models/skybox/skybox.dae"), false,
-                           {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {6.f, 6.f, 6.f}, false);
+                           {0.f, 0.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {6.f, 6.f, 6.f}, true);
 
     // Add models to scene
     renderEngine->addModel(racket1Model);
@@ -98,7 +98,7 @@ int main() {
     renderEngine->addDisplayGrid(shader, 78.f, 36.f);
 
     // Add lights
-    osv::Light light({1.f, 1.f, 1.f}, {1.f, 1.f, 1.f}, {.2f, .2f, .2f}, {0.f, 3.f, 0.f});
+    osv::Light light({1.f, 1.f, 1.f}, {3.f, 3.f, 3.f}, {.5f, .5f, .5f}, {0.f, 0.f, 3.f});
 
     renderEngine->addLight(light);
 

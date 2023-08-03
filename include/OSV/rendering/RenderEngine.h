@@ -45,7 +45,6 @@ private:
     Camera camera;
 
     std::vector<osv::Model> models;
-    std::vector<osv::Light> lights;
 
     float lastFrame = 0.f;
 
@@ -54,6 +53,8 @@ private:
     bool captureMouse = true;
 
 public:
+    std::vector<osv::Light> lights;
+
     float deltaTime = 0.f;
 
     RenderEngine();

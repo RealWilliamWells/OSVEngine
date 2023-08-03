@@ -81,7 +81,10 @@ void osv::Mesh::render(Shader &shader, glm::mat4 &view, glm::mat4 &projection, g
     shader.setBool("useLighting", useLighting);
 
     if (useLighting) {
-        shader.setVec3("light.ambient", light.ambient);
+        shader.setVec3("light.spotDir", {0.f, 0.f, -1.f});
+        shader.setFloat("light.spotCutOff", .5f);
+
+        shader.setVec3("light.ambient", light.ambient != glm::vec3{0.f, 0.f, 0.f} ? light.ambient : glm::vec3{0.1f, 0.1f, 0.1f}); // TODO: handle ambience better when no presence of light exists
         shader.setVec3("light.diffuse", light.diffuse);
         shader.setVec3("light.color", light.lightColor);
         shader.setVec3("light.position", light.position);
