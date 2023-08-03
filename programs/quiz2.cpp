@@ -94,11 +94,6 @@ int main() {
     renderEngine->addModel(coorModel); // TODO: use references to models instead, or only pass path and create model inside of addModel.
     renderEngine->addModel(netModel);
 
-    // Test models
-    osv::Model tennisBall(shader, ASSET("models/tennis_ball/tennis_ball.dae"), true,
-                          {0.f, 3.f, 0.f}, 0.f, {1.f, 1.f, 1.f}, {0.19f, 0.19f, 0.19f}, true);
-    renderEngine->addModel(tennisBall);
-
     // Add displaygrid
     renderEngine->addDisplayGrid(shader, 78.f, 36.f);
 

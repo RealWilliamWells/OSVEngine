@@ -169,7 +169,9 @@ void osv::Model::rotate(float angle, glm::vec3 rotation) {
     baseModel = model;
 
     for (Model& child : childrenModels) {
+        child.translate(position-child.position);
         child.rotate(angle, rotation);
+        child.translate(child.position-position);
     }
 }
 
