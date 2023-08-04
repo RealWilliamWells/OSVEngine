@@ -2,6 +2,18 @@
 OpenGL scene viewer developed for COMP371 at Concordia University
 
 # For Markers
+## Quiz 2
+### Controls
+M - Swap camera view between rackets
+
+R - Reset camera to starting position and viewing
+
+K - Toggle main light source
+
+Arrow keys - Orbit camera around scene origin
+
+A,D - Rotate current focused racket
+
 ## Quiz 1
 ### Controls
 1,2,3,4 - Swap between rackets with
